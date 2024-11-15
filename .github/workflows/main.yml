@@ -9,9 +9,9 @@ env:
   CR: ${{ vars.CR }}
   CR_PAT: ${{ secrets.CR_PAT }}
   CR_USER: ${{ secrets.CR_USER }}
-  SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
-  SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
-  SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+  SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+  SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+  SSH_USER: ${{ secrets.PROD_SSH_USER }}
   NEXT_PUBLIC_API_BASE_URL: ${{ secrets.PROD_NEXT_PUBLIC_API_BASE_URL }}
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
