@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         <ul className="p-3 space-y-2">
           <li>
-            <Card isPressable className="w-full bg-secondary/90 text-primary">
+            <Card as={Link} href="/dashboard" isPressable className="w-full bg-secondary/90 text-primary">
               <CardBody className="flex gap-2 flex-row items-center">
                 <HiOutlineHome />
                 Dashboard
