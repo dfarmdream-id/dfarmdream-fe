@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex">
       <aside className="w-80 h-screen bg-primary hidden md:block">
         <div className="h-20 flex justify-center items-center">
-          <Logo />
+          <Logo className="h-16" />
         </div>
         <ul className="p-3 space-y-2">
           <li>

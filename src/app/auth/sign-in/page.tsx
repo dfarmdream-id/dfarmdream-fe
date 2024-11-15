@@ -16,7 +16,7 @@ export default function Page() {
       <Card className="bg-primary">
         <CardBody className="flex justify-center items-center">
           <div>
-            <Logo />
+            <Logo className="h-20" />
           </div>
         </CardBody>
       </Card>

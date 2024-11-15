@@ -1,11 +1,10 @@
 import * as React from "react";
 
-const Logo = () => (
+const Logo = ({ className }: { className?: string }) => (
   <svg
+    className={className}
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    width="327"
-    height="148"
     fill="none"
     viewBox="0 0 327 148"
   >
