@@ -1,14 +1,18 @@
 "use client";
 import Logo from "@/components/assets/logo";
-import { Card, CardBody } from "@nextui-org/react";
+import { Avatar, Card, CardBody } from "@nextui-org/react";
 import Link from "next/link";
 import {
   HiOutlineFolder,
   HiArrowRightOnRectangle,
   HiOutlineHome,
 } from "react-icons/hi2";
+import { useGetProfile } from "./_services/profile";
+import { signOut } from "./sign-out/_actions/sign-out";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { data } = useGetProfile();
+
   return (
     <div className="flex">
       <aside className="w-80 h-screen bg-primary hidden md:block">
@@ -17,7 +21,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         <ul className="p-3 space-y-2">
           <li>
-            <Card as={Link} href="/dashboard" isPressable className="w-full bg-secondary/90 text-primary">
+            <Card
+              as={Link}
+              href="/dashboard"
+              isPressable
+              className="w-full bg-secondary/90 text-primary"
+            >
               <CardBody className="flex gap-2 flex-row items-center">
                 <HiOutlineHome />
                 Dashboard
@@ -65,7 +74,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </ul>
           </li>
           <li>
-            <Card isPressable className="w-full bg-transparent text-white">
+            <Card
+              onPress={signOut}
+              isPressable
+              className="w-full bg-transparent text-white"
+            >
               <CardBody className="flex gap-2 flex-row items-center">
                 <HiArrowRightOnRectangle />
                 Logout
@@ -74,7 +87,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </li>
         </ul>
       </aside>
-      <main className="flex-1 bg-default-50">{children}</main>
+      <main className="flex-1 bg-default-50">
+        <nav className="bg-white w-full sticky top-0 h-16 flex justify-center items-center px-5">
+          <div className="w-full flex justify-end">
+            <div>
+              <Card shadow="none" isPressable className="p-1">
+                <CardBody className="flex flex-row items-center gap-2 px-1 py-0">
+                  <Avatar />
+                  {data?.data?.fullName}
+                </CardBody>
+              </Card>
+            </div>
+          </div>
+        </nav>
+        {children}
+      </main>
     </div>
   );
 }
