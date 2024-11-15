@@ -1,4 +1,5 @@
 "use client";
+import Logo from "@/components/assets/logo";
 import { Card, CardBody } from "@nextui-org/react";
 import {
   HiOutlineFolder,
@@ -10,7 +11,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex">
       <aside className="w-80 h-screen bg-primary hidden md:block">
-        <div className="h-20 flex justify-center items-center">Logo</div>
+        <div className="h-20 flex justify-center items-center">
+          <Logo />
+        </div>
         <ul className="p-3 space-y-2">
           <li>
             <Card isPressable className="w-full bg-secondary/90 text-primary">
