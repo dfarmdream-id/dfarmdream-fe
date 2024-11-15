@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
 
 export const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
