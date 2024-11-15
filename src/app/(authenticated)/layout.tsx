@@ -1,6 +1,7 @@
 "use client";
 import Logo from "@/components/assets/logo";
 import { Card, CardBody } from "@nextui-org/react";
+import Link from "next/link";
 import {
   HiOutlineFolder,
   HiArrowRightOnRectangle,
@@ -32,17 +33,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Card>
             <ul className="p-3 space-y-2">
               <li>
-                <Card isPressable className="w-full bg-transparent text-white">
+                <Card
+                  as={Link}
+                  href="/master/users"
+                  isPressable
+                  className="w-full bg-transparent text-white"
+                >
                   <CardBody>Jabatan</CardBody>
                 </Card>
               </li>
               <li>
-                <Card isPressable className="w-full bg-transparent text-white">
+                <Card
+                  as={Link}
+                  href="/master/users"
+                  isPressable
+                  className="w-full bg-transparent text-white"
+                >
                   <CardBody>Karyawan</CardBody>
                 </Card>
               </li>
               <li>
-                <Card isPressable className="w-full bg-transparent text-white">
+                <Card
+                  as={Link}
+                  href="/master/users"
+                  isPressable
+                  className="w-full bg-transparent text-white"
+                >
                   <CardBody>Provinsi</CardBody>
                 </Card>
               </li>
