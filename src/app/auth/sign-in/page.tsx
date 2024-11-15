@@ -8,6 +8,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -47,7 +48,7 @@ export default function Page() {
                 <SelectItem key={1}>Majalengka</SelectItem>
               </Select>
             </div>
-            <Button color="primary" className="w-full">
+            <Button as={Link} href="/dashboard" color="primary" className="w-full">
               <span>Sign In</span>
             </Button>
           </form>
