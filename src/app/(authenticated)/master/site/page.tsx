@@ -18,6 +18,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { useGetSites } from "../_services/site";
 import Actions from "./_components/actions";
+import EmptyState from "@/components/state/empty";
 
 const columns = [
   {
@@ -94,6 +95,7 @@ export default function Page() {
             items={rows}
             isLoading={user.isLoading}
             loadingContent={<Spinner />}
+            emptyContent={<EmptyState />}
           >
             {(item) => (
               <TableRow
