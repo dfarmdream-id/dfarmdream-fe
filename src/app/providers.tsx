@@ -20,9 +20,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
               </div>
             }
           >
+            <Toaster
+              richColors
+              closeButton
+              duration={3000}
+              position="top-center"
+            />
             {children}
           </Suspense>
-          <Toaster richColors position="top-center"></Toaster>
         </NuqsAdapter>
       </QueryClientProvider>
     </NextUIProvider>
