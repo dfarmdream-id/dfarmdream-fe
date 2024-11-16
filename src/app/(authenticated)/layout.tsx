@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
 import { usePathname } from "next/navigation";
-import { HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
+import { HiLocationMarker, HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
 import { useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -27,9 +27,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       label: "Master Data",
       children: [
         {
+          label: "Jabatan",
+          href: "/master/positions",
+          icon: <HiUsers />,
+        },
+        {
           label: "Pengguna",
           href: "/master/users",
           icon: <HiUsers />,
+        },
+        {
+          label: "Lokasi",
+          href: "/master/site",
+          icon: <HiLocationMarker />,
         },
       ],
     },
