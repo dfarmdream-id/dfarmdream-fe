@@ -56,8 +56,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Nama Jabatan"
-                  placeholder="Nama Jabatan"
+                  label="Lokasi"
+                  placeholder="Lokasi"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
