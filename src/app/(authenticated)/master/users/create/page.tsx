@@ -13,6 +13,10 @@ import { useForm } from "@/hooks/form";
 import { useCreateUser } from "../../_services/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useGetPositions } from "../../_services/position";
+import { useMemo } from "react";
+import { useGetSites } from "../../_services/site";
+import { useGetRoles } from "../../_services/role";
 
 export default function Page() {
   const schema = z.object({
@@ -26,7 +30,7 @@ export default function Page() {
     fullName: z.string({
       message: "Nama wajib diisi",
     }),
-    position: z.string({
+    positionId: z.string({
       message: "Jabatan wajib diisi",
     }),
     phone: z.string({
@@ -38,8 +42,15 @@ export default function Page() {
     status: z.boolean({
       message: "Status wajib diisi",
     }),
+    sites: z.string(),
+    roles: z.string(),
   });
 
+  const positions = useGetPositions(
+    useMemo(() => ({ page: "1", limit: "100" }), [])
+  );
+  const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
+  const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
   const form = useForm<z.infer<typeof schema>>({
     schema,
     defaultValues: {
@@ -55,6 +66,8 @@ export default function Page() {
       {
         body: {
           ...data,
+          roles: data.roles.split(',').map((id) => ({ roleId: id })),
+          sites: data.sites.split(',').map((id) => ({ siteId: id })),
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },
@@ -151,7 +164,7 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="position"
+              name="positionId"
               render={({ field, fieldState }) => (
                 <Select
                   labelPlacement="outside"
@@ -162,8 +175,60 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
-                  <SelectItem key="Operator">Operator</SelectItem>
-                  <SelectItem key="Farm Manager">Farm Manager</SelectItem>
+                  {positions.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="roles"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Peran"
+                  label="Peran"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {role.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="sites"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Lokasi"
+                  label="Lokasi"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectionMode="multiple"
+                >
+                  {sites.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
                 </Select>
               )}
             />

@@ -1,9 +1,13 @@
 "use client";
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { GetPositionResponse } from "../_models/response/position";
+import {
+  GetPositionListResponse,
+  GetPositionResponse,
+} from "../_models/response/position";
+import { useMemo } from "react";
 
 export const useGetPositions = (params: Record<string, string>) => {
-  return useHttp<GetPositionResponse>("/v1/position", {
+  return useHttp<GetPositionListResponse>("/v1/position", {
     params,
   });
 };
@@ -18,4 +22,16 @@ export const useDeletePosition = () => {
   return useHttpMutation("/v1/position/{id}", {
     method: "DELETE",
   });
+};
+
+export const useUpdatePosition = () => {
+  return useHttpMutation("/v1/position/{id}", {
+    method: "PUT",
+  });
+};
+
+export const useGetPosition = (id: string) => {
+  return useHttp<GetPositionResponse>(
+    useMemo(() => `/v1/position/${id}`, [id])
+  );
 };

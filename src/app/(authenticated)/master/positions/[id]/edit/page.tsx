@@ -4,8 +4,9 @@ import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useCreatePosition } from "../../../_services/position";
+import { useParams, useRouter } from "next/navigation";
+import { useGetPosition, useUpdatePosition } from "../../../_services/position";
+import { useEffect, useMemo } from "react";
 
 export default function Page() {
   const schema = z.object({
@@ -18,12 +19,22 @@ export default function Page() {
     schema,
   });
 
-  const submission = useCreatePosition();
+  const submission = useUpdatePosition();
   const router = useRouter();
+  const params = useParams();
+
+  const position = useGetPosition(useMemo(() => params.id as string, [params]));
+
+  useEffect(() => {
+    if (position.data) {
+      form.setValue("name", position?.data?.data?.name);
+    }
+  }, [position.data, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
+        pathVars: { id: params.id as string },
         body: data,
       },
       {
@@ -31,7 +42,7 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          toast.success("Berhasil menambahkan data");
+          toast.success("Berhasil mengubah data");
           form.reset();
           router.push("/master/positions");
         },

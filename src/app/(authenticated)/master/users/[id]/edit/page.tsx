@@ -10,9 +10,13 @@ import {
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
-import { useCreateUser } from "../../../_services/user";
+import { useGetUser, useUpdateUser } from "../../../_services/user";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { useGetSites } from "../../../_services/site";
+import { useGetRoles } from "../../../_services/role";
+import { useGetPositions } from "../../../_services/position";
 
 export default function Page() {
   const schema = z.object({
@@ -26,7 +30,7 @@ export default function Page() {
     fullName: z.string({
       message: "Nama wajib diisi",
     }),
-    position: z.string({
+    positionId: z.string({
       message: "Jabatan wajib diisi",
     }),
     phone: z.string({
@@ -38,6 +42,8 @@ export default function Page() {
     status: z.boolean({
       message: "Status wajib diisi",
     }),
+    sites: z.string(),
+    roles: z.string(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -47,8 +53,40 @@ export default function Page() {
     },
   });
 
-  const submission = useCreateUser();
+  const submission = useUpdateUser();
   const router = useRouter();
+  const params = useParams();
+
+  const user = useGetUser(useMemo(() => params.id as string, [params.id]));
+
+  useEffect(() => {
+    if (user.data) {
+      if (user?.data?.data?.username) {
+        form.setValue("username", user?.data?.data?.username);
+      }
+      if (user?.data?.data?.fullName) {
+        form.setValue("fullName", user?.data?.data?.fullName);
+      }
+      if (user?.data?.data?.position) {
+        form.setValue("positionId", user?.data?.data?.position);
+      }
+      if (user?.data?.data?.phone) {
+        form.setValue("phone", user?.data?.data?.phone);
+      }
+      if (user?.data?.data?.address) {
+        form.setValue("address", user?.data?.data?.address);
+      }
+      if (user?.data?.data?.status) {
+        form.setValue("status", user?.data?.data?.status === "ACTIVE");
+      }
+    }
+  }, [user.data, form]);
+
+  const positions = useGetPositions(
+    useMemo(() => ({ page: "1", limit: "100" }), [])
+  );
+  const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
+  const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
@@ -56,6 +94,19 @@ export default function Page() {
         body: {
           ...data,
           status: data.status ? "ACTIVE" : "INACTIVE",
+          sites: data.sites.split(",").map((site) => {
+            return {
+              siteId: site,
+            };
+          }),
+          roles: data.roles.split(",").map((role) => {
+            return {
+              roleId: role,
+            };
+          }),
+        },
+        pathVars: {
+          id: params.id as string,
         },
       },
       {
@@ -63,7 +114,7 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          toast.success("Berhasil menambahkan data");
+          toast.success("Berhasil mengubah data");
           form.reset();
           router.push("/master/users");
         },
@@ -73,7 +124,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Pengguna</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -151,7 +202,7 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="position"
+              name="positionId"
               render={({ field, fieldState }) => (
                 <Select
                   labelPlacement="outside"
@@ -162,8 +213,61 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
-                  <SelectItem key="Operator">Operator</SelectItem>
-                  <SelectItem key="Farm Manager">Farm Manager</SelectItem>
+                  {positions.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="roles"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Peran"
+                  label="Peran"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectionMode="multiple"
+                >
+                  {role.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="sites"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Lokasi"
+                  label="Lokasi"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectionMode="multiple"
+                >
+                  {sites.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
                 </Select>
               )}
             />

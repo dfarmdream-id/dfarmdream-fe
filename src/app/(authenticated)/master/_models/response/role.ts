@@ -1,12 +1,12 @@
-export interface UserListResponse {
+export interface GetRoleResponse {
   message: string;
-  data: Data;
+  data: Daum;
   status: number;
 }
 
-export interface UserResponse {
+export interface GetRoleListResponse {
   message: string;
-  data: Daum;
+  data: Data;
   status: number;
 }
 
@@ -17,16 +17,8 @@ export interface Data {
 
 export interface Daum {
   id: string;
-  email: string;
-  username: string;
-  fullName: string;
-  password: string;
-  identityId: string;
-  phone: string;
-  address: string;
-  status: string;
-  position: string;
-  deletedAt: string;
+  name: string;
+  deletedAt: any;
   createdAt: string;
   updatedAt: string;
 }

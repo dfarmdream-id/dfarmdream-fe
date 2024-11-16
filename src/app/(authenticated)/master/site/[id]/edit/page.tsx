@@ -4,8 +4,9 @@ import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useCreateSite } from "../../../_services/site";
+import { useParams, useRouter } from "next/navigation";
+import { useGetSite, useUpdateSite } from "../../../_services/site";
+import { useEffect, useMemo } from "react";
 
 export default function Page() {
   const schema = z.object({
@@ -21,12 +22,24 @@ export default function Page() {
     schema,
   });
 
-  const submission = useCreateSite();
+  const params = useParams();
+  const submission = useUpdateSite();
+  const site = useGetSite(
+    useMemo(() => params.id as string, [params]) as string
+  );
   const router = useRouter();
+
+  useEffect(() => {
+    if (site.data) {
+      form.setValue("name", site?.data?.data?.name);
+      form.setValue("address", site?.data?.data?.address);
+    }
+  }, [site.data, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
+        pathVars: { id: params.id as string },
         body: data,
       },
       {
@@ -34,7 +47,7 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          toast.success("Berhasil menambahkan data");
+          toast.success("Berhasil mengubah data");
           form.reset();
           router.push("/master/site");
         },
