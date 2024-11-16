@@ -18,6 +18,7 @@ import { useQueryState } from "nuqs";
 import { useGetUsers } from "../_services/user";
 import { useMemo } from "react";
 import Link from "next/link";
+import Actions from "./_components/actions";
 
 const columns = [
   {
@@ -43,6 +44,10 @@ const columns = [
   {
     key: "status",
     label: "Status",
+  },
+  {
+    key: "action",
+    label: "Aksi",
   },
 ];
 
@@ -124,6 +129,9 @@ export default function Page() {
                   <Chip color={item.status === "active" ? "success" : "danger"}>
                     {item.status === "active" ? "Aktif" : "Tidak Aktif"}
                   </Chip>
+                </TableCell>
+                <TableCell>
+                  <Actions id={item.id} />
                 </TableCell>
               </TableRow>
             )}

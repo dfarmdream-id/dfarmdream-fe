@@ -12,3 +12,9 @@ export const useCreateSite = () => {
     method: "POST",
   });
 };
+
+export const useDeleteSite = () => {
+  return useHttpMutation("/v1/site/{id}", {
+    method: "DELETE",
+  });
+};

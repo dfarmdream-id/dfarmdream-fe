@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreateSite } from "../../_services/site";
+import { useCreateSite } from "../../../_services/site";
 
 export default function Page() {
   const schema = z.object({
@@ -44,7 +44,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Lokasi</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Lokasi</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">

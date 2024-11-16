@@ -13,3 +13,9 @@ export const useCreatePosition = () => {
     method: "POST",
   });
 };
+
+export const useDeletePosition = () => {
+  return useHttpMutation("/v1/position/{id}", {
+    method: "DELETE",
+  });
+};

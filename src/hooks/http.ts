@@ -117,6 +117,18 @@ type HttpMutationOptions<
   queryOptions?: UseMutationOptions<TData, TError, TVariables, TContext>;
 };
 
+function replaceDynamicParams(
+  urlTemplate: string,
+  params: Record<string, string | any>
+) {
+  return urlTemplate.replace(/{(\w+)}/g, (_, key) => {
+    if (params[key] !== undefined) {
+      return params[key];
+    }
+    throw new Error(`Missing parameter: ${key}`);
+  });
+}
+
 /**
    * Update data to the server.
    * @example
@@ -152,12 +164,13 @@ export function useHttpMutation<
       body?: FormData | any;
       headers?: Record<string, string>;
       params?: Record<string, string>;
+      pathVars?: Record<string, string>;
     }
   >({
     mutationFn: (value) => {
       return new Promise<TData>((resolve, reject) => {
         const cfg = {
-          url: url,
+          url: replaceDynamicParams(url, value.pathVars ?? {}),
           method: options.method,
           ...options.httpOptions,
         };

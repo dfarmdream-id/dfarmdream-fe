@@ -12,3 +12,9 @@ export const useCreateUser = () => {
     method: "POST",
   });
 };
+
+export const useDeleteUser = () => {
+  return useHttpMutation<UserResponse>("/v1/user/{id}", {
+    method: "DELETE",
+  });
+};

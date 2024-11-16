@@ -17,6 +17,7 @@ import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 import Link from "next/link";
 import { useGetPositions } from "../_services/position";
+import Actions from "./_components/actions";
 
 const columns = [
   {
@@ -34,6 +35,10 @@ const columns = [
   {
     key: "updatedAt",
     label: "Tanggal Diubah",
+  },
+  {
+    key: "action",
+    label: "Aksi",
   },
 ];
 
@@ -107,6 +112,9 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{item.updatedAt}</div>
+                </TableCell>
+                <TableCell>
+                  <Actions id={item.id} />
                 </TableCell>
               </TableRow>
             )}
