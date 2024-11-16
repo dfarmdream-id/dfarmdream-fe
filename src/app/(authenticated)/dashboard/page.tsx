@@ -59,19 +59,7 @@ export default function Page() {
         },
         labels: ["Ayam Hidup", "Ayam Mati", "Ayam Afkir"],
         colors: ["#0f6646", "#f3cb52", "#f3cb52"],
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                width: 500,
-              },
-              legend: {
-                position: "bottom",
-              },
-            },
-          },
-        ],
+        responsive: [],
       },
     };
   }, []);
