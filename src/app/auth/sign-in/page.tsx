@@ -14,7 +14,10 @@ import Cookies from "js-cookie";
 import { Controller } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { SignInResponse } from "../_models/response/sign-in";
+import {
+  SignInChooseResponse,
+  SignInResponse,
+} from "../_models/response/sign-in";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -25,14 +28,14 @@ export default function Page() {
     password: z.string({
       message: "Password wajib diisi",
     }),
-    location: z.optional(z.string()),
+    siteId: z.optional(z.string()),
   });
   const router = useRouter();
 
-  const signInMutation = useHttpMutation<
+  const signInChooseMutation = useHttpMutation<
     z.infer<typeof schema>,
-    SignInResponse
-  >("/v1/auth/sign-in", {
+    SignInChooseResponse
+  >("/v1/auth/sign-in/choose", {
     method: "POST",
     queryOptions: {
       onError: (error) => {
@@ -42,6 +45,18 @@ export default function Page() {
         Cookies.set("accessToken", token);
         router.push("/dashboard");
         toast.success("Berhasil login");
+      },
+    },
+  });
+
+  const signInMutation = useHttpMutation<
+    z.infer<typeof schema>,
+    SignInResponse
+  >("/v1/auth/sign-in", {
+    method: "POST",
+    queryOptions: {
+      onError: (error) => {
+        toast.error(error.data?.message);
       },
     },
   });
@@ -58,6 +73,13 @@ export default function Page() {
       toast.error("Harap isi semua data");
     }
   );
+
+  const onChooseSite = () => {
+    const data = form.getValues();
+    signInChooseMutation.mutate({
+      body: data,
+    });
+  };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-4 p-5 bg-gray-100">
@@ -116,33 +138,55 @@ export default function Page() {
               />
             </div>
 
-            <div className="mb-10 h-16">
-              <Controller
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    labelPlacement="outside"
-                    label="Lokasi"
-                    placeholder="Lokasi"
-                    variant="bordered"
-                    fullWidth
-                  >
-                    <SelectItem key={1}>Majalengka</SelectItem>
-                  </Select>
-                )}
-              />
-            </div>
+            {}
 
-            <Button
-              isLoading={signInMutation.isPending}
-              type="submit"
-              color="primary"
-              className="w-full"
-            >
-              Sign In
-            </Button>
+            {signInMutation.isSuccess && (
+              <>
+                <div className="mb-10 h-16 space-y-10">
+                  <Controller
+                    control={form.control}
+                    name="siteId"
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        labelPlacement="outside"
+                        label="Lokasi"
+                        placeholder="Lokasi"
+                        variant="bordered"
+                        fullWidth
+                      >
+                        {signInMutation.data?.data?.sites?.map((item) => {
+                          return (
+                            <SelectItem key={item.siteId}>
+                              {item?.site?.name}
+                            </SelectItem>
+                          );
+                        }) || []}
+                      </Select>
+                    )}
+                  />
+                  <Button
+                    isLoading={signInChooseMutation.isPending}
+                    type="button"
+                    onPress={onChooseSite}
+                    color="primary"
+                    className="w-full"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+              </>
+            )}
+            {!signInMutation.isSuccess && (
+              <Button
+                isLoading={signInMutation.isPending}
+                type="submit"
+                color="primary"
+                className="w-full"
+              >
+                Sign In
+              </Button>
+            )}
           </form>
         </div>
       </div>

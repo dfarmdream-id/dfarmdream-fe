@@ -4,17 +4,14 @@ import { Avatar, Button, Card, CardBody, cn } from "@nextui-org/react";
 import Link from "next/link";
 import {
   HiArrowRightOnRectangle,
-  HiCircleStack,
-  HiInbox,
   HiOutlineHome,
-  HiUserPlus,
   HiUsers,
 } from "react-icons/hi2";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
 import { usePathname } from "next/navigation";
-import { HiInboxIn, HiLocationMarker, HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
+import { HiLocationMarker, HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
 import { useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -44,26 +41,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href: "/master/site",
           icon: <HiLocationMarker />,
         },
-        {
-          label: "Kandang",
-          href: "/master/cages",
-          icon: <HiInbox />,
-        },
-        {
-          label: "Rak",
-          href: "/master/cage-racks",
-          icon: <HiInboxIn />,
-        },
-        {
-          label: "Investor",
-          href: "/master/investors",
-          icon: <HiUserPlus />,
-        },
-        {
-          label: "Ayam",
-          href: "/master/chickens",
-          icon: <HiCircleStack />,
-        },
+        // {
+        //   label: "Kandang",
+        //   href: "/master/cages",
+        //   icon: <HiInbox />,
+        // },
+        // {
+        //   label: "Rak",
+        //   href: "/master/cage-racks",
+        //   icon: <HiInboxIn />,
+        // },
+        // {
+        //   label: "Investor",
+        //   href: "/master/investors",
+        //   icon: <HiUserPlus />,
+        // },
+        // {
+        //   label: "Ayam",
+        //   href: "/master/chickens",
+        //   icon: <HiCircleStack />,
+        // },
       ],
     },
     {
@@ -80,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <AnimatePresence>
-      <div className="flex">
+      <div className="flex w-full h-screen overflow-hidden">
         <motion.aside
           initial={{ width: "20rem" }}
           animate={{ width: open ? 0 : "20rem" }}
@@ -208,8 +205,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ))}
           </ul>
         </motion.aside>
-        <main className="flex-1 bg-default-50 w-full overflow-hidden">
-          <nav className="bg-white w-full sticky top-0 h-16 flex justify-center items-center px-5">
+        <main className="flex-1 bg-default-50 w-full overflow-y-auto">
+          <nav className="bg-white w-full sticky top-0 h-16 flex justify-center items-center px-5 z-30">
             <div className="w-full flex justify-between items-center">
               <div>
                 <Button
@@ -230,7 +227,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </nav>
-          <div className="w-full overflow-x-hidden">{children}</div>
+          <div className="w-full overflow-x-hidden overflow-y-auto">{children}</div>
         </main>
       </div>
     </AnimatePresence>
