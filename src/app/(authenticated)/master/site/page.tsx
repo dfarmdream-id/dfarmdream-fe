@@ -22,10 +22,6 @@ import EmptyState from "@/components/state/empty";
 
 const columns = [
   {
-    key: "id",
-    label: "id",
-  },
-  {
     key: "name",
     label: "Nama",
   },
@@ -103,9 +99,6 @@ export default function Page() {
                 className="hover:bg-gray-100"
                 role="button"
               >
-                <TableCell>
-                  <div>{item.id}</div>
-                </TableCell>
                 <TableCell>
                   <div>{item.name}</div>
                 </TableCell>

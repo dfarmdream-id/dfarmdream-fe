@@ -17,15 +17,18 @@ import { useEffect, useMemo } from "react";
 import { useGetSites } from "../../../_services/site";
 import { useGetRoles } from "../../../_services/role";
 import { useGetPositions } from "../../../_services/position";
+import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
     username: z.string({
       message: "ID wajib diisi",
     }),
-    password: z.string({
-      message: "Password wajib diisi",
-    }),
+    password: z
+      .string({
+        message: "Password wajib diisi",
+      })
+      .optional(),
     site: z.optional(z.string()),
     fullName: z.string({
       message: "Nama wajib diisi",
@@ -67,8 +70,8 @@ export default function Page() {
       if (user?.data?.data?.fullName) {
         form.setValue("fullName", user?.data?.data?.fullName);
       }
-      if (user?.data?.data?.position) {
-        form.setValue("positionId", user?.data?.data?.position);
+      if (user?.data?.data?.position?.id) {
+        form.setValue("positionId", user?.data?.data?.position?.id || "");
       }
       if (user?.data?.data?.phone) {
         form.setValue("phone", user?.data?.data?.phone);
@@ -76,8 +79,20 @@ export default function Page() {
       if (user?.data?.data?.address) {
         form.setValue("address", user?.data?.data?.address);
       }
+      if (user?.data?.data?.sites) {
+        form.setValue(
+          "sites",
+          user?.data?.data?.sites?.map((v) => v.siteId).join(",")
+        );
+      }
       if (user?.data?.data?.status) {
         form.setValue("status", user?.data?.data?.status === "ACTIVE");
+      }
+      if (user.data?.data?.roles) {
+        form.setValue(
+          "roles",
+          user?.data?.data?.roles.map((v) => v.roleId).join(",")
+        );
       }
     }
   }, [user.data, form]);
@@ -212,6 +227,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
+                  selectedKeys={field.value ? [field.value] : []}
                 >
                   {positions.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
@@ -237,6 +253,7 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                   selectionMode="multiple"
+                  selectedKeys={field.value ? field.value.split(",") : []}
                 >
                   {role.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
@@ -262,6 +279,7 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                   selectionMode="multiple"
+                  selectedKeys={field.value ? field.value.split(",") : []}
                 >
                   {sites.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
@@ -307,7 +325,12 @@ export default function Page() {
             />
           </div>
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary">
+            <Button
+              variant="bordered"
+              color="primary"
+              as={Link}
+              href="/master/users"
+            >
               Kembali
             </Button>
             <Button

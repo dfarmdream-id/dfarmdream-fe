@@ -23,10 +23,6 @@ import EmptyState from "@/components/state/empty";
 
 const columns = [
   {
-    key: "id",
-    label: "id",
-  },
-  {
     key: "fullName",
     label: "Nama",
   },
@@ -41,6 +37,10 @@ const columns = [
   {
     key: "address",
     label: "Alamat",
+  },
+  {
+    key: "sites",
+    label: "Lokasi",
   },
   {
     key: "status",
@@ -113,19 +113,21 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.id}</div>
-                </TableCell>
-                <TableCell>
                   <div>{item.fullName}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.position}</div>
+                  <div>{item?.position?.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item.phone}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item.address}</div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {item.sites.map((site) => site.site.name).join(", ")}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Chip color={item.status === "active" ? "success" : "danger"}>

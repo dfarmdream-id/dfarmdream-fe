@@ -14,19 +14,60 @@ export interface Data {
   data: Daum[];
   meta: Meta;
 }
-
 export interface Daum {
   id: string;
   email: string;
   username: string;
   fullName: string;
   password: string;
-  identityId: string;
-  phone: string;
-  address: string;
+  identityId: any;
+  phone?: string;
+  address?: string;
   status: string;
-  position: string;
-  deletedAt: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  positionId?: string;
+  sites: Site[];
+  position?: Position;
+  roles: Roles[];
+}
+
+export interface Roles {
+  id: string;
+  roleId: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Site {
+  id: string;
+  userId: string;
+  siteId: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  site: Site2;
+}
+
+export interface Site2 {
+  id: string;
+  name: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  provinceId: any;
+  cityId: any;
+  districtId: any;
+  subDistrictId: any;
+  address: any;
+}
+
+export interface Position {
+  id: string;
+  name: string;
+  deletedAt: any;
   createdAt: string;
   updatedAt: string;
 }
