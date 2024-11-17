@@ -4,14 +4,17 @@ import { Avatar, Button, Card, CardBody, cn } from "@nextui-org/react";
 import Link from "next/link";
 import {
   HiArrowRightOnRectangle,
+  HiCircleStack,
+  HiInbox,
   HiOutlineHome,
+  HiUserPlus,
   HiUsers,
 } from "react-icons/hi2";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
 import { usePathname } from "next/navigation";
-import { HiLocationMarker, HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
+import { HiInboxIn, HiLocationMarker, HiMenuAlt2, HiMenuAlt4, HiX } from "react-icons/hi";
 import { useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -40,6 +43,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Lokasi",
           href: "/master/site",
           icon: <HiLocationMarker />,
+        },
+        {
+          label: "Kandang",
+          href: "/master/cages",
+          icon: <HiInbox />,
+        },
+        {
+          label: "Rak",
+          href: "/master/cage-racks",
+          icon: <HiInboxIn />,
+        },
+        {
+          label: "Investor",
+          href: "/master/investors",
+          icon: <HiUserPlus />,
+        },
+        {
+          label: "Ayam",
+          href: "/master/chickens",
+          icon: <HiCircleStack />,
         },
       ],
     },
