@@ -130,8 +130,8 @@ export default function Page() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Chip color={item.status === "active" ? "success" : "danger"}>
-                    {item.status === "active" ? "Aktif" : "Tidak Aktif"}
+                  <Chip color={item.status === "ACTIVE" ? "success" : "danger"} className="text-white">
+                    {item.status === "ACTIVE" ? "Aktif" : "Tidak Aktif"}
                   </Chip>
                 </TableCell>
                 <TableCell>
