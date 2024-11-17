@@ -62,7 +62,7 @@ export default function Page() {
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Jabatan</div>
       <div className="space-y-5">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-3">
           <div>
             <Input
               startContent={<HiSearch />}
