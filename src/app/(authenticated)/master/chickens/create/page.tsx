@@ -1,75 +1,39 @@
 "use client";
-import {
-  Button,
-  Input,
-  Textarea,
-  Select,
-  SelectItem,
-  Switch,
-} from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
-import { useCreateUser } from "../../_services/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useGetPositions } from "../../_services/position";
 import { useMemo } from "react";
-import { useGetSites } from "../../_services/site";
-import { useGetRoles } from "../../_services/role";
+import { useGetCageRacks } from "../../_services/rack";
+import { useCreateChicken } from "../../_services/chicken";
 
 export default function Page() {
   const schema = z.object({
-    username: z.string({
-      message: "ID wajib diisi",
+    rackId: z.string({
+      message: "Rak wajib diisi",
     }),
-    password: z.string({
-      message: "Password wajib diisi",
-    }),
-    site: z.optional(z.string()),
-    fullName: z.string({
+    name: z.string({
       message: "Nama wajib diisi",
     }),
-    positionId: z.string({
-      message: "Jabatan wajib diisi",
-    }),
-    phone: z.string({
-      message: "No HP wajib diisi",
-    }),
-    address: z.string({
-      message: "Alamat wajib diisi",
-    }),
-    status: z.boolean({
-      message: "Status wajib diisi",
-    }),
-    sites: z.string(),
-    roles: z.string(),
   });
 
-  const positions = useGetPositions(
+  const racks = useGetCageRacks(
     useMemo(() => ({ page: "1", limit: "100" }), [])
   );
-  const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
-  const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
   const form = useForm<z.infer<typeof schema>>({
     schema,
-    defaultValues: {
-      status: true,
-    },
+    defaultValues: {},
   });
 
-  const submission = useCreateUser();
+  const submission = useCreateChicken();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: {
-          ...data,
-          roles: data.roles.split(',').map((id) => ({ roleId: id })),
-          sites: data.sites.split(',').map((id) => ({ siteId: id })),
-          status: data.status ? "ACTIVE" : "INACTIVE",
-        },
+        body: data,
       },
       {
         onError: (error) => {
@@ -78,7 +42,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/master/users");
+          router.push("/master/chickens");
         },
       }
     );
@@ -86,20 +50,20 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Tambah Data Ayam</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
             <Controller
               control={form.control}
-              name="username"
+              name="name"
               render={({ field, fieldState }) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="ID Pengguna"
-                  placeholder="ID Pengguna"
+                  label="ID Ayam"
+                  placeholder="ID Ayam"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -107,124 +71,24 @@ export default function Page() {
               )}
             />
           </div>
+
           <div className="h-16">
             <Controller
               control={form.control}
-              name="fullName"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nama Pengguna"
-                  placeholder="Nama Pengguna"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="phone"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="No HP"
-                  placeholder="No HP"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="password"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="password"
-                  label="Password"
-                  placeholder="Password"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="positionId"
-              render={({ field, fieldState }) => (
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Jabatan"
-                  label="Jabatan"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {positions.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="roles"
+              name="rackId"
               render={({ field, fieldState }) => (
                 <Select
                   multiple
                   labelPlacement="outside"
-                  placeholder="Pilih Peran"
-                  label="Peran"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {role.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="sites"
-              render={({ field, fieldState }) => (
-                <Select
-                  multiple
-                  labelPlacement="outside"
-                  placeholder="Pilih Lokasi"
-                  label="Lokasi"
+                  placeholder="Pilih Rak"
+                  label="Rak"
                   variant="bordered"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                   selectionMode="multiple"
                 >
-                  {sites.data?.data?.data?.map((position) => (
+                  {racks.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
                       {position.name}
                     </SelectItem>
@@ -233,40 +97,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="mb-3">
-            <Controller
-              control={form.control}
-              name="address"
-              render={({ field, fieldState }) => (
-                <Textarea
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Alamat"
-                  placeholder="Alamat"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <div className="text-sm mb-2">Status</div>
-            <Controller
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <Switch
-                  defaultChecked
-                  isSelected={field.value}
-                  onValueChange={field.onChange}
-                >
-                  Aktif
-                </Switch>
-              )}
-            />
-          </div>
+
           <div className="mt-5 flex gap-3 justify-end">
             <Button variant="bordered" color="primary">
               Kembali

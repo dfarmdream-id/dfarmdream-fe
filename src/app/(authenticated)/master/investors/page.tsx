@@ -9,26 +9,25 @@ import {
   Pagination,
   Button,
   Input,
-  Chip,
   Spinner,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useGetUsers } from "../_services/user";
 import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { useGetInvestors } from "../_services/investor";
 
 const columns = [
   {
-    key: "fullName",
+    key: "name",
     label: "Nama",
   },
   {
     key: "role",
-    label: "Jabatan",
+    label: "No NIK",
   },
   {
     key: "phone",
@@ -39,12 +38,8 @@ const columns = [
     label: "Alamat",
   },
   {
-    key: "sites",
-    label: "Lokasi",
-  },
-  {
-    key: "status",
-    label: "Status",
+    key: "username",
+    label: "Username",
   },
   {
     key: "action",
@@ -60,7 +55,7 @@ export default function Page() {
     throttleMs: 1000,
   });
 
-  const user = useGetUsers(
+  const user = useGetInvestors(
     useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
   );
 
@@ -73,13 +68,13 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Pengguna</div>
+      <div className="text-3xl font-bold mb-10">Data Investor</div>
       <div className="space-y-5">
         <div className="flex justify-between items-center gap-3">
           <div>
             <Input
               startContent={<HiSearch />}
-              placeholder="Cari Pengguna"
+              placeholder="Cari Investor"
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
@@ -87,11 +82,11 @@ export default function Page() {
           </div>
           <Button
             as={Link}
-            href="/master/users/create"
+            href="/master/investors/create"
             color="primary"
             startContent={<HiPlus />}
           >
-            Tambah Pengguna
+            Tambah Investor
           </Button>
         </div>
         <Table aria-label="Example table with dynamic content">
@@ -116,7 +111,7 @@ export default function Page() {
                   <div>{item.fullName}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item?.position?.name}</div>
+                  <div>{item?.identityId}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item.phone}</div>
@@ -125,15 +120,9 @@ export default function Page() {
                   <div>{item.address}</div>
                 </TableCell>
                 <TableCell>
-                  <div>
-                    {item.sites.map((site) => site.site.name).join(", ")}
-                  </div>
+                  <div>{item.username}</div>
                 </TableCell>
-                <TableCell>
-                  <Chip color={item.status === "ACTIVE" ? "success" : "danger"} className="text-white">
-                    {item.status === "ACTIVE" ? "Aktif" : "Tidak Aktif"}
-                  </Chip>
-                </TableCell>
+
                 <TableCell>
                   <Actions id={item.id} />
                 </TableCell>

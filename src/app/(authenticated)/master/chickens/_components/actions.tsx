@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteUser } from "../../_services/user";
+import { useDeleteChicken } from "../../_services/chicken";
 
 type Props = {
   id: string;
@@ -22,7 +22,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteUser();
+  const deleteData = useDeleteChicken();
 
   const queryClient = useQueryClient();
 
@@ -33,7 +33,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/user"],
+            queryKey: ["/v1/chicken"],
           });
           deleteDisclosure.onClose();
         },

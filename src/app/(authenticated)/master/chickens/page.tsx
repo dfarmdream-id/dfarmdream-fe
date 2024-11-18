@@ -15,11 +15,11 @@ import {
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useGetUsers } from "../_services/user";
 import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { useGetChickens } from "../_services/chicken";
 
 const columns = [
   {
@@ -28,19 +28,11 @@ const columns = [
   },
   {
     key: "role",
-    label: "Jabatan",
+    label: "Rak",
   },
   {
-    key: "phone",
-    label: "No HP",
-  },
-  {
-    key: "address",
-    label: "Alamat",
-  },
-  {
-    key: "sites",
-    label: "Lokasi",
+    key: "cage",
+    label: "Kandang",
   },
   {
     key: "status",
@@ -60,7 +52,7 @@ export default function Page() {
     throttleMs: 1000,
   });
 
-  const user = useGetUsers(
+  const user = useGetChickens(
     useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
   );
 
@@ -73,13 +65,13 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Pengguna</div>
+      <div className="text-3xl font-bold mb-10">Data Ayam</div>
       <div className="space-y-5">
         <div className="flex justify-between items-center gap-3">
           <div>
             <Input
               startContent={<HiSearch />}
-              placeholder="Cari Pengguna"
+              placeholder="Cari Ayam"
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
@@ -87,11 +79,11 @@ export default function Page() {
           </div>
           <Button
             as={Link}
-            href="/master/users/create"
+            href="/master/chickens/create"
             color="primary"
             startContent={<HiPlus />}
           >
-            Tambah Pengguna
+            Tambah Ayam
           </Button>
         </div>
         <Table aria-label="Example table with dynamic content">
@@ -113,25 +105,20 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.fullName}</div>
+                  <div>{item.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item?.position?.name}</div>
+                  <div>{item?.rack?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.phone}</div>
+                  <div>{item?.rack?.cage?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.address}</div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    {item.sites.map((site) => site.site.name).join(", ")}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Chip color={item.status === "ACTIVE" ? "success" : "danger"} className="text-white">
-                    {item.status === "ACTIVE" ? "Aktif" : "Tidak Aktif"}
+                  <Chip
+                    color={item.status === "ALIVE" ? "success" : "danger"}
+                    className="text-white"
+                  >
+                    {item.status === "ALIVE" ? "Hidup" : "Mati"}
                   </Chip>
                 </TableCell>
                 <TableCell>
