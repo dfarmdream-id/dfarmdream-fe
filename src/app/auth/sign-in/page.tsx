@@ -92,7 +92,7 @@ export default function Page() {
       <div className="flex justify-center items-center">
         <div className="w-full max-w-lg p-5">
           <form onSubmit={onSubmit} className="w-full">
-            <div className="text-3xl font-semibold mb-10">Welcome Back 👋</div>
+            <div className="text-3xl font-semibold mb-10">Selamat Datang 👋</div>
 
             {signInMutation.isError && (
               <Card shadow="none" className="bg-danger-50 text-danger my-10">
@@ -172,7 +172,7 @@ export default function Page() {
                     color="primary"
                     className="w-full"
                   >
-                    Sign In
+                    Masuk dan Pilih Lokasi
                   </Button>
                 </div>
               </>
@@ -184,7 +184,7 @@ export default function Page() {
                 color="primary"
                 className="w-full"
               >
-                Sign In
+                Masuk
               </Button>
             )}
           </form>
