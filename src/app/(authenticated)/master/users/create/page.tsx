@@ -43,7 +43,7 @@ export default function Page() {
       message: "Status wajib diisi",
     }),
     sites: z.string(),
-    roles: z.string(),
+    roles: z.optional(z.string()),
   });
 
   const positions = useGetPositions(
@@ -66,7 +66,7 @@ export default function Page() {
       {
         body: {
           ...data,
-          roles: data.roles.split(',').map((id) => ({ roleId: id })),
+          roles: data?.roles?.split(',').map((id) => ({ roleId: id })),
           sites: data.sites.split(',').map((id) => ({ siteId: id })),
           status: data.status ? "ACTIVE" : "INACTIVE",
         },

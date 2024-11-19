@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
               closeButton
               duration={3000}
               position="top-center"
+            />
+            <ProgressBar
+              height="4px"
+              color="#fffd00"
+              options={{ showSpinner: false }}
+              shallowRouting
             />
             {children}
           </Suspense>

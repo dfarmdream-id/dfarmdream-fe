@@ -46,7 +46,7 @@ export default function Page() {
       message: "Status wajib diisi",
     }),
     sites: z.string(),
-    roles: z.string(),
+    roles: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -114,7 +114,7 @@ export default function Page() {
               siteId: site,
             };
           }),
-          roles: data.roles.split(",").map((role) => {
+          roles: data.roles?.split(",").map((role) => {
             return {
               roleId: role,
             };
