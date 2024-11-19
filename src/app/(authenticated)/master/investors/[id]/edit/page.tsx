@@ -184,7 +184,7 @@ export default function Page() {
               variant="bordered"
               color="primary"
               as={Link}
-              href="/master/users"
+              href="/master/investors"
             >
               Kembali
             </Button>
