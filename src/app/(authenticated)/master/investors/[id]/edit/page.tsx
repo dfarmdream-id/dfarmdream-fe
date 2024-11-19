@@ -84,7 +84,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Investor</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">

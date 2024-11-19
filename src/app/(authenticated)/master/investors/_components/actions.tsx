@@ -49,7 +49,7 @@ export default function Actions(props: Props) {
       <Tooltip content="Edit Data">
         <Button
           as={Link}
-          href={`/master/users/${props.id}/edit`}
+          href={`/master/investors/${props.id}/edit`}
           isIconOnly
           variant="light"
           color="primary"
