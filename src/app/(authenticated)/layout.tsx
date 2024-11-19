@@ -76,7 +76,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {menu.icon}
               {menu.label}
             </div>
-            {menu.children ? <motion.div animate={{ rotate: open ? 90 : 0 }}><HiChevronRight /></motion.div> : null}
+            {menu.children ? (
+              <motion.div animate={{ rotate: open ? 90 : 0 }}>
+                <HiChevronRight />
+              </motion.div>
+            ) : null}
           </CardBody>
         </Card>
         <motion.div>
@@ -212,8 +216,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   ];
 
-  const path = usePathname();
-
   const [open, setOpen] = useState(false);
 
   return (
@@ -263,56 +265,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             </div>
           </div>
-          <ScrollShadow>
-            <ul className="p-3 space-y-2">
-              {menus.map((menu) => (
-                <li key={menu.label}>
-                  <Card
-                    as={menu.href ? Link : "a"}
-                    href={menu.href ? menu.href : undefined}
-                    isPressable
-                    onPress={() => {
-                      menu?.action?.();
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      "w-full",
-                      path === menu.href
-                        ? "bg-secondary/90"
-                        : "bg-transparent text-white"
-                    )}
-                  >
-                    <CardBody className="flex gap-2 flex-row items-center">
-                      {menu.icon}
-                      {menu.label}
-                    </CardBody>
-                  </Card>
-                  {menu.children && (
-                    <ul className="p-3 space-y-2">
-                      {menu.children.map((child) => (
-                        <li key={child.label}>
-                          <Card
-                            as={Link}
-                            href={child.href}
-                            isPressable
-                            data-active={child.href === path}
-                            onPress={() => {
-                              console.log(open);
-                              setOpen(false);
-                            }}
-                            className="w-full bg-transparent text-white data-[active=true]:bg-secondary/90 data-[active=true]:text-primary"
-                          >
-                            <CardBody className="flex gap-2 flex-row items-center">
-                              {child.icon}
-                              {child.label}
-                            </CardBody>
-                          </Card>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
+          <ScrollShadow className="h-full" hideScrollBar>
+            <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
+              {menus.map((menu) => {
+                return (
+                  <SidebarMenuItem
+                    href={menu.href as string}
+                    key={menu.label}
+                    {...menu}
+                  />
+                );
+              })}
             </ul>
           </ScrollShadow>
         </motion.aside>
