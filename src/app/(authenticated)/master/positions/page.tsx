@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useGetPositions } from "../_services/position";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { DateTime } from "luxon";
 
 const columns = [
   {
@@ -103,10 +104,20 @@ export default function Page() {
                   <div>{item.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.createdAt}</div>
+                  <div>
+                    {DateTime.fromISO(item.createdAt).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      { locale: "id" }
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.updatedAt}</div>
+                  <div>
+                    {DateTime.fromISO(item.createdAt).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      { locale: "id" }
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Actions id={item.id} />

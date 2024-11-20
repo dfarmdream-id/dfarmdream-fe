@@ -16,15 +16,36 @@ import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 import Link from "next/link";
-import { useGetSites } from "../_services/site";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { useGetCashFlows } from "../_services/cash-flow";
+import { IDR } from "@/common/helpers/currency";
 import { DateTime } from "luxon";
 
 const columns = [
   {
     key: "name",
     label: "Nama",
+  },
+  {
+    key: "type",
+    label: "Jenis",
+  },
+  {
+    key: "category",
+    label: "Kategori",
+  },
+  {
+    key: "amount",
+    label: "Jumlah",
+  },
+  {
+    key: "createdBy",
+    label: "Dibuat Oleh",
+  },
+  {
+    key: "cage",
+    label: "Kandang",
   },
   {
     key: "createdAt",
@@ -48,7 +69,7 @@ export default function Page() {
     throttleMs: 1000,
   });
 
-  const user = useGetSites(
+  const user = useGetCashFlows(
     useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
   );
 
@@ -61,13 +82,13 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Lokasi</div>
+      <div className="text-3xl font-bold mb-10">Data Arus Kas</div>
       <div className="space-y-5">
         <div className="flex justify-between items-center gap-3">
           <div>
             <Input
               startContent={<HiSearch />}
-              placeholder="Cari Lokasi"
+              placeholder="Cari Arus Kas"
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
@@ -75,11 +96,11 @@ export default function Page() {
           </div>
           <Button
             as={Link}
-            href="/master/site/create"
+            href="/master/cash-flow/create"
             color="primary"
             startContent={<HiPlus />}
           >
-            Tambah Lokasi
+            Tambah Arus Kas
           </Button>
         </div>
         <Table aria-label="Example table with dynamic content">
@@ -102,6 +123,23 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {item.type == "INCOME" ? "Pemasukan" : "Pengeluaran"}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.category.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{IDR(item.amount)}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.createdBy.fullName}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.cage.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>
