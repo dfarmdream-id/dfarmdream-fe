@@ -19,6 +19,7 @@ import {
   SignInResponse,
 } from "../_models/response/sign-in";
 import { useRouter } from "next/navigation";
+import { useDebounce } from "react-use";
 
 export default function Page() {
   const schema = z.object({
@@ -30,6 +31,7 @@ export default function Page() {
     }),
     siteId: z.optional(z.string()),
   });
+
   const router = useRouter();
 
   const signInChooseMutation = useHttpMutation<
@@ -54,6 +56,11 @@ export default function Page() {
     SignInResponse
   >("/v1/auth/sign-in", {
     method: "POST",
+    queryOptions: {
+      onError: (error) => {
+        toast.error(error.data?.message);
+      },
+    },
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -69,112 +76,120 @@ export default function Page() {
     }
   );
 
-  const onSearchSite = () => {
-    const data = form.getValues();
-    signInMutation.mutate({
-      body: data,
-    });
-  };
+  const password = form.watch("password");
+  const user = form.watch("username");
+
+  const [] = useDebounce(
+    () => {
+      if (!user || !password) return;
+      const data = form.getValues();
+      signInMutation.mutate({
+        body: data,
+      });
+    },
+    500,
+    [password, user]
+  );
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-4 p-5 bg-gray-100">
-      <Card className="bg-primary flex justify-center items-center p-8">
-        <CardBody className="flex justify-center items-center">
-          <Logo className="lg:h-40 w-auto" />
-        </CardBody>
-      </Card>
+    <div className="min-h-screen bg-gradient-to-tr from-secondary/20 to-primary/20 flex justify-center items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 py-20 bg-white max-w-screen-xl mx-auto w-full rounded-xl">
+        <div className="flex justify-center items-center order-2 md:order-1">
+          <div className="w-full p-5">
+            <form onSubmit={onSubmit} className="w-full">
+              <div className="text-3xl font-semibold mb-10">
+                Selamat Datang 👋
+              </div>
 
-      <div className="flex justify-center items-center">
-        <div className="w-full max-w-lg p-5">
-          <form onSubmit={onSubmit} className="w-full">
-            <div className="text-3xl font-semibold mb-10">
-              Selamat Datang 👋
-            </div>
+              {signInChooseMutation.isError && (
+                <Card shadow="none" className="bg-danger-50 text-danger my-10">
+                  <CardBody className="text-danger-600">
+                    {signInChooseMutation.error?.data?.message}
+                  </CardBody>
+                </Card>
+              )}
 
-            {signInChooseMutation.isError && (
-              <Card shadow="none" className="bg-danger-50 text-danger my-10">
-                <CardBody className="text-danger-600">
-                  {signInChooseMutation.error?.data?.message}
-                </CardBody>
-              </Card>
-            )}
+              <div className="mb-10 h-16">
+                <Controller
+                  control={form.control}
+                  name="username"
+                  render={({ field, fieldState }) => (
+                    <Input
+                      {...field}
+                      labelPlacement="outside"
+                      label="ID"
+                      placeholder="NIK/Username"
+                      variant="bordered"
+                      isInvalid={fieldState.invalid}
+                      errorMessage={fieldState.error?.message}
+                    />
+                  )}
+                />
+              </div>
 
-            <div className="mb-10 h-16">
-              <Controller
-                control={form.control}
-                name="username"
-                render={({ field, fieldState }) => (
-                  <Input
-                    {...field}
-                    labelPlacement="outside"
-                    label="ID"
-                    placeholder="NIK/Username"
-                    variant="bordered"
-                    isInvalid={fieldState.invalid}
-                    errorMessage={fieldState.error?.message}
-                  />
-                )}
-              />
-            </div>
+              <div className="mb-10 h-16">
+                <Controller
+                  control={form.control}
+                  name="password"
+                  render={({ field, fieldState }) => (
+                    <Input
+                      {...field}
+                      type="password"
+                      labelPlacement="outside"
+                      label="Password"
+                      variant="bordered"
+                      placeholder="Password"
+                      fullWidth
+                      isInvalid={fieldState.invalid}
+                      errorMessage={fieldState.error?.message}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
+                  )}
+                />
+              </div>
 
-            <div className="mb-10 h-16">
-              <Controller
-                control={form.control}
-                name="password"
-                render={({ field, fieldState }) => (
-                  <Input
-                    {...field}
-                    type="password"
-                    labelPlacement="outside"
-                    label="Password"
-                    variant="bordered"
-                    placeholder="Password"
-                    fullWidth
-                    isInvalid={fieldState.invalid}
-                    errorMessage={fieldState.error?.message}
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      onSearchSite();
-                    }}
-                  />
-                )}
-              />
-            </div>
-
-            <div className="mb-10 h-16 space-y-10">
-              <Controller
-                control={form.control}
-                name="siteId"
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    labelPlacement="outside"
-                    label="Lokasi"
-                    placeholder="Lokasi"
-                    variant="bordered"
-                    fullWidth
-                  >
-                    {signInMutation.data?.data?.sites?.map((item) => {
-                      return (
-                        <SelectItem key={item.siteId}>
-                          {item?.site?.name}
-                        </SelectItem>
-                      );
-                    }) || []}
-                  </Select>
-                )}
-              />
-            </div>
-            <Button
-              isLoading={signInChooseMutation.isPending}
-              type="submit"
-              color="primary"
-              className="w-full"
-            >
-              Masuk
-            </Button>
-          </form>
+              <div className="mb-10 h-16 space-y-10">
+                <Controller
+                  control={form.control}
+                  name="siteId"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      labelPlacement="outside"
+                      label="Lokasi"
+                      placeholder="Lokasi"
+                      variant="bordered"
+                      fullWidth
+                    >
+                      {signInMutation.data?.data?.sites?.map((item) => {
+                        return (
+                          <SelectItem key={item.siteId}>
+                            {item?.site?.name}
+                          </SelectItem>
+                        );
+                      }) || []}
+                    </Select>
+                  )}
+                />
+              </div>
+              <Button
+                isLoading={signInChooseMutation.isPending}
+                type="submit"
+                color="primary"
+                className="w-full"
+              >
+                Masuk
+              </Button>
+            </form>
+          </div>
         </div>
+        <Card className="bg-primary flex justify-center items-center p-8 order-1 md:order-1">
+          <CardBody className="flex justify-center items-center">
+            <Logo className="lg:h-40 w-auto" />
+          </CardBody>
+        </Card>
       </div>
     </div>
   );

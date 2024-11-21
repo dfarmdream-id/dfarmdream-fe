@@ -15,30 +15,30 @@ import {
 } from "@nextui-org/react";
 import Link from "next/link";
 import {
-  HiArrowRightOnRectangle,
-  HiBars3,
   HiChevronRight,
-  HiCircleStack,
-  HiClock,
-  HiCurrencyDollar,
-  HiInbox,
-  HiListBullet,
+  HiOutlineArrowRightOnRectangle,
+  HiOutlineBars3,
+  HiOutlineCircleStack,
+  HiOutlineClock,
+  HiOutlineCurrencyDollar,
   HiOutlineHome,
-  HiUserPlus,
-  HiUsers,
-  HiWindow,
+  HiOutlineInbox,
+  HiOutlineListBullet,
+  HiOutlineUserPlus,
+  HiOutlineUsers,
+  HiOutlineWindow,
 } from "react-icons/hi2";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
 import { usePathname } from "next/navigation";
 import {
-  HiDatabase,
-  HiInboxIn,
-  HiLocationMarker,
   HiMenuAlt2,
   HiMenuAlt4,
-  HiReceiptTax,
+  HiOutlineDatabase,
+  HiOutlineInboxIn,
+  HiOutlineLocationMarker,
+  HiOutlineReceiptTax,
   HiX,
 } from "react-icons/hi";
 import { useState } from "react";
@@ -134,93 +134,93 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       icon: <HiOutlineHome className="text-xl" />,
     },
     {
-      icon: <HiReceiptTax className="text-xl" />,
+      icon: <HiOutlineReceiptTax className="text-xl" />,
       label: "Transaksi",
       children: [
         {
           label: "Transaksi Gudang",
           href: "/master/warehouse-transactions",
-          icon: <HiWindow className="text-xl" />,
+          icon: <HiOutlineWindow className="text-xl" />,
         },
         {
           label: "Transaksi Penjualan",
           href: "/master/sales-transactions",
-          icon: <HiCurrencyDollar className="text-xl" />,
+          icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiClock className="text-xl" />,
+      icon: <HiOutlineClock className="text-xl" />,
       label: "Operasional",
       children: [
         {
           label: "Kandang",
           href: "/master/cages",
-          icon: <HiInbox className="text-xl" />,
+          icon: <HiOutlineInbox className="text-xl" />,
         },
         {
           label: "Rak",
           href: "/master/cage-racks",
-          icon: <HiInboxIn className="text-xl" />,
+          icon: <HiOutlineInboxIn className="text-xl" />,
         },
         {
           label: "Ayam",
           href: "/master/chickens",
-          icon: <HiCircleStack className="text-xl" />,
+          icon: <HiOutlineCircleStack className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiCurrencyDollar className="text-xl" />,
+      icon: <HiOutlineCurrencyDollar className="text-xl" />,
       label: "Arus Kas",
       children: [
         {
           label: "Jenis Arus Kas",
           href: "/master/cash-flow-category",
-          icon: <HiListBullet className="text-xl" />,
+          icon: <HiOutlineListBullet className="text-xl" />,
         },
         {
           label: "Arus Kas",
           href: "/master/cash-flow",
-          icon: <HiCurrencyDollar className="text-xl" />,
+          icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiDatabase className="text-xl" />,
+      icon: <HiOutlineDatabase className="text-xl" />,
       label: "Data Master",
       children: [
         {
           label: "Jabatan",
           href: "/master/positions",
-          icon: <HiUsers className="text-xl" />,
+          icon: <HiOutlineUsers className="text-xl" />,
         },
         {
           label: "Pengguna",
           href: "/master/users",
-          icon: <HiUsers className="text-xl" />,
+          icon: <HiOutlineUsers className="text-xl" />,
         },
         {
           label: "Lokasi",
           href: "/master/site",
-          icon: <HiLocationMarker className="text-xl" />,
+          icon: <HiOutlineLocationMarker className="text-xl" />,
         },
         {
           label: "Investor",
           href: "/master/investors",
-          icon: <HiUserPlus className="text-xl" />,
+          icon: <HiOutlineUserPlus className="text-xl" />,
         },
         {
           label: "Harga",
           href: "/master/prices",
-          icon: <HiBars3 className="text-xl" />,
+          icon: <HiOutlineBars3 className="text-xl" />,
         },
       ],
     },
     {
       label: "Sign Out",
       href: "/sign-out",
-      icon: <HiArrowRightOnRectangle />,
+      icon: <HiOutlineArrowRightOnRectangle />,
       action: signOut,
     },
   ];
