@@ -53,6 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     action?: () => void;
     children?: { href: string; label: string; icon: React.ReactNode }[];
     expanded?: boolean;
+    mobile?: boolean;
   }) => {
     const [open, setOpen] = useState(false);
 
@@ -69,26 +70,47 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             menu?.action?.();
           }}
           className={cn(
-            "w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-gray-600"
+            "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
           )}
           data-active={menu.href == path}
           shadow="none"
         >
           <CardBody
             className={cn(
-              "flex gap-2 flex-row items-center",
+              "flex gap-2 flex-row items-center w-full",
               menu.expanded ? "justify-between" : "justify-center"
             )}
           >
-            <div className="flex gap-2 flex-row items-center">
-              {menu.icon}
-              {menu.expanded ? menu.label : null}
-            </div>
-            {menu.children && menu.expanded ? (
-              <motion.div animate={{ rotate: open ? 90 : 0 }}>
-                <HiChevronRight />
-              </motion.div>
-            ) : null}
+            {menu.mobile && (
+              <div className="flex gap-2 flex-row items-center w-full">
+                {menu.icon}
+                {menu.label}
+              </div>
+            )}
+            {!menu.mobile && (
+              <div className="flex gap-2 flex-row items-center">
+                {menu.icon}
+                {menu.expanded ? menu.label : null}
+              </div>
+            )}
+            {menu.mobile && (
+              <>
+                {menu.children ? (
+                  <motion.div animate={{ rotate: open ? 90 : 0 }}>
+                    <HiChevronRight />
+                  </motion.div>
+                ) : null}
+              </>
+            )}
+            {!menu.mobile && (
+              <>
+                {menu.children && menu.expanded ? (
+                  <motion.div animate={{ rotate: open ? 90 : 0 }}>
+                    <HiChevronRight />
+                  </motion.div>
+                ) : null}
+              </>
+            )}
           </CardBody>
         </Card>
         <motion.div>
@@ -109,7 +131,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         href={child.href}
                         isPressable
                         data-active={child.href == path}
-                        className="py-1 w-full bg-transparent text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                        className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
                       >
                         <CardBody className="flex gap-2 flex-row items-center">
                           {child.icon}
@@ -284,6 +306,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {menus.map((menu) => {
                 return (
                   <SidebarMenuItem
+                    mobile
                     href={menu.href as string}
                     key={menu.label}
                     {...menu}
