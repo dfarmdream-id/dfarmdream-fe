@@ -8,6 +8,8 @@ export interface Data {
   user: number;
   cage: number;
   investor: number;
+  qtyTotal: number;
+  weightTotal: number;
 }
 
 export interface DashboardChartResponse {

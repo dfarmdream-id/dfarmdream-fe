@@ -123,7 +123,11 @@ export default function Page() {
           <CardBody>
             <ul className="grid xl:grid-cols-2 gap-3">
               <Card as="li" shadow="none">
-                <StatsCard icon={<HiUsers />} title="Berat Telur" count={1} />
+                <StatsCard
+                  icon={<HiUsers />}
+                  title="Berat Telur"
+                  count={dashboard.data?.data?.weightTotal || 0}
+                />
               </Card>
               <Card as="li" shadow="none">
                 <StatsCard icon={<HiUsers />} title="FCR" count={1} />
@@ -132,11 +136,11 @@ export default function Page() {
                 <StatsCard
                   icon={<HiUsers />}
                   title="Berat Keseluruhan"
-                  count={1}
+                  count={dashboard.data?.data?.weightTotal || 0}
                 />
               </Card>
               <Card as="li" shadow="none">
-                <StatsCard icon={<HiUsers />} title="Total Telur" count={1} />
+                <StatsCard icon={<HiUsers />} title="Total Telur" count={dashboard.data?.data?.qtyTotal || 0} />
               </Card>
             </ul>
           </CardBody>

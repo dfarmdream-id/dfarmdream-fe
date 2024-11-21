@@ -10,6 +10,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
   ScrollShadow,
 } from "@nextui-org/react";
 import Link from "next/link";
@@ -51,6 +52,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     icon?: React.ReactNode;
     action?: () => void;
     children?: { href: string; label: string; icon: React.ReactNode }[];
+    expanded?: boolean;
   }) => {
     const [open, setOpen] = useState(false);
 
@@ -67,16 +69,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             menu?.action?.();
           }}
           className={cn(
-            "w-full",
-            path === menu.href ? "bg-secondary/90" : "bg-transparent text-white"
+            "w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-gray-600"
           )}
+          data-active={menu.href == path}
+          shadow="none"
         >
-          <CardBody className="flex gap-2 flex-row items-center justify-between">
+          <CardBody
+            className={cn(
+              "flex gap-2 flex-row items-center",
+              menu.expanded ? "justify-between" : "justify-center"
+            )}
+          >
             <div className="flex gap-2 flex-row items-center">
               {menu.icon}
-              {menu.label}
+              {menu.expanded ? menu.label : null}
             </div>
-            {menu.children ? (
+            {menu.children && menu.expanded ? (
               <motion.div animate={{ rotate: open ? 90 : 0 }}>
                 <HiChevronRight />
               </motion.div>
@@ -96,11 +104,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   {menu.children.map((child) => (
                     <li key={child.label}>
                       <Card
+                        shadow="none"
                         as={Link}
                         href={child.href}
                         isPressable
-                        data-active={child.href === path}
-                        className="w-full bg-transparent text-white data-[active=true]:bg-secondary/90 data-[active=true]:text-primary"
+                        data-active={child.href == path}
+                        className="py-1 w-full bg-transparent text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
                       >
                         <CardBody className="flex gap-2 flex-row items-center">
                           {child.icon}
@@ -122,89 +131,89 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: <HiOutlineHome />,
+      icon: <HiOutlineHome className="text-xl" />,
     },
     {
-      icon: <HiReceiptTax />,
+      icon: <HiReceiptTax className="text-xl" />,
       label: "Transaksi",
       children: [
         {
           label: "Transaksi Gudang",
           href: "/master/warehouse-transactions",
-          icon: <HiWindow />,
+          icon: <HiWindow className="text-xl" />,
         },
         {
           label: "Transaksi Penjualan",
           href: "/master/sales-transactions",
-          icon: <HiCurrencyDollar />,
+          icon: <HiCurrencyDollar className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiClock />,
+      icon: <HiClock className="text-xl" />,
       label: "Operasional",
       children: [
         {
           label: "Kandang",
           href: "/master/cages",
-          icon: <HiInbox />,
+          icon: <HiInbox className="text-xl" />,
         },
         {
           label: "Rak",
           href: "/master/cage-racks",
-          icon: <HiInboxIn />,
+          icon: <HiInboxIn className="text-xl" />,
         },
         {
           label: "Ayam",
           href: "/master/chickens",
-          icon: <HiCircleStack />,
+          icon: <HiCircleStack className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiCurrencyDollar />,
+      icon: <HiCurrencyDollar className="text-xl" />,
       label: "Arus Kas",
       children: [
         {
           label: "Jenis Arus Kas",
           href: "/master/cash-flow-category",
-          icon: <HiListBullet />,
+          icon: <HiListBullet className="text-xl" />,
         },
         {
           label: "Arus Kas",
           href: "/master/cash-flow",
-          icon: <HiCurrencyDollar />,
+          icon: <HiCurrencyDollar className="text-xl" />,
         },
       ],
     },
     {
-      icon: <HiDatabase />,
+      icon: <HiDatabase className="text-xl" />,
       label: "Data Master",
       children: [
         {
           label: "Jabatan",
           href: "/master/positions",
-          icon: <HiUsers />,
+          icon: <HiUsers className="text-xl" />,
         },
         {
           label: "Pengguna",
           href: "/master/users",
-          icon: <HiUsers />,
+          icon: <HiUsers className="text-xl" />,
         },
         {
           label: "Lokasi",
           href: "/master/site",
-          icon: <HiLocationMarker />,
+          icon: <HiLocationMarker className="text-xl" />,
         },
         {
           label: "Investor",
           href: "/master/investors",
-          icon: <HiUserPlus />,
+          icon: <HiUserPlus className="text-xl" />,
         },
         {
           label: "Harga",
           href: "/master/prices",
-          icon: <HiBars3 />,
+          icon: <HiBars3 className="text-xl" />,
         },
       ],
     },
@@ -223,17 +232,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex w-full h-screen overflow-hidden">
         <motion.aside
           initial={{ width: "20rem" }}
-          animate={{ width: open ? 0 : "20rem" }}
-          className="w-80 h-screen bg-primary hidden md:block overflow-hidden"
+          animate={{ width: open ? "5rem" : "20rem" }}
+          className="w-80 h-screen bg-[#F8F9FA] hidden md:block overflow-hidden"
         >
           <div className="h-20 flex justify-center items-center">
-            <Logo className="h-16" />
+            {open ? (
+              <Image className="h-16" src="/icon.png" alt="logo" />
+            ) : (
+              <Logo className="h-16" />
+            )}
           </div>
           <ScrollShadow className="h-full" hideScrollBar>
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
                   <SidebarMenuItem
+                    expanded={!open}
                     href={menu.href as string}
                     key={menu.label}
                     {...menu}
@@ -273,6 +287,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     href={menu.href as string}
                     key={menu.label}
                     {...menu}
+                    expanded={!open}
                   />
                 );
               })}
@@ -315,7 +330,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </nav>
-          <div className="w-full overflow-x-hidden overflow-y-auto">
+          <div className="w-full overflow-x-hidden overflow-y-auto bg-[#ececec] min-h-screen">
             {children}
           </div>
         </main>

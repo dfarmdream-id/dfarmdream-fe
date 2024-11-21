@@ -54,11 +54,6 @@ export default function Page() {
     SignInResponse
   >("/v1/auth/sign-in", {
     method: "POST",
-    queryOptions: {
-      onError: (error) => {
-        toast.error(error.data?.message);
-      },
-    },
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -67,16 +62,16 @@ export default function Page() {
 
   const onSubmit = form.handleSubmit(
     (data) => {
-      signInMutation.mutate({ body: data });
+      signInChooseMutation.mutate({ body: data });
     },
     () => {
       toast.error("Harap isi semua data");
     }
   );
 
-  const onChooseSite = () => {
+  const onSearchSite = () => {
     const data = form.getValues();
-    signInChooseMutation.mutate({
+    signInMutation.mutate({
       body: data,
     });
   };
@@ -92,12 +87,14 @@ export default function Page() {
       <div className="flex justify-center items-center">
         <div className="w-full max-w-lg p-5">
           <form onSubmit={onSubmit} className="w-full">
-            <div className="text-3xl font-semibold mb-10">Selamat Datang 👋</div>
+            <div className="text-3xl font-semibold mb-10">
+              Selamat Datang 👋
+            </div>
 
-            {signInMutation.isError && (
+            {signInChooseMutation.isError && (
               <Card shadow="none" className="bg-danger-50 text-danger my-10">
                 <CardBody className="text-danger-600">
-                  {signInMutation.error?.data?.message}
+                  {signInChooseMutation.error?.data?.message}
                 </CardBody>
               </Card>
             )}
@@ -124,7 +121,7 @@ export default function Page() {
               <Controller
                 control={form.control}
                 name="password"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <Input
                     {...field}
                     type="password"
@@ -133,60 +130,49 @@ export default function Page() {
                     variant="bordered"
                     placeholder="Password"
                     fullWidth
+                    isInvalid={fieldState.invalid}
+                    errorMessage={fieldState.error?.message}
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                      onSearchSite();
+                    }}
                   />
                 )}
               />
             </div>
 
-            {}
-
-            {signInMutation.isSuccess && (
-              <>
-                <div className="mb-10 h-16 space-y-10">
-                  <Controller
-                    control={form.control}
-                    name="siteId"
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        labelPlacement="outside"
-                        label="Lokasi"
-                        placeholder="Lokasi"
-                        variant="bordered"
-                        fullWidth
-                      >
-                        {signInMutation.data?.data?.sites?.map((item) => {
-                          return (
-                            <SelectItem key={item.siteId}>
-                              {item?.site?.name}
-                            </SelectItem>
-                          );
-                        }) || []}
-                      </Select>
-                    )}
-                  />
-                  <Button
-                    isLoading={signInChooseMutation.isPending}
-                    type="button"
-                    onPress={onChooseSite}
-                    color="primary"
-                    className="w-full"
+            <div className="mb-10 h-16 space-y-10">
+              <Controller
+                control={form.control}
+                name="siteId"
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelPlacement="outside"
+                    label="Lokasi"
+                    placeholder="Lokasi"
+                    variant="bordered"
+                    fullWidth
                   >
-                    Masuk dan Pilih Lokasi
-                  </Button>
-                </div>
-              </>
-            )}
-            {!signInMutation.isSuccess && (
-              <Button
-                isLoading={signInMutation.isPending}
-                type="submit"
-                color="primary"
-                className="w-full"
-              >
-                Masuk
-              </Button>
-            )}
+                    {signInMutation.data?.data?.sites?.map((item) => {
+                      return (
+                        <SelectItem key={item.siteId}>
+                          {item?.site?.name}
+                        </SelectItem>
+                      );
+                    }) || []}
+                  </Select>
+                )}
+              />
+            </div>
+            <Button
+              isLoading={signInChooseMutation.isPending}
+              type="submit"
+              color="primary"
+              className="w-full"
+            >
+              Masuk
+            </Button>
           </form>
         </div>
       </div>
