@@ -92,7 +92,7 @@ export default function Page() {
         body: data,
       });
     },
-    500,
+    400,
     [password, user]
   );
 
@@ -165,6 +165,7 @@ export default function Page() {
                       placeholder="Lokasi"
                       variant="bordered"
                       fullWidth
+                      isLoading={signInMutation.isPending}
                     >
                       {signInMutation.data?.data?.sites?.map((item) => {
                         return (
