@@ -18,21 +18,22 @@ import {
   SignInChooseResponse,
   SignInResponse,
 } from "../_models/response/sign-in";
-import { useRouter } from "next/navigation";
 import { useDebounce } from "react-use";
 
 export default function Page() {
   const schema = z.object({
     username: z.string({
       message: "ID wajib diisi",
+    }).max(100, {
+      message: "Maksimal 100 karakter",
     }),
     password: z.string({
       message: "Password wajib diisi",
+    }).max(100, {
+      message: "Maksimal 100 karakter",
     }),
     siteId: z.optional(z.string()),
   });
-
-  const router = useRouter();
 
   const signInChooseMutation = useHttpMutation<
     z.infer<typeof schema>,
@@ -45,8 +46,8 @@ export default function Page() {
       },
       onSuccess: ({ data: { token } }) => {
         Cookies.set("accessToken", token);
-        router.push("/dashboard");
         toast.success("Berhasil login");
+        location.href = "/dashboard";
       },
     },
   });
@@ -93,7 +94,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-secondary/20 to-primary/20 flex justify-center items-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 py-20 bg-white max-w-screen-xl mx-auto w-full rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 py-10 bg-white max-w-screen-lg mx-auto w-full rounded-xl">
         <div className="flex justify-center items-center order-2 md:order-1">
           <div className="w-full p-5">
             <form onSubmit={onSubmit} className="w-full">
