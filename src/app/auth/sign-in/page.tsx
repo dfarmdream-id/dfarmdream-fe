@@ -22,16 +22,20 @@ import { useDebounce } from "react-use";
 
 export default function Page() {
   const schema = z.object({
-    username: z.string({
-      message: "ID wajib diisi",
-    }).max(100, {
-      message: "Maksimal 100 karakter",
-    }),
-    password: z.string({
-      message: "Password wajib diisi",
-    }).max(100, {
-      message: "Maksimal 100 karakter",
-    }),
+    username: z
+      .string({
+        message: "ID wajib diisi",
+      })
+      .max(100, {
+        message: "Maksimal 100 karakter",
+      }),
+    password: z
+      .string({
+        message: "Password wajib diisi",
+      })
+      .max(100, {
+        message: "Maksimal 100 karakter",
+      }),
     siteId: z.optional(z.string()),
   });
 
@@ -98,9 +102,7 @@ export default function Page() {
         <div className="flex justify-center items-center order-2 md:order-1">
           <div className="w-full p-5">
             <form onSubmit={onSubmit} className="w-full">
-              <div className="text-3xl font-semibold mb-10">
-                Selamat Datang 👋
-              </div>
+              <div className="text-3xl font-semibold mb-10">Welcome 👋</div>
 
               {signInChooseMutation.isError && (
                 <Card shadow="none" className="bg-danger-50 text-danger my-10">
