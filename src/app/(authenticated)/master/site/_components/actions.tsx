@@ -12,7 +12,7 @@ import { HiPencilAlt } from "react-icons/hi";
 import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDeleteSite } from "../../_services/site";
+import { useDeleteSite } from "../../../_services/site";
 import Link from "next/link";
 
 type Props = {

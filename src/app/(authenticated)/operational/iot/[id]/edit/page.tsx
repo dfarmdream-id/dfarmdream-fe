@@ -7,8 +7,8 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { InputNumber } from "@/components/ui/input";
-import { useGetCages } from "../../../../master/_services/cage";
-import { useGetIotDevice, useUpdateIotDevice } from "../../../../master/_services/iot-device";
+import { useGetCages } from "../../../../_services/cage";
+import { useGetIotDevice, useUpdateIotDevice } from "../../../../_services/iot-device";
 
 export default function Page() {
   const schema = z.object({

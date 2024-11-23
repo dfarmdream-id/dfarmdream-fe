@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteCageRack } from "../../../master/_services/rack";
+import { useDeleteCageRack } from "../../../_services/rack";
 
 type Props = {
   id: string;

@@ -3,7 +3,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   GetWarehouseTransactionListResponse,
   GetWarehouseTransactionResponse,
-} from "../_models/response/warehouse-transaction";
+} from "../master/_models/response/warehouse-transaction";
 import { useMemo } from "react";
 
 export const useGetWarehouseTransactions = (params: Record<string, string>) => {

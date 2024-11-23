@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreatePermission } from "../../_services/permission";
+import { useCreatePermission } from "../../../_services/permission";
 
 export default function Page() {
   const schema = z.object({

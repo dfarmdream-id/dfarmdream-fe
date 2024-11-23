@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { InputNumber } from "@/components/ui/input";
-import { useCreateWarehouseTransaction } from "@/app/(authenticated)/master/_services/warehouse-transaction";
-import { useGetCages } from "@/app/(authenticated)/master/_services/cage";
-import { useGetCageRacks } from "@/app/(authenticated)/master/_services/rack";
+import { useCreateWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
+import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 
 export default function Page() {
   const schema = z.object({

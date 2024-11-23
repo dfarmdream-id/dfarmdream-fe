@@ -6,7 +6,7 @@ import { Controller } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useDebounce } from "react-use";
-import { useLoginInvestor } from "@/app/(authenticated)/master/_services/investor";
+import { useLoginInvestor } from "@/app/(authenticated)/_services/investor";
 
 export default function Page() {
   const schema = z.object({

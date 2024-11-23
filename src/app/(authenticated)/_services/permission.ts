@@ -1,5 +1,5 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { PermissionListResponse, GetPermissionResponse } from "../_models/response/permission";
+import { PermissionListResponse, GetPermissionResponse } from "../master/_models/response/permission";
 import { useMemo } from "react";
 
 export const useGetPermissions = (params: Record<string, string>) => {

@@ -11,9 +11,9 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetSites } from "../../../../master/_services/site";
+import { useGetSites } from "../../../../_services/site";
 import { InputNumber } from "@/components/ui/input";
-import { useGetCage, useUpdateCage } from "../../../../master/_services/cage";
+import { useGetCage, useUpdateCage } from "../../../../_services/cage";
 
 export default function Page() {
   const schema = z.object({

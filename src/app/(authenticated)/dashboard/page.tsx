@@ -6,8 +6,8 @@ import { ReactNode, useMemo } from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
-import { useGetProfile } from "../_services/profile";
 import { Can } from "@/components/acl/can";
+import { useGetProfile } from "../_services/profile";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),

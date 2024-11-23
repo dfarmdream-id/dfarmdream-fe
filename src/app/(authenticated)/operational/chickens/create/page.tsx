@@ -6,8 +6,8 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { useGetCageRacks } from "@/app/(authenticated)/master/_services/rack";
-import { useCreateChicken } from "@/app/(authenticated)/master/_services/chicken";
+import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
+import { useCreateChicken } from "@/app/(authenticated)/_services/chicken";
 
 export default function Page() {
   const schema = z.object({

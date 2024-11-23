@@ -18,7 +18,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
-import { useGetIotDevices } from "../../master/_services/iot-device";
+import { useGetIotDevices } from "../../_services/iot-device";
 
 const columns = [
   {
@@ -69,8 +69,9 @@ export default function Page() {
   return (
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Perangkat IOT</div>
-      <div className="space-y-5">
-        <div className="flex justify-between items-center gap-3">
+            <div className="space-y-5 bg-white p-5 rounded-lg">
+
+        <div className="flex justify-between items-center gap-3 flex-wrap">
           <div>
             <Input
               startContent={<HiSearch />}
@@ -85,6 +86,7 @@ export default function Page() {
             href="/operational/iot/create"
             color="primary"
             startContent={<HiPlus />}
+className="w-full md:w-auto"
           >
             Tambah Perangkat
           </Button>
@@ -104,7 +106,7 @@ export default function Page() {
             {(item) => (
               <TableRow
                 key={item.id}
-                className="hover:bg-gray-100"
+                className="odd:bg-[#75B89F]"
                 role="button"
               >
                 <TableCell>

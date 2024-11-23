@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useGetSite, useUpdateSite } from "../../../_services/site";
+import { useGetSite, useUpdateSite } from "../../../../_services/site";
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
 

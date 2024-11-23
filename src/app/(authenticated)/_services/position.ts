@@ -3,7 +3,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   GetPositionListResponse,
   GetPositionResponse,
-} from "../_models/response/position";
+} from "../master/_models/response/position";
 import { useMemo } from "react";
 
 export const useGetPositions = (params: Record<string, string>) => {

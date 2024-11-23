@@ -6,9 +6,9 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetCageRack, useUpdateCageRack } from "../../../../master/_services/rack";
+import { useGetCageRack, useUpdateCageRack } from "../../../../_services/rack";
 import { useRouter } from "next/navigation";
-import { useGetCages } from "../../../../master/_services/cage";
+import { useGetCages } from "../../../../_services/cage";
 
 export default function Page() {
   const schema = z.object({

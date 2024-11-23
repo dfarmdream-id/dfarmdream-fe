@@ -5,11 +5,11 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useGetCashFlowCategories } from "../../../master/_services/cashflow-category";
+import { useGetCashFlowCategories } from "../../../_services/cashflow-category";
 import { InputNumber } from "@/components/ui/input";
 import { useMemo } from "react";
-import { useGetCages } from "../../../master/_services/cage";
-import { useCreateCashFlow } from "../../../master/_services/cash-flow";
+import { useGetCages } from "../../../_services/cage";
+import { useCreateCashFlow } from "../../../_services/cash-flow";
 
 export default function Page() {
   const schema = z.object({

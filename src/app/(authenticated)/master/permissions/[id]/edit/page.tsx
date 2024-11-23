@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetPermission,
   useUpdatePermission,
-} from "../../../_services/permission";
+} from "../../../../_services/permission";
 
 export default function Page() {
   const schema = z.object({

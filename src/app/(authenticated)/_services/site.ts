@@ -1,5 +1,5 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { GetSiteListResponse, GetSiteResponse } from "../_models/response/site";
+import { GetSiteListResponse, GetSiteResponse } from "../master/_models/response/site";
 import { useMemo } from "react";
 
 export const useGetSites = (params: Record<string, string>) => {

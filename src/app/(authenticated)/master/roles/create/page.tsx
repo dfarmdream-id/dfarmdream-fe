@@ -5,8 +5,8 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreateRole } from "../../_services/role";
-import { useGetPermissions } from "../../_services/permission";
+import { useCreateRole } from "../../../_services/role";
+import { useGetPermissions } from "../../../_services/permission";
 import { useMemo } from "react";
 
 export default function Page() {

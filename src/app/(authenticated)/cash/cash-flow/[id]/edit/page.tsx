@@ -9,7 +9,7 @@ import { useEffect, useMemo } from "react";
 import {
   useGetCashFlowCategory,
   useUpdateCashFlowCategory,
-} from "../../../../master/_services/cashflow-category";
+} from "../../../../_services/cashflow-category";
 
 export default function Page() {
   const schema = z.object({

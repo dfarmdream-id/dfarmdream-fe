@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreateCashFlowCategory } from "../../../master/_services/cashflow-category";
+import { useCreateCashFlowCategory } from "../../../_services/cashflow-category";
 
 export default function Page() {
   const schema = z.object({

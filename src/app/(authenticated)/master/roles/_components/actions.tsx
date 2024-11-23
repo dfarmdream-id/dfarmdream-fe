@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteRole } from "../../_services/role";
+import { useDeleteRole } from "../../../_services/role";
 
 type Props = {
   id: string;

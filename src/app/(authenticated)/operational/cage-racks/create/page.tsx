@@ -11,8 +11,8 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { useGetCages } from "../../../master/_services/cage";
-import { useCreateCageRack } from "../../../master/_services/rack";
+import { useGetCages } from "../../../_services/cage";
+import { useCreateCageRack } from "../../../_services/rack";
 
 export default function Page() {
   const schema = z.object({

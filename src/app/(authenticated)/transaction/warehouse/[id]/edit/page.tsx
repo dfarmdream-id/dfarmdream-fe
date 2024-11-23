@@ -6,7 +6,7 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetSite, useUpdateSite } from "@/app/(authenticated)/master/_services/site";
+import { useGetSite, useUpdateSite } from "@/app/(authenticated)/_services/site";
 
 export default function Page() {
   const schema = z.object({

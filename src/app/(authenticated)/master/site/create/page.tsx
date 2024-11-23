@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreateSite } from "../../_services/site";
+import { useCreateSite } from "../../../_services/site";
 
 export default function Page() {
   const schema = z.object({
