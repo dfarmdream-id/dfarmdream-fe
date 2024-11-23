@@ -71,9 +71,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     label?: string;
     icon?: React.ReactNode;
     action?: () => void;
-    children?: { href: string; label: string; icon: React.ReactNode }[];
+    children?: {
+      href: string;
+      label: string;
+      icon: React.ReactNode;
+      can: string;
+    }[];
     expanded?: boolean;
     mobile?: boolean;
+    onClick?: () => void;
   }) => {
     const [open, setOpen] = useState(false);
 
@@ -87,6 +93,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           isPressable
           onPress={() => {
             setOpen(!open);
+            menu.onClick?.();
             menu?.action?.();
           }}
           className={cn(
@@ -145,19 +152,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 >
                   {menu.children.map((child) => (
                     <li key={child.label}>
-                      <Card
-                        shadow="none"
-                        as={Link}
-                        href={child.href}
-                        isPressable
-                        data-active={child.href == path}
-                        className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
-                      >
-                        <CardBody className="flex gap-2 flex-row items-center">
-                          {child.icon}
-                          {child.label}
-                        </CardBody>
-                      </Card>
+                      <Can action={child.can}>
+                        <Card
+                          shadow="none"
+                          as={Link}
+                          href={child.href}
+                          onPress={() => {
+                            if (menu.mobile) {
+                              setOpen(false);
+                            }
+                          }}
+                          isPressable
+                          data-active={child.href == path}
+                          className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                        >
+                          <CardBody className="flex gap-2 flex-row items-center">
+                            {child.icon}
+                            {child.label}
+                          </CardBody>
+                        </Card>
+                      </Can>
                     </li>
                   ))}
                 </motion.ul>
@@ -355,13 +369,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
-                  <SidebarMenuItem
-                    mobile
-                    href={menu.href as string}
-                    key={menu.label}
-                    {...menu}
-                    expanded={!open}
-                  />
+                  <Can key={menu.label} action={menu.can || ""}>
+                    <SidebarMenuItem
+                      onClick={() => setOpen(false)}
+                      expanded={!open}
+                      href={menu.href as string}
+                      {...menu}
+                    />
+                  </Can>
                 );
               })}
             </ul>
