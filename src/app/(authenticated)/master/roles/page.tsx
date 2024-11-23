@@ -82,8 +82,8 @@ export default function Page() {
               <SelectItem key="10">10</SelectItem>
               <SelectItem key="20">20</SelectItem>
               <SelectItem key="30">30</SelectItem>
-              <SelectItem key="50">30</SelectItem>
-              <SelectItem key="50">30</SelectItem>
+              <SelectItem key="40">40</SelectItem>
+              <SelectItem key="50">50</SelectItem>
             </Select>{" "}
             <Input
               startContent={<HiSearch />}
