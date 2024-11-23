@@ -46,6 +46,7 @@ import {
 import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
+import { MdSensors } from "react-icons/md";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
@@ -220,6 +221,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Kandang",
           href: "/master/cages",
           icon: <HiOutlineInbox className="text-xl" />,
+        },
+        {
+          label: "Sensor IOT",
+          href: "/master/iot",
+          icon: <MdSensors className="text-xl" />,
         },
         {
           can: "show:cage-racks",

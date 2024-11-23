@@ -30,15 +30,15 @@ export default function Page() {
   }) => {
     return (
       <Card>
-        <CardBody className="flex gap-3 flex-row">
-          <div className="flex items-center text-3xl bg-default-50 p-5 aspect-square rounded-lg text-primary">
-            {icon}{" "}
-          </div>
+        <CardBody className="flex gap-3 flex-row justify-between items-center">
           <div>
             <div className="text-xl">{title}</div>
             <div className="text-2xl font-semibold">
               {Intl.NumberFormat("id-ID").format(count)}
             </div>
+          </div>
+          <div className="flex items-center text-3xl bg-primary p-2 aspect-square rounded-lg text-white">
+            {icon}
           </div>
         </CardBody>
       </Card>
