@@ -92,9 +92,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href={menu.href ? menu.href : undefined}
           isPressable
           onPress={() => {
+            if (!menu.children) {
+              menu?.onClick?.();
+            }
             setOpen(!open);
-            menu.onClick?.();
-            menu?.action?.();
           }}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
@@ -160,6 +161,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           onPress={() => {
                             if (menu.mobile) {
                               setOpen(false);
+                              menu.onClick?.();
                             }
                           }}
                           isPressable
@@ -373,6 +375,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <SidebarMenuItem
                       onClick={() => setOpen(false)}
                       expanded={!open}
+                      mobile
                       href={menu.href as string}
                       {...menu}
                     />
