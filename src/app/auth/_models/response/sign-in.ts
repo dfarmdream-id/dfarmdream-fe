@@ -21,5 +21,5 @@ export interface User {
   email: string;
   id: string;
   fullName: string;
-  sites: Site[];
+  sites: { siteId: string; site: Site }[];
 }
