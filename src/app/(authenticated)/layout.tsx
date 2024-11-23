@@ -73,12 +73,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     label?: string;
     icon?: React.ReactNode;
     action?: () => void;
-    children?: {
+    childrens?: Partial<{
       href: string;
       label: string;
       icon: React.ReactNode;
       can: string;
-    }[];
+    }>[];
     expanded?: boolean;
     mobile?: boolean;
     onClick?: () => void;
@@ -94,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href={menu.href ? menu.href : undefined}
           isPressable
           onPress={() => {
-            if (!menu.children) {
+            if (!menu.childrens) {
               menu?.onClick?.();
             }
             setOpen(!open);
@@ -126,7 +126,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
             {menu.mobile && (
               <>
-                {menu.children ? (
+                {menu.childrens ? (
                   <motion.div animate={{ rotate: open ? 90 : 0 }}>
                     <HiChevronRight />
                   </motion.div>
@@ -135,7 +135,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
             {!menu.mobile && (
               <>
-                {menu.children && menu.expanded ? (
+                {menu.childrens && menu.expanded ? (
                   <motion.div animate={{ rotate: open ? 90 : 0 }}>
                     <HiChevronRight />
                   </motion.div>
@@ -147,16 +147,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <motion.div>
           {open && (
             <AnimatePresence>
-              {menu.children && (
+              {menu.childrens && (
                 <motion.ul
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="p-3 space-y-2"
                 >
-                  {menu.children.map((child) => (
+                  {menu.childrens.map((child) => (
                     <li key={child.label}>
-                      <Can action={child.can}>
+                      <Can action={child.can || ""}>
                         <Card
                           shadow="none"
                           as={Link}
@@ -349,6 +349,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       can={menu.can as string}
                       expanded={!open}
                       href={menu.href as string}
+                      childrens={menu.children}
                     />
                   </Can>
                 );
@@ -392,6 +393,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       action={menu.action}
                       icon={menu.icon as React.ReactNode}
                       can={menu.can as string}
+                      childrens={menu.children}
                     />
                   </Can>
                 );
