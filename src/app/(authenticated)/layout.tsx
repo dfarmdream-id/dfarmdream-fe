@@ -20,10 +20,12 @@ import {
   HiOutlineBars3,
   HiOutlineCircleStack,
   HiOutlineClock,
+  HiOutlineCog6Tooth,
   HiOutlineCurrencyDollar,
   HiOutlineHome,
   HiOutlineInbox,
   HiOutlineListBullet,
+  HiOutlineRocketLaunch,
   HiOutlineUserPlus,
   HiOutlineUsers,
   HiOutlineWindow,
@@ -41,20 +43,44 @@ import {
   HiOutlineReceiptTax,
   HiX,
 } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Can } from "@/components/acl/can";
+import { useAuthStore } from "../auth/_store/auth";
 import { MdSensors } from "react-icons/md";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
+
+  const { setPermissions } = useAuthStore((state) => state);
+
+  useEffect(() => {
+    if (data?.data && data?.data?.roles?.length > 0) {
+      setPermissions(
+        data?.data?.roles
+          .map((role) =>
+            role.role.permissions.map(
+              (permission) => permission.permission.name
+            )
+          )
+          .flat()
+      );
+    }
+  }, [data, setPermissions]);
 
   const SidebarMenuItem = (menu: {
     href?: string;
     label?: string;
     icon?: React.ReactNode;
     action?: () => void;
-    children?: { href: string; label: string; icon: React.ReactNode }[];
+    children?: {
+      href: string;
+      label: string;
+      icon: React.ReactNode;
+      can: string;
+    }[];
     expanded?: boolean;
     mobile?: boolean;
+    onClick?: () => void;
   }) => {
     const [open, setOpen] = useState(false);
 
@@ -67,8 +93,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href={menu.href ? menu.href : undefined}
           isPressable
           onPress={() => {
+            if (!menu.children) {
+              menu?.onClick?.();
+            }
             setOpen(!open);
-            menu?.action?.();
           }}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
@@ -126,19 +154,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 >
                   {menu.children.map((child) => (
                     <li key={child.label}>
-                      <Card
-                        shadow="none"
-                        as={Link}
-                        href={child.href}
-                        isPressable
-                        data-active={child.href == path}
-                        className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
-                      >
-                        <CardBody className="flex gap-2 flex-row items-center">
-                          {child.icon}
-                          {child.label}
-                        </CardBody>
-                      </Card>
+                      <Can action={child.can}>
+                        <Card
+                          shadow="none"
+                          as={Link}
+                          href={child.href}
+                          onPress={() => {
+                            if (menu.mobile) {
+                              menu.onClick?.();
+                            }
+                          }}
+                          isPressable
+                          data-active={child.href == path}
+                          className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                        >
+                          <CardBody className="flex gap-2 flex-row items-center">
+                            {child.icon}
+                            {child.label}
+                          </CardBody>
+                        </Card>
+                      </Can>
                     </li>
                   ))}
                 </motion.ul>
@@ -155,17 +190,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       label: "Dashboard",
       href: "/dashboard",
       icon: <HiOutlineHome className="text-xl" />,
+      can: "show:dashboard",
     },
     {
       icon: <HiOutlineReceiptTax className="text-xl" />,
       label: "Transaksi",
+      can: "show:transaction",
       children: [
         {
+          can: "show:warehouse-transaction",
           label: "Transaksi Gudang",
           href: "/master/warehouse-transactions",
           icon: <HiOutlineWindow className="text-xl" />,
         },
         {
+          can: "show:sales-transaction",
           label: "Transaksi Penjualan",
           href: "/master/sales-transactions",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
@@ -173,10 +212,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      can: "show:operational",
       icon: <HiOutlineClock className="text-xl" />,
       label: "Operasional",
       children: [
         {
+          can: "show:cages",
           label: "Kandang",
           href: "/master/cages",
           icon: <HiOutlineInbox className="text-xl" />,
@@ -187,11 +228,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           icon: <MdSensors className="text-xl" />,
         },
         {
+          can: "show:cage-racks",
           label: "Rak",
           href: "/master/cage-racks",
           icon: <HiOutlineInboxIn className="text-xl" />,
         },
         {
+          can: "show:chickens",
           label: "Ayam",
           href: "/master/chickens",
           icon: <HiOutlineCircleStack className="text-xl" />,
@@ -199,15 +242,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      can: "show:cash-flow",
       icon: <HiOutlineCurrencyDollar className="text-xl" />,
       label: "Arus Kas",
       children: [
         {
+          can: "show:cash-flow-category",
           label: "Jenis Arus Kas",
           href: "/master/cash-flow-category",
           icon: <HiOutlineListBullet className="text-xl" />,
         },
         {
+          can: "show:cash-flow",
           label: "Arus Kas",
           href: "/master/cash-flow",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
@@ -215,33 +261,51 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      can: "show:master",
       icon: <HiOutlineDatabase className="text-xl" />,
       label: "Data Master",
       children: [
         {
+          can: "show:positions",
           label: "Jabatan",
           href: "/master/positions",
           icon: <HiOutlineUsers className="text-xl" />,
         },
         {
+          can: "show:users",
           label: "Pengguna",
           href: "/master/users",
           icon: <HiOutlineUsers className="text-xl" />,
         },
         {
+          can: "show:sites",
           label: "Lokasi",
           href: "/master/site",
           icon: <HiOutlineLocationMarker className="text-xl" />,
         },
         {
+          can: "show:investors",
           label: "Investor",
           href: "/master/investors",
           icon: <HiOutlineUserPlus className="text-xl" />,
         },
         {
+          can: "show:prices",
           label: "Harga",
           href: "/master/prices",
           icon: <HiOutlineBars3 className="text-xl" />,
+        },
+        {
+          can: "show:roles",
+          label: "Role",
+          href: "/master/roles",
+          icon: <HiOutlineRocketLaunch className="text-xl" />,
+        },
+        {
+          can: "show:permissions",
+          label: "Permission",
+          href: "/master/permissions",
+          icon: <HiOutlineCog6Tooth className="text-xl" />,
         },
       ],
     },
@@ -274,12 +338,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
-                  <SidebarMenuItem
-                    expanded={!open}
-                    href={menu.href as string}
-                    key={menu.label}
-                    {...menu}
-                  />
+                  <Can key={menu.label} action={menu.can || ""}>
+                    <SidebarMenuItem
+                      expanded={!open}
+                      href={menu.href as string}
+                      {...menu}
+                    />
+                  </Can>
                 );
               })}
             </ul>
@@ -311,13 +376,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
-                  <SidebarMenuItem
-                    mobile
-                    href={menu.href as string}
-                    key={menu.label}
-                    {...menu}
-                    expanded={!open}
-                  />
+                  <Can key={menu.label} action={menu.can || ""}>
+                    <SidebarMenuItem
+                      onClick={() => setOpen(false)}
+                      expanded={!open}
+                      mobile
+                      href={menu.href as string}
+                      {...menu}
+                    />
+                  </Can>
                 );
               })}
             </ul>

@@ -5,12 +5,12 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreatePosition } from "../../_services/position";
+import { useCreatePermission } from "../../_services/permission";
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Nama jabatan wajib diisi",
+      message: "Permission wajib diisi",
     }),
   });
 
@@ -18,7 +18,7 @@ export default function Page() {
     schema,
   });
 
-  const submission = useCreatePosition();
+  const submission = useCreatePermission();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
@@ -33,7 +33,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/master/positions");
+          router.push("/master/permissions");
         },
       }
     );
@@ -41,7 +41,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Tambah Data Permission</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -53,8 +53,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Nama Jabatan"
-                  placeholder="Nama Jabatan"
+                  label="Permission"
+                  placeholder="Permission"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -64,11 +64,7 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-            <Button
-              variant="bordered"
-              color="primary"
-              onClick={() => router.back()}
-            >
+            <Button variant="bordered" color="primary" onClick={() => router.back()}>
               Kembali
             </Button>
             <Button

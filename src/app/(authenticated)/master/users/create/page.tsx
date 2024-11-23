@@ -66,8 +66,8 @@ export default function Page() {
       {
         body: {
           ...data,
-          roles: data?.roles?.split(',').map((id) => ({ roleId: id })),
-          sites: data.sites.split(',').map((id) => ({ siteId: id })),
+          roles: data?.roles?.split(",").map((id) => ({ roleId: id })),
+          sites: data.sites.split(",").map((id) => ({ siteId: id })),
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },
@@ -268,7 +268,11 @@ export default function Page() {
             />
           </div>
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary">
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

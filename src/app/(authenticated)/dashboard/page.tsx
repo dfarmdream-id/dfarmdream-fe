@@ -7,9 +7,7 @@ import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
 import { useGetProfile } from "../_services/profile";
-import GrafikSuhu from "./_components/grafik-suhu";
-import { GrafikPerforma } from "./_components/grafik-performa";
-
+import { Can } from "@/components/acl/can";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -34,8 +32,10 @@ export default function Page() {
       <Card>
         <CardBody className="flex gap-3 flex-row justify-between items-center">
           <div>
-            <div className="text-xl text-gray-600 font-semibold">{title}</div>
-            <div className="text-2xl font-semibold">{count}</div>
+            <div className="text-xl">{title}</div>
+            <div className="text-2xl font-semibold">
+              {Intl.NumberFormat("id-ID").format(count)}
+            </div>
           </div>
           <div className="flex items-center text-3xl bg-primary p-2 aspect-square rounded-lg text-white">
             {icon}
@@ -81,85 +81,88 @@ export default function Page() {
   }, [chartData]);
 
   return (
-    <div className="p-5 space-y-5">
-      <div className="text-3xl font-bold mb-10">Data Peternakan</div>
-      <div className="grid md:grid-cols-3 gap-3">
-        <Link href="/master/investor">
-          <StatsCard
-            icon={<HiUserPlus />}
-            title="Total Investor"
-            count={dashboard.data?.data?.investor || 0}
-          />
-        </Link>
-        <Link href="/master/cages">
-          <StatsCard
-            icon={<HiArchiveBox />}
-            title="Total Kandang"
-            count={dashboard.data?.data?.cage || 0}
-          />
-        </Link>
-        <Link href="/master/users">
-          <StatsCard
-            icon={<HiUsers />}
-            title="Total Karyawan"
-            count={dashboard?.data?.data?.user || 0}
-          />
-        </Link>
-      </div>
-
-      <div className="grid md:grid-cols-12 gap-5">
-        <div className="md:col-span-8">
-          <GrafikSuhu/>
+    <Can action="show:dashboard">
+      <div className="p-5 space-y-5">
+        <div className="text-3xl font-bold mb-10">Data Peternakan</div>
+        <div className="grid grid-cols-3 gap-3">
+          <Can action="show:investors">
+            <Link href="/master/investor">
+              <StatsCard
+                icon={<HiUserPlus />}
+                title="Investor"
+                count={dashboard.data?.data?.investor || 0}
+              />
+            </Link>
+          </Can>
+          <Can action="show:cages">
+            <Link href="/master/cages">
+              <StatsCard
+                icon={<HiArchiveBox />}
+                title="Kandang"
+                count={dashboard.data?.data?.cage || 0}
+              />
+            </Link>
+          </Can>
+          <Can action="show:users">
+            <Link href="/master/users">
+              <StatsCard
+                icon={<HiUsers />}
+                title="Karyawan"
+                count={dashboard?.data?.data?.user || 0}
+              />
+            </Link>
+          </Can>
         </div>
-        <div className="md:col-span-4">
-          <GrafikPerforma/>
+        <div className="grid md:grid-cols-2 gap-5">
+          <Card>
+            <CardHeader className="flex flex-col items-start">
+              <div className="font-bold text-xl">Grafik Ayam</div>
+              <div>{profile?.data?.data?.site?.name}</div>
+            </CardHeader>
+            <CardBody>
+              <Chart
+                options={chart.options}
+                series={chart.series}
+                type="donut"
+              />
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-col items-start">
+              <div className="font-bold text-xl">Grafik Performa</div>
+              <div>{profile.data?.data?.site?.name}</div>
+            </CardHeader>
+            <CardBody>
+              <ul className="grid xl:grid-cols-2 gap-3">
+                <Card as="li" shadow="none">
+                  <StatsCard
+                    icon={<HiUsers />}
+                    title="Berat Telur"
+                    count={dashboard.data?.data?.weightTotal || 0}
+                  />
+                </Card>
+                <Card as="li" shadow="none">
+                  <StatsCard icon={<HiUsers />} title="FCR" count={1} />
+                </Card>
+                <Card as="li" shadow="none">
+                  <StatsCard
+                    icon={<HiUsers />}
+                    title="Berat Keseluruhan"
+                    count={dashboard.data?.data?.weightTotal || 0}
+                  />
+                </Card>
+                <Card as="li" shadow="none">
+                  <StatsCard
+                    icon={<HiUsers />}
+                    title="Total Telur"
+                    count={dashboard.data?.data?.qtyTotal || 0}
+                  />
+                </Card>
+              </ul>
+            </CardBody>
+          </Card>
         </div>
       </div>
-      <div className="grid md:grid-cols-2 gap-5">
-        <Card>
-          <CardHeader className="flex flex-col items-start">
-            <div className="font-bold text-xl">Grafik Ayam</div>
-            <div>{profile?.data?.data?.sites?.at(0)?.site?.name}</div>
-          </CardHeader>
-          <CardBody>
-            <Chart options={chart.options} series={chart.series} type="donut" />
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-col items-start">
-            <div className="font-bold text-xl">Grafik Performa</div>
-            <div>{profile.data?.data?.site?.name}</div>
-          </CardHeader>
-          <CardBody>
-            <ul className="grid xl:grid-cols-2 gap-3">
-              <Card as="li" shadow="none">
-                <StatsCard
-                  icon={<HiUsers />}
-                  title="Berat Telur"
-                  count={dashboard.data?.data?.weightTotal || 0}
-                />
-              </Card>
-              <Card as="li" shadow="none">
-                <StatsCard icon={<HiUsers />} title="FCR" count={1} />
-              </Card>
-              <Card as="li" shadow="none">
-                <StatsCard
-                  icon={<HiUsers />}
-                  title="Berat Keseluruhan"
-                  count={dashboard.data?.data?.weightTotal || 0}
-                />
-              </Card>
-              <Card as="li" shadow="none">
-                <StatsCard
-                  icon={<HiUsers />}
-                  title="Total Telur"
-                  count={dashboard.data?.data?.qtyTotal || 0}
-                />
-              </Card>
-            </ul>
-          </CardBody>
-        </Card>
-      </div>
-    </div>
+    </Can>
   );
 }

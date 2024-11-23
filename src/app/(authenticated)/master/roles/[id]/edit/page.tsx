@@ -1,53 +1,57 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Checkbox, CheckboxGroup, Input } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetCageRack, useUpdateCageRack } from "../../../_services/rack";
-import { useRouter } from "next/navigation";
-import { useGetCages } from "../../../_services/cage";
+import { useGetPermissions } from "../../../_services/permission";
+import { useGetRole, useUpdateRole } from "../../../_services/role";
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Nama wajib diisi",
+      message: "Kategori Arus Kas wajib diisi",
     }),
-    cageId: z.string({
-      message: "Id kandang",
-    }),
+    permissions: z.array(z.string()),
   });
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
 
-  const submission = useUpdateCageRack();
+  const submission = useUpdateRole();
   const router = useRouter();
   const params = useParams();
-  const cage = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
 
-  const data = useGetCageRack(useMemo(() => params.id as string, [params.id]));
+  const position = useGetRole(useMemo(() => params.id as string, [params]));
 
   useEffect(() => {
-    if (data.data) {
-      if (data?.data?.data?.name) {
-        form.setValue("name", data?.data?.data?.name);
-      }
-      if (data?.data?.data?.cageId) {
-        form.setValue("cageId", data?.data?.data?.cageId);
-      }
+    if (position.data) {
+      form.setValue("name", position?.data?.data?.name);
+      form.setValue(
+        "permissions",
+        position?.data?.data?.permissions?.map((item) => item.permissionId)
+      );
     }
-  }, [data.data, form]);
+  }, [position.data, form]);
+
+  const permissions = useGetPermissions(
+    useMemo(() => {
+      return {
+        limit: "1000",
+      };
+    }, [])
+  );
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
-        pathVars: {
-          id: params.id as string,
+        pathVars: { id: params.id as string },
+        body: {
+          ...data,
+          permissions: data.permissions.map((id) => ({ permissionId: id })),
         },
       },
       {
@@ -57,7 +61,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/master/cages");
+          router.push("/master/roles");
         },
       }
     );
@@ -65,7 +69,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Ubah Kategori Arus Kas</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -77,8 +81,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="ID Rak"
-                  placeholder="ID Rak"
+                  label="Kategori Arus Kas"
+                  placeholder="Kategori Arus Kas"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -87,33 +91,36 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-5">
             <Controller
               control={form.control}
-              name="cageId"
+              name="permissions"
               render={({ field, fieldState }) => (
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
-                  variant="bordered"
-                  {...field}
+                <CheckboxGroup
+                  label="Permissions"
+                  color="primary"
+                  onChange={field.onChange}
+                  defaultValue={field.value}
                   errorMessage={fieldState.error?.message}
+                  value={field.value}
                   isInvalid={fieldState.invalid}
-                  selectedKeys={[field.value]}
                 >
-                  {cage.data?.data?.data?.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
+                  {permissions.data?.data?.data.map((item) => (
+                    <Checkbox key={item.id} value={item.id}>
                       {item.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
               )}
             />
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-                        <Button variant="bordered" color="primary" onClick={() => router.back()}>
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

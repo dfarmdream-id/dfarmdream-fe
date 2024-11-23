@@ -8,7 +8,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useGetChicken, useUpdateChicken } from "../../../_services/chicken";
 import { useGetCageRacks } from "../../../_services/rack";
-import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
@@ -117,7 +116,11 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary" as={Link} href="/master/chickens">
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

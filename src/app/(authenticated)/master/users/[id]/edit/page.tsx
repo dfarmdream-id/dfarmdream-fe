@@ -17,7 +17,6 @@ import { useEffect, useMemo } from "react";
 import { useGetSites } from "../../../_services/site";
 import { useGetRoles } from "../../../_services/role";
 import { useGetPositions } from "../../../_services/position";
-import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
@@ -328,8 +327,7 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              as={Link}
-              href="/master/users"
+              onClick={() => router.back()}
             >
               Kembali
             </Button>

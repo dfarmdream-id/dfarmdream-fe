@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useGetPosition, useUpdatePosition } from "../../../_services/position";
 import { useEffect, useMemo } from "react";
-import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
@@ -76,7 +75,11 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary" as={Link} href="/master/positions">
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

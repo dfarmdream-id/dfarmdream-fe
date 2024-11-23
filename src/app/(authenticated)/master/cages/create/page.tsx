@@ -158,7 +158,7 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary">
+                        <Button variant="bordered" color="primary" onClick={() => router.back()}>
               Kembali
             </Button>
             <Button
