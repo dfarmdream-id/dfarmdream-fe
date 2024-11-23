@@ -160,7 +160,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           href={child.href}
                           onPress={() => {
                             if (menu.mobile) {
-                              setOpen(false);
                               menu.onClick?.();
                             }
                           }}
