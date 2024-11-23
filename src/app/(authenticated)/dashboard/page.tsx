@@ -95,7 +95,7 @@ export default function Page() {
             </Link>
           </Can>
           <Can action="show:cages">
-            <Link href="/master/cages">
+            <Link href="/operational/cages">
               <StatsCard
                 icon={<HiArchiveBox />}
                 title="Kandang"

@@ -13,7 +13,6 @@ import {
   Image,
   ScrollShadow,
 } from "@nextui-org/react";
-import Link from "next/link";
 import {
   HiChevronRight,
   HiOutlineArrowRightOnRectangle,
@@ -33,7 +32,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   HiMenuAlt2,
   HiMenuAlt4,
@@ -83,15 +82,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     mobile?: boolean;
     onClick?: () => void;
   }) => {
-    const [open, setOpen] = useState(false);
-
     const path = usePathname();
+
+    const router = useRouter();
+
+    const [open, setOpen] = useState(path.includes(menu.href || ""));
 
     return (
       <li key={menu.label}>
         <Card
-          as={menu.href ? Link : "a"}
-          href={menu.href ? menu.href : undefined}
           isPressable
           onPress={() => {
             if (!menu.childrens) {
@@ -99,6 +98,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }
             setOpen(!open);
             menu.action?.();
+            if (menu.href) {
+              router.push(menu.href);
+            }
           }}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
@@ -159,13 +161,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <Can action={child.can || ""}>
                         <Card
                           shadow="none"
-                          as={Link}
-                          href={child.href}
+                          as={Button}
                           onPress={() => {
                             if (menu.mobile) {
                               menu.onClick?.();
                             }
                             menu.action?.();
+                            router.push(child.href || "");
                           }}
                           isPressable
                           data-active={child.href == path}
@@ -203,13 +205,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
           can: "show:warehouse-transaction",
           label: "Transaksi Gudang",
-          href: "/master/warehouse-transactions",
+          href: "/transaction/warehouse",
           icon: <HiOutlineWindow className="text-xl" />,
         },
         {
           can: "show:sales-transaction",
           label: "Transaksi Penjualan",
-          href: "/master/sales-transactions",
+          href: "/transaction/sales",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
@@ -222,24 +224,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
           can: "show:cages",
           label: "Kandang",
-          href: "/master/cages",
+          href: "/operational/cages",
           icon: <HiOutlineInbox className="text-xl" />,
         },
         {
           label: "Sensor IOT",
-          href: "/master/iot",
+          href: "/operational/iot",
           icon: <MdSensors className="text-xl" />,
         },
         {
           can: "show:cage-racks",
           label: "Rak",
-          href: "/master/cage-racks",
+          href: "/operational/cage-racks",
           icon: <HiOutlineInboxIn className="text-xl" />,
         },
         {
           can: "show:chickens",
           label: "Ayam",
-          href: "/master/chickens",
+          href: "/operational/chickens",
           icon: <HiOutlineCircleStack className="text-xl" />,
         },
       ],
@@ -252,13 +254,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
           can: "show:cash-flow-category",
           label: "Jenis Arus Kas",
-          href: "/master/cash-flow-category",
+          href: "/cash/category",
           icon: <HiOutlineListBullet className="text-xl" />,
         },
         {
           can: "show:cash-flow",
           label: "Arus Kas",
-          href: "/master/cash-flow",
+          href: "/cash/cash-flow",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
