@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteCashFlowCategory } from "../../_services/cashflow-category";
+import { useDeleteRole } from "../../_services/role";
 
 type Props = {
   id: string;
@@ -22,7 +22,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteCashFlowCategory();
+  const deleteData = useDeleteRole();
 
   const queryClient = useQueryClient();
 
@@ -33,7 +33,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/cash-flow-category"],
+            queryKey: ["/v1/role"],
           });
           deleteDisclosure.onClose();
         },
@@ -47,7 +47,7 @@ export default function Actions(props: Props) {
   return (
     <div className="flex space-x-1">
       <Tooltip content="Edit Data">
-        <Button as={Link} href={`/master/cash-flow-category/${props.id}/edit`} isIconOnly variant="light" color="primary">
+        <Button as={Link} href={`/master/roles/${props.id}/edit`} isIconOnly variant="light" color="primary">
           <HiPencilAlt />
         </Button>
       </Tooltip>

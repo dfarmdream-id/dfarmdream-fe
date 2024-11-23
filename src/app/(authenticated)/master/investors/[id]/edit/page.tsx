@@ -7,7 +7,6 @@ import { useGetUser, useUpdateUser } from "../../../_services/user";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
@@ -183,8 +182,7 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              as={Link}
-              href="/master/investors"
+              onClick={() => router.back()}
             >
               Kembali
             </Button>

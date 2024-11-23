@@ -7,6 +7,7 @@ import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
 import { useGetProfile } from "../_services/profile";
+import { Can } from "@/components/acl/can";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -35,7 +36,9 @@ export default function Page() {
           </div>
           <div>
             <div className="text-xl">{title}</div>
-            <div className="text-2xl font-semibold">{count}</div>
+            <div className="text-2xl font-semibold">
+              {Intl.NumberFormat("id-ID").format(count)}
+            </div>
           </div>
         </CardBody>
       </Card>
@@ -80,8 +83,8 @@ export default function Page() {
   return (
     <div className="p-5 space-y-5">
       <div className="text-3xl font-bold mb-10">Data Peternakan</div>
-      <Card>
-        <CardBody className="grid md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3">
+        <Can action="show:investors">
           <Link href="/master/investor">
             <StatsCard
               icon={<HiUserPlus />}
@@ -89,6 +92,8 @@ export default function Page() {
               count={dashboard.data?.data?.investor || 0}
             />
           </Link>
+        </Can>
+        <Can action="show:cages">
           <Link href="/master/cages">
             <StatsCard
               icon={<HiArchiveBox />}
@@ -96,6 +101,8 @@ export default function Page() {
               count={dashboard.data?.data?.cage || 0}
             />
           </Link>
+        </Can>
+        <Can action="show:users">
           <Link href="/master/users">
             <StatsCard
               icon={<HiUsers />}
@@ -103,13 +110,13 @@ export default function Page() {
               count={dashboard?.data?.data?.user || 0}
             />
           </Link>
-        </CardBody>
-      </Card>
+        </Can>
+      </div>
       <div className="grid md:grid-cols-2 gap-5">
         <Card>
           <CardHeader className="flex flex-col items-start">
             <div className="font-bold text-xl">Grafik Ayam</div>
-            <div>{profile?.data?.data?.sites?.at(0)?.site?.name}</div>
+            <div>{profile?.data?.data?.site?.name}</div>
           </CardHeader>
           <CardBody>
             <Chart options={chart.options} series={chart.series} type="donut" />
@@ -140,7 +147,11 @@ export default function Page() {
                 />
               </Card>
               <Card as="li" shadow="none">
-                <StatsCard icon={<HiUsers />} title="Total Telur" count={dashboard.data?.data?.qtyTotal || 0} />
+                <StatsCard
+                  icon={<HiUsers />}
+                  title="Total Telur"
+                  count={dashboard.data?.data?.qtyTotal || 0}
+                />
               </Card>
             </ul>
           </CardBody>

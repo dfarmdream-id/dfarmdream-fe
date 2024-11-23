@@ -1,32 +1,33 @@
 "use client";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
+import { useGetUser, useUpdateUser } from "../../../_services/user";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useCreateWarehouseTransaction } from "../../_services/warehouse-transaction";
-import { useGetCages } from "../../_services/cage";
-import { useGetCageRacks } from "../../_services/rack";
-import { useMemo } from "react";
-import { InputNumber } from "@/components/ui/input";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import Link from "next/link";
 
 export default function Page() {
   const schema = z.object({
-    cageId: z.string({
-      message: "Kandang wajib diisi",
+    username: z.string({
+      message: "ID wajib diisi",
     }),
-    rackId: z.string({
-      message: "Rak wajib diisi",
+    password: z.string({
+      message: "Password wajib diisi",
     }),
-    qty: z.number({
-      message: "Jumlah wajib diisi",
+    fullName: z.string({
+      message: "Nama wajib diisi",
     }),
-    weight: z.number({
-      message: "Berat wajib diisi",
+    phone: z.string({
+      message: "No HP wajib diisi",
     }),
-    type: z.string({
-      message: "Jenis wajib diisi",
+    address: z.string({
+      message: "Alamat wajib diisi",
+    }),
+    identityId: z.string({
+      message: "KTP wajib diisi",
     }),
   });
 
@@ -34,115 +35,69 @@ export default function Page() {
     schema,
   });
 
-  const submission = useCreateWarehouseTransaction();
+  const submission = useUpdateUser();
   const router = useRouter();
+  const params = useParams();
+
+  const user = useGetUser(useMemo(() => params.id as string, [params.id]));
+
+  useEffect(() => {
+    if (user.data) {
+      if (user?.data?.data?.username) {
+        form.setValue("username", user?.data?.data?.username);
+      }
+      if (user?.data?.data?.fullName) {
+        form.setValue("fullName", user?.data?.data?.fullName);
+      }
+      if (user?.data?.data?.identityId) {
+        form.setValue("identityId", user?.data?.data?.identityId);
+      }
+      if (user?.data?.data?.phone) {
+        form.setValue("phone", user?.data?.data?.phone);
+      }
+      if (user?.data?.data?.address) {
+        form.setValue("address", user?.data?.data?.address);
+      }
+    }
+  }, [user.data, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
         body: data,
+        pathVars: {
+          id: params.id as string,
+        },
       },
       {
         onError: (error) => {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          toast.success("Berhasil menambahkan data");
+          toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/master/warehouse-transactions");
+          router.push("/master/investors");
         },
       }
     );
   });
 
-  const cage = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
-  const rack = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100" }), [])
-  );
-
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Transaksi Gudang</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Investor</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
             <Controller
               control={form.control}
-              name="type"
+              name="username"
               render={({ field, fieldState }) => (
-                <Select
-                  placeholder="Pilih Jenis"
-                  label="Jenis Transaksi"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  {...field}
-                  isInvalid={fieldState.invalid}
-                  errorMessage={fieldState.error?.message}
-                >
-                  <SelectItem key="IN">Masuk</SelectItem>
-                  <SelectItem key="OUT">Keluar</SelectItem>
-                </Select>
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="cageId"
-              render={({ field, fieldState }) => (
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {cage.data?.data?.data?.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="rackId"
-              render={({ field, fieldState }) => (
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Rak"
-                  label="Rak"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {rack.data?.data?.data?.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="qty"
-              render={({ field, fieldState }) => (
-                <InputNumber
+                <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Jumlah"
-                  placeholder="Jumlah"
+                  label="ID Pengguna"
+                  placeholder="ID Pengguna"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -153,14 +108,69 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="weight"
+              name="fullName"
               render={({ field, fieldState }) => (
-                <InputNumber
+                <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Berat kg"
-                  placeholder="Berat kg"
+                  label="Nama Pengguna"
+                  placeholder="Nama Pengguna"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="phone"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="No HP"
+                  placeholder="No HP"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="password"
+                  label="Password"
+                  placeholder="Password"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="mb-3">
+            <Controller
+              control={form.control}
+              name="address"
+              render={({ field, fieldState }) => (
+                <Textarea
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Alamat"
+                  placeholder="Alamat"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -173,7 +183,8 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              onClick={() => router.back()}
+              as={Link}
+              href="/master/investors"
             >
               Kembali
             </Button>

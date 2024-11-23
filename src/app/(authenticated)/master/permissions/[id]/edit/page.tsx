@@ -4,13 +4,18 @@ import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useCreatePosition } from "../../_services/position";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import Link from "next/link";
+import {
+  useGetCashFlowCategory,
+  useUpdateCashFlowCategory,
+} from "../../../_services/cashflow-category";
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Nama jabatan wajib diisi",
+      message: "Kategori Arus Kas wajib diisi",
     }),
   });
 
@@ -18,12 +23,24 @@ export default function Page() {
     schema,
   });
 
-  const submission = useCreatePosition();
+  const submission = useUpdateCashFlowCategory();
   const router = useRouter();
+  const params = useParams();
+
+  const position = useGetCashFlowCategory(
+    useMemo(() => params.id as string, [params])
+  );
+
+  useEffect(() => {
+    if (position.data) {
+      form.setValue("name", position?.data?.data?.name);
+    }
+  }, [position.data, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
+        pathVars: { id: params.id as string },
         body: data,
       },
       {
@@ -31,9 +48,9 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          toast.success("Berhasil menambahkan data");
+          toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/master/positions");
+          router.push("/master/cash-flow-category");
         },
       }
     );
@@ -41,7 +58,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Pengguna</div>
+      <div className="text-2xl font-bold mb-10">Ubah Kategori Arus Kas</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -53,8 +70,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Nama Jabatan"
-                  placeholder="Nama Jabatan"
+                  label="Kategori Arus Kas"
+                  placeholder="Kategori Arus Kas"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -67,7 +84,8 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              onClick={() => router.back()}
+              as={Link}
+              href="/master/positions"
             >
               Kembali
             </Button>
