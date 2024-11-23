@@ -9,7 +9,6 @@ import {
   Pagination,
   Button,
   Input,
-  Chip,
   Spinner,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";

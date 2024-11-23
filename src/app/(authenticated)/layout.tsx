@@ -68,6 +68,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [data, setPermissions]);
 
   const SidebarMenuItem = (menu: {
+    can: string;
     href?: string;
     label?: string;
     icon?: React.ReactNode;
@@ -342,9 +343,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 return (
                   <Can key={menu.label} action={menu.can || ""}>
                     <SidebarMenuItem
+                      label={menu.label as string}
+                      action={menu.action}
+                      icon={menu.icon as React.ReactNode}
+                      can={menu.can as string}
                       expanded={!open}
                       href={menu.href as string}
-                      {...menu}
                     />
                   </Can>
                 );
@@ -384,7 +388,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       expanded={!open}
                       mobile
                       href={menu.href as string}
-                      {...menu}
+                      label={menu.label as string}
+                      action={menu.action}
+                      icon={menu.icon as React.ReactNode}
+                      can={menu.can as string}
                     />
                   </Can>
                 );
