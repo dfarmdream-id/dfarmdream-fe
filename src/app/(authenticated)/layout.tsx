@@ -96,6 +96,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               menu?.onClick?.();
             }
             setOpen(!open);
+            menu.action?.();
           }}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
@@ -162,6 +163,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             if (menu.mobile) {
                               menu.onClick?.();
                             }
+                            menu.action?.();
                           }}
                           isPressable
                           data-active={child.href == path}

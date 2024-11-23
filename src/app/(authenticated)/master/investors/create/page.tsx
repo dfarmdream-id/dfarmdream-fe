@@ -1,11 +1,13 @@
 "use client";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useCreateInvestor } from "../../_services/investor";
+import { useGetRoles } from "../../_services/role";
+import { useMemo } from "react";
 
 export default function Page() {
   const schema = z.object({
@@ -24,8 +26,15 @@ export default function Page() {
     address: z.string({
       message: "Alamat wajib diisi",
     }),
-    identityId: z.string({
-      message: "KTP wajib diisi",
+    identityId: z
+      .string({
+        message: "KTP wajib diisi",
+      })
+      .max(16, {
+        message: "Maksimal 16 karakter",
+      }),
+    roles: z.string({
+      message: "Role wajib diisi",
     }),
   });
 
@@ -34,12 +43,21 @@ export default function Page() {
   });
 
   const submission = useCreateInvestor();
+  const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
+
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          roles: data.roles.split(",").map((role) => {
+            return {
+              roleId: role,
+            };
+          }),
+        },
       },
       {
         onError: (error) => {
@@ -91,6 +109,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
+                  maxLength={16}
                 />
               )}
             />
@@ -149,7 +168,31 @@ export default function Page() {
               )}
             />
           </div>
-
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="roles"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Peran"
+                  label="Peran"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectedKeys={field.value?.split(",")}
+                >
+                  {role.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
           <div className="mb-3">
             <Controller
               control={form.control}

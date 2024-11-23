@@ -1,21 +1,24 @@
 "use client";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
-import { useGetUser, useUpdateUser } from "../../../_services/user";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
+import { useGetRoles } from "../../../_services/role";
+import { useGetInvestor, useUpdateInvestor } from "../../../_services/investor";
 
 export default function Page() {
   const schema = z.object({
     username: z.string({
       message: "ID wajib diisi",
     }),
-    password: z.string({
-      message: "Password wajib diisi",
-    }),
+    password: z
+      .string({
+        message: "Password wajib diisi",
+      })
+      .optional(),
     fullName: z.string({
       message: "Nama wajib diisi",
     }),
@@ -28,17 +31,21 @@ export default function Page() {
     identityId: z.string({
       message: "KTP wajib diisi",
     }),
+    roles: z.string({
+      message: "Role wajib diisi",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
 
-  const submission = useUpdateUser();
+  const submission = useUpdateInvestor();
   const router = useRouter();
   const params = useParams();
 
-  const user = useGetUser(useMemo(() => params.id as string, [params.id]));
+  const user = useGetInvestor(useMemo(() => params.id as string, [params.id]));
+  const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   useEffect(() => {
     if (user.data) {
@@ -57,13 +64,30 @@ export default function Page() {
       if (user?.data?.data?.address) {
         form.setValue("address", user?.data?.data?.address);
       }
+      if (user?.data?.data?.roles) {
+        form.setValue(
+          "roles",
+          user?.data?.data?.roles
+            .map((item) => {
+              return item.roleId;
+            })
+            .join(",")
+        );
+      }
     }
   }, [user.data, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          roles: data.roles.split(",").map((item) => {
+            return {
+              roleId: item,
+            };
+          }),
+        },
         pathVars: {
           id: params.id as string,
         },
@@ -137,6 +161,31 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="roles"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Peran"
+                  label="Peran"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectedKeys={field.value?.split(",")}
+                >
+                  {role.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
               )}
             />
           </div>

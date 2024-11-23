@@ -84,7 +84,7 @@ export default function Page() {
     <Can action="show:dashboard">
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Can action="show:investors">
             <Link href="/master/investor">
               <StatsCard
