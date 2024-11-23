@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteRole } from "../../_services/role";
+import { useDeletePermission } from "../../_services/permission";
 
 type Props = {
   id: string;
@@ -22,7 +22,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteRole();
+  const deleteData = useDeletePermission();
 
   const queryClient = useQueryClient();
 
@@ -47,7 +47,13 @@ export default function Actions(props: Props) {
   return (
     <div className="flex space-x-1">
       <Tooltip content="Edit Data">
-        <Button as={Link} href={`/master/role/${props.id}/edit`} isIconOnly variant="light" color="primary">
+        <Button
+          as={Link}
+          href={`/master/permissions/${props.id}/edit`}
+          isIconOnly
+          variant="light"
+          color="primary"
+        >
           <HiPencilAlt />
         </Button>
       </Tooltip>

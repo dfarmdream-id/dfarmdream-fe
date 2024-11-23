@@ -6,16 +6,16 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import {
-  useGetCashFlowCategory,
-  useUpdateCashFlowCategory,
-} from "../../../_services/cashflow-category";
+  useGetPermission,
+  useUpdatePermission,
+} from "../../../_services/permission";
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Kategori Arus Kas wajib diisi",
+      message: "Permission wajib diisi",
     }),
   });
 
@@ -23,11 +23,12 @@ export default function Page() {
     schema,
   });
 
-  const submission = useUpdateCashFlowCategory();
+  const submission = useUpdatePermission();
   const router = useRouter();
   const params = useParams();
+  const queryClient = useQueryClient();
 
-  const position = useGetCashFlowCategory(
+  const position = useGetPermission(
     useMemo(() => params.id as string, [params])
   );
 
@@ -50,7 +51,10 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/master/cash-flow-category");
+          router.push("/master/permissions");
+          queryClient.invalidateQueries({
+            queryKey: ["/v1/auth/profile"],
+          });
         },
       }
     );
@@ -58,7 +62,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Kategori Arus Kas</div>
+      <div className="text-2xl font-bold mb-10">Ubah Permission</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -70,8 +74,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Kategori Arus Kas"
-                  placeholder="Kategori Arus Kas"
+                  label="Permission"
+                  placeholder="Permission"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -84,8 +88,7 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              as={Link}
-              href="/master/positions"
+              onPress={() => router.back()}
             >
               Kembali
             </Button>
