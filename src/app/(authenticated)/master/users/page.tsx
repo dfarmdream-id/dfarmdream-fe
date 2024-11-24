@@ -157,12 +157,12 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>
-                    {item.sites.map((site) => site.site.name).join(", ")}
+                    {item?.sites?.map((site) => site.site.name).join(", ")}
                   </div>
                 </TableCell>
                 <TableCell>
                   <div>
-                    {item.cages.map((cage) => cage.cage.name).join(", ")}
+                    {item?.cages?.map((cage) => cage?.cage?.name).join(", ")}
                   </div>
                 </TableCell>
                 <TableCell>

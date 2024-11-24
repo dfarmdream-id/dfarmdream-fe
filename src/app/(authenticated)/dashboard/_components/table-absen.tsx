@@ -60,7 +60,10 @@ export default function TableAbsen() {
   });
 
   const attendance = useGetAbsen(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -70,9 +73,9 @@ export default function TableAbsen() {
     return [];
   }, [attendance.data]);
 
-  const calculateJamKerja = (jamMasuk:string, jamKeluar:string)=>{
-    if(!jamMasuk || !jamKeluar){
-        return "-"
+  const calculateJamKerja = (jamMasuk: string, jamKeluar: string) => {
+    if (!jamMasuk || !jamKeluar) {
+      return "-";
     }
 
     const waktuMasuk = new Date(`1970-01-01T${jamMasuk}:00`).getTime();
@@ -83,8 +86,8 @@ export default function TableAbsen() {
 
     // Konversi selisih milidetik ke jam
     const jamKerja = selisih / (1000 * 60 * 60);
-    return jamKerja
-  }
+    return jamKerja;
+  };
   return (
     <>
       <Card>
@@ -92,34 +95,34 @@ export default function TableAbsen() {
           <div className="font-bold text-xl">Absensi Karyawan</div>
         </CardHeader>
         <CardBody>
-        <div className="flex justify-between items-center gap-3 flex-wrap">
-          <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
-            <Select
-              label="Tampilkan"
-              onChange={(e) => {
-                setLimit(e.target.value);
-              }}
-              labelPlacement="outside-left"
-              classNames={{ base: "flex items-center" }}
-              selectedKeys={[limit?.toString() || "10"]}
-            >
-              <SelectItem key="10">10</SelectItem>
-              <SelectItem key="20">20</SelectItem>
-              <SelectItem key="30">30</SelectItem>
-              <SelectItem key="40">40</SelectItem>
-              <SelectItem key="50">50</SelectItem>
-            </Select>
-            <Input
-              variant="bordered"
-              labelPlacement="outside-left"
-              placeholder="Cari"
-              value={search || ""}
-              onValueChange={(e) => setSearch(e)}
-              endContent={<HiSearch />}
-            />
-            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
+          <div className="flex justify-between items-center gap-3 flex-wrap mb-5">
+            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
+              <Select
+                label="Tampilkan"
+                onChange={(e) => {
+                  setLimit(e.target.value);
+                }}
+                labelPlacement="outside-left"
+                classNames={{ base: "flex items-center" }}
+                selectedKeys={[limit?.toString() || "10"]}
+              >
+                <SelectItem key="10">10</SelectItem>
+                <SelectItem key="20">20</SelectItem>
+                <SelectItem key="30">30</SelectItem>
+                <SelectItem key="40">40</SelectItem>
+                <SelectItem key="50">50</SelectItem>
+              </Select>
+              <Input
+                variant="bordered"
+                labelPlacement="outside-left"
+                placeholder="Cari"
+                value={search || ""}
+                onValueChange={(e) => setSearch(e)}
+                endContent={<HiSearch />}
+              />
+              <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
+            </div>
           </div>
-        </div>
           <Table aria-label="Example table with dynamic content">
             <TableHeader columns={columns}>
               {(column) => (
@@ -148,10 +151,12 @@ export default function TableAbsen() {
                     <div>{item.jamKeluar}</div>
                   </TableCell>
                   <TableCell>
-                    <div>{calculateJamKerja(item.jamMasuk, item.jamKeluar)}</div>
+                    <div>
+                      {calculateJamKerja(item.jamMasuk, item.jamKeluar)}
+                    </div>
                   </TableCell>
                   <TableCell>
-                  <Chip
+                    <Chip
                       color={item.status === 1 ? "success" : "danger"}
                       className="text-white"
                     >

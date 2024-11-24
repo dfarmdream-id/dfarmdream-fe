@@ -69,7 +69,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
         series: [
           {
             name: "Humidity",
-            data: items?.data?.data.chart.map((x)=>x.y) ?? [],
+            data: items?.data?.data?.chart?.map((x)=>x.y) ?? [],
           },
         ],
         fill: {
@@ -84,7 +84,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
         },
         responsive: [],
         xaxis: {
-          categories: items?.data?.data.chart.map((x)=>`${x.x}%`) ?? [],
+          categories: items?.data?.data?.chart?.map((x)=>`${x.x}%`) ?? [],
         },
       },
     };

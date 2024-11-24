@@ -20,13 +20,19 @@ const Chart = dynamic(
 );
 
 export default function GrafikAmonia({ children }: { children: ReactNode }) {
-
-  const [lokasi,setLokasi] = useState<string|null>(null)
-  const [kandang,setKandang] = useState<string|null>(null)
-  const [tanggal,setTanggal] = useState<string|null>(null)
+  const [lokasi, setLokasi] = useState<string | null>(null);
+  const [kandang, setKandang] = useState<string | null>(null);
+  const [tanggal, setTanggal] = useState<string | null>(null);
 
   const items = useGetAmoniaData(
-    useMemo(() => ({ tanggal:tanggal||"",siteId: lokasi || "", cageId: kandang || "" }), [lokasi,kandang, tanggal])
+    useMemo(
+      () => ({
+        tanggal: tanggal || "",
+        siteId: lokasi || "",
+        cageId: kandang || "",
+      }),
+      [lokasi, kandang, tanggal]
+    )
   );
 
   const sites = useGetSites(
@@ -68,7 +74,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
         series: [
           {
             name: "Temperature",
-            data: items?.data?.data.chart.map((x)=>x.y) ?? [],
+            data: items?.data?.data?.chart?.map((x) => x.y) ?? [],
           },
         ],
         fill: {
@@ -83,7 +89,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
         },
         responsive: [],
         xaxis: {
-          categories: items?.data?.data.chart.map((x)=>`${x.x} ppm`) ?? [],
+          categories: items?.data?.data?.chart?.map((x) => `${x.x} ppm`) ?? [],
         },
       },
     };
@@ -102,7 +108,11 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
             series={cageTempChart.options.series}
           />
         </div>
-        <Input type="date" placeholder="Pilih Tanggal" onChange={(e)=>setTanggal(e.target.value)}/>
+        <Input
+          type="date"
+          placeholder="Pilih Tanggal"
+          onChange={(e) => setTanggal(e.target.value)}
+        />
         {/* <Select placeholder="Pilih " variant="bordered" className="w-full">
           <SelectItem key="1">1 Jam terakhir</SelectItem>
           <SelectItem key="2">2 Jam terakhir</SelectItem>
@@ -112,14 +122,22 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
       </div>
       <div>
         <div className="grid md:grid-cols-2 gap-3">
-          <Select variant="bordered" placeholder="Pilih lokasi" onChange={(e)=>setLokasi(e.target.value)}>
+          <Select
+            variant="bordered"
+            placeholder="Pilih lokasi"
+            onChange={(e) => setLokasi(e.target.value)}
+          >
             {sites.data?.data?.data?.map((site) => (
               <SelectItem key={site.id} value={site.id}>
                 {site.name}
               </SelectItem>
             )) || []}
           </Select>
-          <Select variant="bordered" placeholder="Pilih kandang" onChange={(e)=>setKandang(e.target.value)}>
+          <Select
+            variant="bordered"
+            placeholder="Pilih kandang"
+            onChange={(e) => setKandang(e.target.value)}
+          >
             {cages.data?.data?.data?.map((site) => (
               <SelectItem key={site.id} value={site.id}>
                 {site.name}
@@ -128,32 +146,37 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
           </Select>
         </div>
         <ul className="space-y-5 py-5">
-          {items?.data?.data?.sensors && items.data.data.sensors.map((item)=>(
-             <li className="flex gap-3 items-center border-primary border-4 p-3 rounded-md" key={item.code}>
-             <div className="w-16 h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
-               <div>
-                 <FaTemperatureEmpty className="w-8 h-8" />
-               </div>
-             </div>
-             <div className="w-full">
-               <div className="font-bold">Sensor {item.code}</div>
-               <div>{item.currentAmonia}</div>
-               <div>
-                 <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
-                 <div className="flex justify-between">
-                   <div>Bad</div>
-                   <div>Good</div>
-                 </div>
-               </div>
-             </div>
-             <div className="flex items-center">
-              {item.currentAmonia ? 
-               <Chip color="primary">Hidup</Chip>:
-               <Chip color="danger">Mati</Chip>              
-            }
-             </div>
-           </li>
-          ))}
+          {items?.data?.data?.sensors &&
+            items.data.data.sensors.map((item) => (
+              <li
+                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
+                key={item.code}
+              >
+                <div className="w-16 h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
+                  <div>
+                    <FaTemperatureEmpty className="w-8 h-8" />
+                  </div>
+                </div>
+                <div className="w-full">
+                  <div className="font-bold">Sensor {item.code}</div>
+                  <div>{item.currentAmonia}</div>
+                  <div>
+                    <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
+                    <div className="flex justify-between">
+                      <div>Bad</div>
+                      <div>Good</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  {item.currentAmonia ? (
+                    <Chip color="primary">Hidup</Chip>
+                  ) : (
+                    <Chip color="danger">Mati</Chip>
+                  )}
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
       <div className="p-5">

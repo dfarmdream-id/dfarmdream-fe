@@ -218,12 +218,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href: "/transaction/warehouse",
           icon: <HiOutlineWindow className="text-xl" />,
         },
-        {
-          can: "show:sales-transaction",
-          label: "Transaksi Penjualan",
-          href: "/transaction/sales",
-          icon: <HiOutlineCurrencyDollar className="text-xl" />,
-        },
+        // {
+        //   can: "show:sales-transaction",
+        //   label: "Transaksi Penjualan",
+        //   href: "/transaction/sales",
+        //   icon: <HiOutlineCurrencyDollar className="text-xl" />,
+        // },
       ],
     },
     {
