@@ -78,7 +78,7 @@ export default function Page() {
           </div>
           <Button
             as={Link}
-            href="/master/cctv/create"
+            href="/operational/cctv/create"
             color="primary"
             startContent={<HiPlus />}
           >

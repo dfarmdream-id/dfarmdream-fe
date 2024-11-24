@@ -91,7 +91,7 @@ export default function Page() {
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Can action="show:investors">
-            <Link href="/master/investor">
+            <Link href="/master/investors">
               <StatsCard
                 icon={<HiUserPlus />}
                 title="Investor"

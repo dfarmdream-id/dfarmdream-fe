@@ -49,7 +49,7 @@ export default function Actions(props: Props) {
       <Tooltip content="Edit Data">
         <Button
           as={Link}
-          href={`/master/iot/${props.id}/edit`}
+          href={`/operational/cctv/${props.id}/edit`}
           isIconOnly
           variant="light"
           color="primary"
