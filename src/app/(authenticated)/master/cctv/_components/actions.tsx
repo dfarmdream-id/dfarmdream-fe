@@ -9,12 +9,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiEye, HiTrash } from "react-icons/hi2";
+import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteCage } from "../../../_services/cage";
-import { Can } from "@/components/acl/can";
+import { useDeleteIotDevice } from "../../_services/iot-device";
 
 type Props = {
   id: string;
@@ -23,7 +22,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteCage();
+  const deleteData = useDeleteIotDevice();
 
   const queryClient = useQueryClient();
 
@@ -34,7 +33,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/cage"],
+            queryKey: ["/v1/sensor"],
           });
           deleteDisclosure.onClose();
         },
@@ -47,45 +46,27 @@ export default function Actions(props: Props) {
 
   return (
     <div className="flex space-x-1">
-      <Can action="update:cage">
-        <Tooltip content="Edit Data">
-          <Button
-            as={Link}
-            href={`/operational/cages/${props.id}/edit`}
-            isIconOnly
-            variant="light"
-            color="primary"
-          >
-            <HiPencilAlt />
-          </Button>
-        </Tooltip>
-      </Can>
-      <Can action="delete:cage">
-        <Tooltip content="Hapus Data">
-          <Button
-            isIconOnly
-            variant="light"
-            color="danger"
-            onPress={deleteDisclosure.onOpen}
-          >
-            <HiTrash />
-          </Button>
-        </Tooltip>
-      </Can>
-      <Can action="view:cage-cctv">
-        <Tooltip content="View Live CCTV">
-          <Button
-            as={Link}
-            href={`/master/cages/${props.id}/cctv`}
-            isIconOnly
-            variant="light"
-            color="primary"
-          >
-            <HiEye />
-          </Button>
-        </Tooltip>
-      </Can>
-
+      <Tooltip content="Edit Data">
+        <Button
+          as={Link}
+          href={`/master/iot/${props.id}/edit`}
+          isIconOnly
+          variant="light"
+          color="primary"
+        >
+          <HiPencilAlt />
+        </Button>
+      </Tooltip>
+      <Tooltip content="Hapus Data">
+        <Button
+          isIconOnly
+          variant="light"
+          color="danger"
+          onPress={deleteDisclosure.onOpen}
+        >
+          <HiTrash />
+        </Button>
+      </Tooltip>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

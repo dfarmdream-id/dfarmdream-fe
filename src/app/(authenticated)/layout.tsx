@@ -15,6 +15,7 @@ import {
 } from "@nextui-org/react";
 import {
   HiChevronRight,
+  HiEye,
   HiOutlineArrowRightOnRectangle,
   HiOutlineBars3,
   HiOutlineCircleStack,
@@ -238,9 +239,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           icon: <HiOutlineInbox className="text-xl" />,
         },
         {
+          label: "CCTV",
+          href: "/master/cctv",
+          icon: <HiEye className="text-xl" />,
+          can: "show:cctv",
+        },
+        {
           label: "Sensor IOT",
           href: "/operational/iot",
           icon: <MdSensors className="text-xl" />,
+          can: "show:sensor-iot",
         },
         {
           can: "show:cage-racks",
@@ -327,6 +335,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      can:"signout",
       label: "Sign Out",
       href: "/sign-out",
       icon: <HiOutlineArrowRightOnRectangle />,
@@ -398,7 +407,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
-                  <Can key={menu.label} action={menu.can || ""}>
+                  <Can key={menu.label} action={menu.can || "show:basic-menu"}>
                     <SidebarMenuItem
                       id={menu.key || ""}
                       onClick={() => setOpen(false)}
@@ -440,6 +449,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </Card>
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Actions">
+                    <DropdownItem
+                      key="update-profile"
+                      color="danger"
+                    >
+                      <Link href="/user/update-profile">
+                        Update Profile
+                      </Link>
+                    </DropdownItem>
+                    <DropdownItem
+                      key="update-password"
+                      color="danger"
+                    >
+                      <Link href="/user/update-password">
+                        Update Password
+                      </Link>
+                    </DropdownItem>
                     <DropdownItem
                       key="delete"
                       className="text-danger"
