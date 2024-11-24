@@ -179,9 +179,6 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
             ))}
         </ul>
       </div>
-      <div className="p-5">
-        <div className="text-center font-bold text-primary">Sensor Lampu</div>
-      </div>
     </div>
   );
 }
