@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         data?.data?.roles
           .map((role) =>
             role.role.permissions.map(
-              (permission) => permission.permission.name
+              (permission) => permission.permission.code
             )
           )
           .flat()

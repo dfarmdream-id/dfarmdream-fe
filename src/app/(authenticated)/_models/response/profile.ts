@@ -55,6 +55,7 @@ export interface Permission2 {
   id: string
   name: string
   deletedAt: any
+  code: string
   createdAt: string
   updatedAt: string
 }
