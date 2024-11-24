@@ -10,7 +10,7 @@ import {
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
 import { HiTrash } from "react-icons/hi2";
-import { useDeletePosition } from "../../_services/position";
+import { useDeletePosition } from "../../../_services/position";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";

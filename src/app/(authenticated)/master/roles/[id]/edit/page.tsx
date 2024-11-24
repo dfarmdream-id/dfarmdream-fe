@@ -6,8 +6,8 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetPermissions } from "../../../_services/permission";
-import { useGetRole, useUpdateRole } from "../../../_services/role";
+import { useGetPermissions } from "../../../../_services/permission";
+import { useGetRole, useUpdateRole } from "../../../../_services/role";
 
 export default function Page() {
   const schema = z.object({

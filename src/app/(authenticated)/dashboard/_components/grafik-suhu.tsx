@@ -7,9 +7,7 @@ export default function GrafikSuhu() {
         <CardHeader className="flex flex-col items-start">
           <div className="font-bold text-xl">Suhu Kandang</div>
         </CardHeader>
-        <CardBody>
-          Grafik Suhu Kandang
-        </CardBody>
+        <CardBody>Grafik Suhu Kandang</CardBody>
       </Card>
     </>
   );

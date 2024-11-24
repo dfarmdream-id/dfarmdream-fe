@@ -10,13 +10,13 @@ import {
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
-import { useGetUser, useUpdateUser } from "../../../_services/user";
+import { useGetUser, useUpdateUser } from "../../../../_services/user";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetSites } from "../../../_services/site";
-import { useGetRoles } from "../../../_services/role";
-import { useGetPositions } from "../../../_services/position";
+import { useGetSites } from "../../../../_services/site";
+import { useGetRoles } from "../../../../_services/role";
+import { useGetPositions } from "../../../../_services/position";
 
 export default function Page() {
   const schema = z.object({

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useGetPosition, useUpdatePosition } from "../../../_services/position";
+import { useGetPosition, useUpdatePosition } from "../../../../_services/position";
 import { useEffect, useMemo } from "react";
 
 export default function Page() {

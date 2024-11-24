@@ -6,8 +6,10 @@ import { ReactNode, useMemo } from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
-import { useGetProfile } from "../_services/profile";
 import { Can } from "@/components/acl/can";
+import { useGetProfile } from "../_services/profile";
+import DashboardCard from "./_components/card";
+import IotDevices from "./_components/IotDevice";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -84,7 +86,7 @@ export default function Page() {
     <Can action="show:dashboard">
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Can action="show:investors">
             <Link href="/master/investor">
               <StatsCard
@@ -95,7 +97,7 @@ export default function Page() {
             </Link>
           </Can>
           <Can action="show:cages">
-            <Link href="/master/cages">
+            <Link href="/operational/cages">
               <StatsCard
                 icon={<HiArchiveBox />}
                 title="Kandang"
@@ -162,6 +164,10 @@ export default function Page() {
             </CardBody>
           </Card>
         </div>
+        <DashboardCard>Suhu Kandang</DashboardCard>
+        <DashboardCard>Kadar Amonia</DashboardCard>
+        <DashboardCard>Kadar Kelembapan</DashboardCard>
+        <IotDevices>Sensor Lampu</IotDevices>
       </div>
     </Can>
   );

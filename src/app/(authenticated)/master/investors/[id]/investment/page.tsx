@@ -3,7 +3,7 @@ import { Button, Input, Textarea } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
-import { useGetUser, useUpdateUser } from "../../../_services/user";
+import { useGetUser, useUpdateUser } from "../../../../_services/user";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";

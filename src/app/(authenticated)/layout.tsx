@@ -13,7 +13,6 @@ import {
   Image,
   ScrollShadow,
 } from "@nextui-org/react";
-import Link from "next/link";
 import {
   HiChevronRight,
   HiEye,
@@ -34,7 +33,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   HiMenuAlt2,
   HiMenuAlt4,
@@ -48,6 +47,7 @@ import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
 import { MdSensors } from "react-icons/md";
+import Link from "next/link";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
@@ -69,36 +69,47 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [data, setPermissions]);
 
   const SidebarMenuItem = (menu: {
+    can: string;
     href?: string;
     label?: string;
     icon?: React.ReactNode;
     action?: () => void;
-    children?: {
+    childrens?: Partial<{
       href: string;
       label: string;
       icon: React.ReactNode;
-      can?: string;
-    }[];
+      can: string;
+      key: string;
+    }>[];
     expanded?: boolean;
     mobile?: boolean;
+    id: string;
     onClick?: () => void;
   }) => {
-    const [open, setOpen] = useState(false);
-
     const path = usePathname();
+
+    const router = useRouter();
+
+    const [open, setOpen] = useState(
+      menu?.id?.includes(path.split("/")[1]) || false
+    );
 
     return (
       <li key={menu.label}>
         <Card
-          as={menu.href ? Link : "a"}
-          href={menu.href ? menu.href : undefined}
           isPressable
           onPress={() => {
-            if (!menu.children) {
+            if (!menu.childrens) {
               menu?.onClick?.();
             }
             setOpen(!open);
+            menu.action?.();
+            if (menu.href) {
+              router.push(menu.href);
+            }
           }}
+          as={menu.href ? Link : "a"}
+          href={menu.href ? menu.href : undefined}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
           )}
@@ -125,7 +136,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
             {menu.mobile && (
               <>
-                {menu.children ? (
+                {menu.childrens ? (
                   <motion.div animate={{ rotate: open ? 90 : 0 }}>
                     <HiChevronRight />
                   </motion.div>
@@ -134,7 +145,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
             {!menu.mobile && (
               <>
-                {menu.children && menu.expanded ? (
+                {menu.childrens && menu.expanded ? (
                   <motion.div animate={{ rotate: open ? 90 : 0 }}>
                     <HiChevronRight />
                   </motion.div>
@@ -146,25 +157,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <motion.div>
           {open && (
             <AnimatePresence>
-              {menu.children && (
+              {menu.childrens && (
                 <motion.ul
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="p-3 space-y-2"
                 >
-                  {menu.children.map((child) => (
+                  {menu.childrens.map((child) => (
                     <li key={child.label}>
-                      <Can action={child.can || ''}>
+                      <Can action={child.can || ""}>
                         <Card
                           shadow="none"
-                          as={Link}
-                          href={child.href}
                           onPress={() => {
                             if (menu.mobile) {
                               menu.onClick?.();
                             }
+                            menu.action?.();
+                            router.push(child.href || "");
                           }}
+                          as={child.href ? Link : "a"}
+                          href={child.href ? child.href : undefined}
                           isPressable
                           data-active={child.href == path}
                           className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
@@ -196,18 +209,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     {
       icon: <HiOutlineReceiptTax className="text-xl" />,
       label: "Transaksi",
+      key: "transaction",
       can: "show:transaction",
       children: [
         {
           can: "show:warehouse-transaction",
           label: "Transaksi Gudang",
-          href: "/master/warehouse-transactions",
+          href: "/transaction/warehouse",
           icon: <HiOutlineWindow className="text-xl" />,
         },
         {
           can: "show:sales-transaction",
           label: "Transaksi Penjualan",
-          href: "/master/sales-transactions",
+          href: "/transaction/sales",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
@@ -216,11 +230,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       can: "show:operational",
       icon: <HiOutlineClock className="text-xl" />,
       label: "Operasional",
+      key: "operational",
       children: [
         {
           can: "show:cages",
           label: "Kandang",
-          href: "/master/cages",
+          href: "/operational/cages",
           icon: <HiOutlineInbox className="text-xl" />,
         },
         {
@@ -231,20 +246,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         },
         {
           label: "Sensor IOT",
-          href: "/master/iot",
+          href: "/operational/iot",
           icon: <MdSensors className="text-xl" />,
           can: "show:sensor-iot",
         },
         {
           can: "show:cage-racks",
           label: "Rak",
-          href: "/master/cage-racks",
+          href: "/operational/cage-racks",
           icon: <HiOutlineInboxIn className="text-xl" />,
         },
         {
           can: "show:chickens",
           label: "Ayam",
-          href: "/master/chickens",
+          href: "/operational/chickens",
           icon: <HiOutlineCircleStack className="text-xl" />,
         },
       ],
@@ -253,22 +268,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       can: "show:cash-flow",
       icon: <HiOutlineCurrencyDollar className="text-xl" />,
       label: "Arus Kas",
+      key: "cash",
       children: [
         {
           can: "show:cash-flow-category",
           label: "Jenis Arus Kas",
-          href: "/master/cash-flow-category",
+          href: "/cash/category",
           icon: <HiOutlineListBullet className="text-xl" />,
         },
         {
           can: "show:cash-flow",
           label: "Arus Kas",
-          href: "/master/cash-flow",
+          href: "/cash/cash-flow",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
         },
       ],
     },
     {
+      key: "master",
       can: "show:master",
       icon: <HiOutlineDatabase className="text-xl" />,
       label: "Data Master",
@@ -349,9 +366,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 return (
                   <Can key={menu.label} action={menu.can || ""}>
                     <SidebarMenuItem
+                      id={menu.key || ""}
+                      label={menu.label as string}
+                      action={menu.action}
+                      icon={menu.icon as React.ReactNode}
+                      can={menu.can as string}
                       expanded={!open}
                       href={menu.href as string}
-                      {...menu}
+                      childrens={menu.children}
                     />
                   </Can>
                 );
@@ -387,11 +409,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 return (
                   <Can key={menu.label} action={menu.can || "show:basic-menu"}>
                     <SidebarMenuItem
+                      id={menu.key || ""}
                       onClick={() => setOpen(false)}
                       expanded={!open}
                       mobile
                       href={menu.href as string}
-                      {...menu}
+                      label={menu.label as string}
+                      action={menu.action}
+                      icon={menu.icon as React.ReactNode}
+                      can={menu.can as string}
+                      childrens={menu.children}
                     />
                   </Can>
                 );
