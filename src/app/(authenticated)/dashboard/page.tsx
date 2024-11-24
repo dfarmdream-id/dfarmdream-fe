@@ -8,6 +8,8 @@ import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
 import { Can } from "@/components/acl/can";
 import { useGetProfile } from "../_services/profile";
+import DashboardCard from "./_components/card";
+import IotDevices from "./_components/IotDevice";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -162,6 +164,10 @@ export default function Page() {
             </CardBody>
           </Card>
         </div>
+        <DashboardCard>Suhu Kandang</DashboardCard>
+        <DashboardCard>Kadar Amonia</DashboardCard>
+        <DashboardCard>Kadar Kelembapan</DashboardCard>
+        <IotDevices>Sensor Lampu</IotDevices>
       </div>
     </Can>
   );
