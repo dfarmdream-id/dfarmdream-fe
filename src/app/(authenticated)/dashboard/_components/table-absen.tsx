@@ -1,8 +1,10 @@
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
   Chip,
+  Input,
   Pagination,
   Spinner,
   Table,
@@ -16,6 +18,7 @@ import { useGetAbsen } from "../../_services/absen";
 import { useMemo } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
+import { HiSearch } from "react-icons/hi";
 
 export default function TableAbsen() {
   const columns = [
@@ -88,6 +91,17 @@ export default function TableAbsen() {
           <div className="font-bold text-xl">Absensi Karyawan</div>
         </CardHeader>
         <CardBody>
+        <div className="flex justify-between items-center gap-3">
+          <div>
+            <Input
+              startContent={<HiSearch />}
+              placeholder="Cari CCTV"
+              variant="bordered"
+              value={search || ""}
+              onValueChange={setSearch}
+            />
+          </div>
+        </div>
           <Table aria-label="Example table with dynamic content">
             <TableHeader columns={columns}>
               {(column) => (
