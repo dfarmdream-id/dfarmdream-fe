@@ -40,7 +40,7 @@ export default function TableAbsen() {
       label: "jamKeluar",
     },
     {
-      key: "jamKeluar",
+      key: "totalJamKerja",
       label: "Total Jam Kerja",
     },
     {

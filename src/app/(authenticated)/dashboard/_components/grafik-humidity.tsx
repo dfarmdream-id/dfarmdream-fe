@@ -5,7 +5,7 @@ import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
 import { useGetSites } from "../../_services/site";
 import dynamic from "next/dynamic";
-import { useGetTemperatureData } from "../../_services/iot-device";
+import {  useGetHumidityData } from "../../_services/iot-device";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -19,17 +19,16 @@ const Chart = dynamic(
   }
 );
 
-export default function GrafikSuhu({ children }: { children: ReactNode }) {
+export default function GrafikHumidity({ children }: { children: ReactNode }) {
 
   const [lokasi,setLokasi] = useState<string|null>(null)
   const [kandang,setKandang] = useState<string|null>(null)
   const [tanggal,setTanggal] = useState<string|null>(null)
 
-  const items = useGetTemperatureData(
+  const items = useGetHumidityData(
     useMemo(() => ({ tanggal:tanggal||"",siteId: lokasi || "", cageId: kandang || "" }), [lokasi,kandang, tanggal])
   );
 
-  console.log("Items : ", items)
 
   const sites = useGetSites(
     useMemo(() => {
@@ -69,7 +68,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
         },
         series: [
           {
-            name: "Temperature",
+            name: "Humidity",
             data: items?.data?.data.chart.map((x)=>x.y) ?? [],
           },
         ],
@@ -85,7 +84,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
         },
         responsive: [],
         xaxis: {
-          categories: items?.data?.data.chart.map((x)=>x.x) ?? [],
+          categories: items?.data?.data.chart.map((x)=>`${x.x}%`) ?? [],
         },
       },
     };
@@ -139,7 +138,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
              </div>
              <div className="w-full">
                <div className="font-bold">Sensor {item.code}</div>
-               <div>{item.currentTemperature}</div>
+               <div>{item.currentHumidity}</div>
                <div>
                  <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                  <div className="flex justify-between">
@@ -149,7 +148,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                </div>
              </div>
              <div className="flex items-center">
-              {item.currentTemperature ? 
+              {item.currentHumidity ? 
                <Chip color="primary">Hidup</Chip>:
                <Chip color="danger">Mati</Chip>              
             }

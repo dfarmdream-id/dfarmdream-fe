@@ -8,9 +8,11 @@ import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
 import { Can } from "@/components/acl/can";
 import { useGetProfile } from "../_services/profile";
-import DashboardCard from "./_components/card";
 import IotDevices from "./_components/IotDevice";
 import TableAbsen from "./_components/table-absen";
+import GrafikSuhu from "./_components/grafik-suhu";
+import GrafikAmonia from "./_components/grafik-amonia";
+import GrafikHumidity from "./_components/grafik-humidity";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -165,9 +167,9 @@ export default function Page() {
             </CardBody>
           </Card>
         </div>
-        <DashboardCard>Suhu Kandang</DashboardCard>
-        <DashboardCard>Kadar Amonia</DashboardCard>
-        <DashboardCard>Kadar Kelembapan</DashboardCard>
+        <GrafikSuhu>Suhu Kandang</GrafikSuhu>
+        <GrafikAmonia>Kadar Amonia</GrafikAmonia>
+        <GrafikHumidity>Kadar Kelembapan</GrafikHumidity>
         <IotDevices>Sensor Lampu</IotDevices>
         <TableAbsen/>
       </div>
