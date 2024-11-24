@@ -1,6 +1,6 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
 import { useMemo } from "react";
-import { GetAllCCTVDataResponse, GetCCTVResponse, GetListCCTVResponse } from "../master/_models/response/cctv"
+import { GetAllCCTVDataResponse, GetCCTVResponse, GetListCCTVResponse } from "../_models/response/cctv";
 
 export const useGetAllCCTV = (params: Record<string, string>) => {
   return useHttp<GetListCCTVResponse>("/v1/cctv", {
