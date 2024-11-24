@@ -10,6 +10,7 @@ import { Can } from "@/components/acl/can";
 import { useGetProfile } from "../_services/profile";
 import DashboardCard from "./_components/card";
 import IotDevices from "./_components/IotDevice";
+import TableAbsen from "./_components/table-absen";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -168,6 +169,7 @@ export default function Page() {
         <DashboardCard>Kadar Amonia</DashboardCard>
         <DashboardCard>Kadar Kelembapan</DashboardCard>
         <IotDevices>Sensor Lampu</IotDevices>
+        <TableAbsen/>
       </div>
     </Can>
   );

@@ -12,6 +12,12 @@ export default function Page() {
     name: z.string({
       message: "Nama jabatan wajib diisi",
     }),
+    checkinTime: z.string({
+      message: "Checkin Time wajib diisi",
+    }),
+    checkoutTime: z.string({
+      message: "Checkout Time wajib diisi",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -55,6 +61,44 @@ export default function Page() {
                   type="text"
                   label="Nama Jabatan"
                   placeholder="Nama Jabatan"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="checkinTime"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="time"
+                  label="Jam Checkin"
+                  placeholder="Jam Checkin"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="checkoutTime"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="time"
+                  label="Checkout Time"
+                  placeholder="Jam Checkout"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}

@@ -46,6 +46,10 @@ const columns = [
     label: "Lokasi",
   },
   {
+    key: "cages",
+    label: "Kandang",
+  },
+  {
     key: "status",
     label: "Status",
   },
@@ -154,6 +158,11 @@ export default function Page() {
                 <TableCell>
                   <div>
                     {item.sites.map((site) => site.site.name).join(", ")}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {item.cages.map((cage) => cage.cage.name).join(", ")}
                   </div>
                 </TableCell>
                 <TableCell>

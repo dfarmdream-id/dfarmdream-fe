@@ -30,6 +30,14 @@ const columns = [
     label: "Nama",
   },
   {
+    key: "checkinTime",
+    label: "Jam Masuk",
+  },
+  {
+    key: "checkoutTime",
+    label: "Jam Keluar",
+  },
+  {
     key: "createdAt",
     label: "Tanggal Dibuat",
   },
@@ -129,6 +137,12 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{DateTime.fromISO(item.checkinTime).toFormat('HH:mm')}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{DateTime.fromISO(item.checkoutTime).toFormat('HH:mm')}</div>
                 </TableCell>
                 <TableCell>
                   <div>
