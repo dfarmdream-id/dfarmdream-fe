@@ -19,7 +19,6 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetAllCCTV } from "../../_services/cctv";
-import { DateTime } from "luxon";
 
 const columns = [
   {

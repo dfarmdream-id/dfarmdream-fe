@@ -1,11 +1,12 @@
 import {
-  Button,
   Card,
   CardBody,
   CardHeader,
   Chip,
   Input,
   Pagination,
+  Select,
+  SelectItem,
   Spinner,
   Table,
   TableBody,
@@ -91,15 +92,32 @@ export default function TableAbsen() {
           <div className="font-bold text-xl">Absensi Karyawan</div>
         </CardHeader>
         <CardBody>
-        <div className="flex justify-between items-center gap-3">
-          <div>
+        <div className="flex justify-between items-center gap-3 flex-wrap">
+          <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
+            <Select
+              label="Tampilkan"
+              onChange={(e) => {
+                setLimit(e.target.value);
+              }}
+              labelPlacement="outside-left"
+              classNames={{ base: "flex items-center" }}
+              selectedKeys={[limit?.toString() || "10"]}
+            >
+              <SelectItem key="10">10</SelectItem>
+              <SelectItem key="20">20</SelectItem>
+              <SelectItem key="30">30</SelectItem>
+              <SelectItem key="40">40</SelectItem>
+              <SelectItem key="50">50</SelectItem>
+            </Select>
             <Input
-              startContent={<HiSearch />}
-              placeholder="Cari CCTV"
               variant="bordered"
+              labelPlacement="outside-left"
+              placeholder="Cari"
               value={search || ""}
-              onValueChange={setSearch}
+              onValueChange={(e) => setSearch(e)}
+              endContent={<HiSearch />}
             />
+            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
           </div>
         </div>
           <Table aria-label="Example table with dynamic content">

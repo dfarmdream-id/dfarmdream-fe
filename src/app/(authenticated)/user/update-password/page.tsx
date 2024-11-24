@@ -140,7 +140,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="confirmPassword"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <Input
                   label="Confirm Password"
                   variant="bordered"
