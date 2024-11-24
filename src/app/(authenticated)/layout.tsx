@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import {
   HiChevronRight,
+  HiEye,
   HiOutlineArrowRightOnRectangle,
   HiOutlineBars3,
   HiOutlineCircleStack,
@@ -76,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       href: string;
       label: string;
       icon: React.ReactNode;
-      can: string;
+      can?: string;
     }[];
     expanded?: boolean;
     mobile?: boolean;
@@ -154,7 +155,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 >
                   {menu.children.map((child) => (
                     <li key={child.label}>
-                      <Can action={child.can}>
+                      <Can action={child.can || ''}>
                         <Card
                           shadow="none"
                           as={Link}
@@ -223,9 +224,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           icon: <HiOutlineInbox className="text-xl" />,
         },
         {
+          label: "CCTV",
+          href: "/master/cctv",
+          icon: <HiEye className="text-xl" />,
+          can: "show:cctv",
+        },
+        {
           label: "Sensor IOT",
           href: "/master/iot",
           icon: <MdSensors className="text-xl" />,
+          can: "show:sensor-iot",
         },
         {
           can: "show:cage-racks",
@@ -310,6 +318,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      can:"signout",
       label: "Sign Out",
       href: "/sign-out",
       icon: <HiOutlineArrowRightOnRectangle />,
@@ -376,7 +385,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
               {menus.map((menu) => {
                 return (
-                  <Can key={menu.label} action={menu.can || ""}>
+                  <Can key={menu.label} action={menu.can || "show:basic-menu"}>
                     <SidebarMenuItem
                       onClick={() => setOpen(false)}
                       expanded={!open}
@@ -413,6 +422,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </Card>
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Actions">
+                    <DropdownItem
+                      key="update-profile"
+                      color="danger"
+                    >
+                      <Link href="/user/update-profile">
+                        Update Profile
+                      </Link>
+                    </DropdownItem>
+                    <DropdownItem
+                      key="update-password"
+                      color="danger"
+                    >
+                      <Link href="/user/update-password">
+                        Update Password
+                      </Link>
+                    </DropdownItem>
                     <DropdownItem
                       key="delete"
                       className="text-danger"

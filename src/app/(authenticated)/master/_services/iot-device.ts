@@ -1,5 +1,4 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { CageListResponse, GetCageResponse } from "../_models/response/cage";
 import { useMemo } from "react";
 import { GetIotDeviceResponse, GetListIotDeviceResponse } from "../_models/response/iot-device";
 
