@@ -1,5 +1,5 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { RoleListResponse, GetRoleResponse } from "../master/_models/response/role";
+import { RoleListResponse, GetRoleResponse } from "../_models/response/role";
 import { useMemo } from "react";
 
 export const useGetRoles = (params: Record<string, string>) => {

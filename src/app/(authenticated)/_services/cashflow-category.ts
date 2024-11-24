@@ -3,7 +3,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   GetCashFlowCategoryListResponse,
   GetCashFlowCategoryResponse,
-} from "../master/_models/response/cash-flow-category";
+} from "../_models/response/cash-flow-category";
 import { useMemo } from "react";
 
 export const useGetCashFlowCategories = (params: Record<string, string>) => {

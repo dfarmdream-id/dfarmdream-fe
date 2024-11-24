@@ -2,7 +2,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   ChickenListResponse,
   ChickenResponse,
-} from "../master/_models/response/chicken";
+} from "../_models/response/chicken";
 
 export const useGetChickens = (params: Record<string, string>) => {
   return useHttp<ChickenListResponse>("/v1/chicken", {

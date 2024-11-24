@@ -6,8 +6,8 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetCages } from "../../../_services/cage";
-import { useGetCCTV, useUpdateCCTV } from "../../../_services/cctv";
+import { useGetCCTV, useUpdateCCTV } from "@/app/(authenticated)/_services/cctv";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
 
 export default function Page() {
   const schema = z.object({

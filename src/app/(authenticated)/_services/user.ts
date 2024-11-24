@@ -1,5 +1,5 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { UserListResponse, UserResponse } from "../master/_models/response/user";
+import { UserListResponse, UserResponse } from "../_models/response/user";
 import { useMemo } from "react";
 
 export const useGetUsers = (params: Record<string, string>) => {

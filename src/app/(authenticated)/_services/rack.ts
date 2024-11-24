@@ -2,7 +2,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   CageRackListResponse,
   GetRackResponse,
-} from "../master/_models/response/rack";
+} from "../_models/response/rack";
 import { useMemo } from "react";
 
 export const useGetCageRacks = (params: Record<string, string>) => {

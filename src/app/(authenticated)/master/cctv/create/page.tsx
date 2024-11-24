@@ -6,13 +6,13 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { useGetCages } from "../../_services/cage";
-import { useCreateCCTV } from "../../_services/cctv";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
+import { useCreateCCTV } from "@/app/(authenticated)/_services/cctv";
 
 export default function Page() {
   const schema = z.object({
-    name:z.string({
-      message:"Ketikkan nama CCTV"
+    name: z.string({
+      message: "Ketikkan nama CCTV",
     }),
     cageId: z.string({
       message: "Pilih kandang terlebih dahulu",
@@ -20,12 +20,14 @@ export default function Page() {
     ipAddress: z.string({
       message: "Isi dengan Alamat IP CCTV",
     }),
-    description:z.string({
-      message:"Mohon isi deskripsi"
-    })
+    description: z.string({
+      message: "Mohon isi deskripsi",
+    }),
   });
 
-  const sites = useGetCages(useMemo(() => ({ page: "1", limit: "1000000" }), []));
+  const sites = useGetCages(
+    useMemo(() => ({ page: "1", limit: "1000000" }), [])
+  );
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
@@ -135,7 +137,11 @@ export default function Page() {
             />
           </div>
           <div className="mt-5 flex gap-3 justify-end">
-            <Button variant="bordered" color="primary" onClick={() => router.back()}>
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

@@ -1,14 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
-import { useGetCCTVByCage } from "../../../_services/cctv";
+import { createRef, useMemo } from "react";
+import { useGetCCTVByCage } from "../../../../_services/cctv";
 import { useParams } from "next/navigation";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Divider,
-} from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import ReactHlsPlayer from "react-hls-player";
 
 export default function ViewCCTVPage() {
@@ -25,6 +20,8 @@ export default function ViewCCTVPage() {
     return [];
   }, [cctv.data]);
 
+  const ref = createRef<HTMLVideoElement>();
+
   return (
     <div className="px-4 py-4">
       <div className="text-2xl font-bold mb-10">Live CCTV Kandang</div>
@@ -39,6 +36,7 @@ export default function ViewCCTVPage() {
               <Divider />
               <CardBody>
                 <ReactHlsPlayer
+                  playerRef={ref}
                   src={item.ipAddress}
                   autoPlay={false}
                   controls={true}

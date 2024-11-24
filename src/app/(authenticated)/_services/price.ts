@@ -3,7 +3,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   GetPriceListResponse,
   GetPriceResponse,
-} from "../master/_models/response/price";
+} from "../_models/response/price";
 import { useMemo } from "react";
 
 export const useGetPrices = (params: Record<string, string>) => {
