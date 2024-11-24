@@ -76,7 +76,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="currentPassword"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <Input
                   label="Password"
                   variant="bordered"
@@ -108,7 +108,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="newPassword"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <Input
                   label="New Password"
                   variant="bordered"

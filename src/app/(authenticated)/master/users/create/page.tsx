@@ -14,7 +14,7 @@ import { useCreateUser } from "../../../_services/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useGetPositions } from "../../../_services/position";
-import { useEffect, useMemo, useState } from "react";
+import {  useMemo } from "react";
 import { useGetSites } from "../../../_services/site";
 import { useGetRoles } from "../../../_services/role";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";

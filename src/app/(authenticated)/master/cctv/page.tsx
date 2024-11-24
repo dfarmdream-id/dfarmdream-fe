@@ -19,6 +19,7 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetAllCCTV } from "../../_services/cctv";
+import { DateTime } from "luxon";
 
 const columns = [
   {
@@ -36,10 +37,6 @@ const columns = [
   {
     key: "description",
     label: "Deskripsi",
-  },
-  {
-    key:"createdAt",
-    label:"Created At"
   },
   {
     key: "action",
@@ -118,9 +115,6 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{item.description}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{item.createdAt}</div>
                 </TableCell>
                 <TableCell>
                   <Actions id={item.id} />
