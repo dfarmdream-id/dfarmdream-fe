@@ -58,7 +58,7 @@ export default function Page() {
       () => ({
         q: search || "",
         page: page || "1",
-        limit: limit?.toString() || "",
+        limit: limit?.toString() || "10",
       }),
       [search, page, limit]
     )

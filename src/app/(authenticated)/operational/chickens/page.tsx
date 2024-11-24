@@ -58,7 +58,7 @@ export default function Page() {
   });
 
   const user = useGetChickens(
-    useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
+    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
   );
 
   const rows = useMemo(() => {

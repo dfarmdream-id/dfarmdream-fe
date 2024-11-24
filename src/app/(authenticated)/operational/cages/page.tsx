@@ -66,7 +66,7 @@ export default function Page() {
   });
 
   const cage = useGetCages(
-    useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
+    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
   );
 
   const rows = useMemo(() => {
@@ -110,7 +110,7 @@ export default function Page() {
             href="/operational/cages/create"
             color="primary"
             startContent={<HiPlus />}
-className="w-full md:w-auto"
+            className="w-full md:w-auto"
           >
             Tambah Kandang
           </Button>

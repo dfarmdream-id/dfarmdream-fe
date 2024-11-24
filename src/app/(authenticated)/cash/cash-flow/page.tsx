@@ -74,7 +74,7 @@ export default function Page() {
     throttleMs: 1000,
   });
   const user = useGetCashFlows(
-    useMemo(() => ({ q: search || "", page: page || "1" }), [search, page])
+    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
   );
 
   const rows = useMemo(() => {

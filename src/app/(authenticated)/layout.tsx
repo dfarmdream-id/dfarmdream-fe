@@ -46,6 +46,7 @@ import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
 import { MdSensors } from "react-icons/md";
+import Link from "next/link";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
@@ -77,16 +78,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       label: string;
       icon: React.ReactNode;
       can: string;
+      key: string;
     }>[];
     expanded?: boolean;
     mobile?: boolean;
+    id: string;
     onClick?: () => void;
   }) => {
     const path = usePathname();
 
     const router = useRouter();
 
-    const [open, setOpen] = useState(path.includes(menu.href || ""));
+    const [open, setOpen] = useState(
+      menu?.id?.includes(path.split("/")[1]) || false
+    );
 
     return (
       <li key={menu.label}>
@@ -102,6 +107,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               router.push(menu.href);
             }
           }}
+          as={menu.href ? Link : "a"}
+          href={menu.href ? menu.href : undefined}
           className={cn(
             "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
           )}
@@ -161,7 +168,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <Can action={child.can || ""}>
                         <Card
                           shadow="none"
-                          as={Button}
                           onPress={() => {
                             if (menu.mobile) {
                               menu.onClick?.();
@@ -169,6 +175,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             menu.action?.();
                             router.push(child.href || "");
                           }}
+                          as={child.href ? Link : "a"}
+                          href={child.href ? child.href : undefined}
                           isPressable
                           data-active={child.href == path}
                           className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
@@ -200,6 +208,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     {
       icon: <HiOutlineReceiptTax className="text-xl" />,
       label: "Transaksi",
+      key: "transaction",
       can: "show:transaction",
       children: [
         {
@@ -220,6 +229,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       can: "show:operational",
       icon: <HiOutlineClock className="text-xl" />,
       label: "Operasional",
+      key: "operational",
       children: [
         {
           can: "show:cages",
@@ -250,6 +260,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       can: "show:cash-flow",
       icon: <HiOutlineCurrencyDollar className="text-xl" />,
       label: "Arus Kas",
+      key: "cash",
       children: [
         {
           can: "show:cash-flow-category",
@@ -266,6 +277,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
+      key: "master",
       can: "show:master",
       icon: <HiOutlineDatabase className="text-xl" />,
       label: "Data Master",
@@ -345,6 +357,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 return (
                   <Can key={menu.label} action={menu.can || ""}>
                     <SidebarMenuItem
+                      id={menu.key || ""}
                       label={menu.label as string}
                       action={menu.action}
                       icon={menu.icon as React.ReactNode}
@@ -387,6 +400,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 return (
                   <Can key={menu.label} action={menu.can || ""}>
                     <SidebarMenuItem
+                      id={menu.key || ""}
                       onClick={() => setOpen(false)}
                       expanded={!open}
                       mobile
