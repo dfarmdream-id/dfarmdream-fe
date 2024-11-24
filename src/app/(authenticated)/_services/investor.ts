@@ -3,7 +3,7 @@ import {
   InvestorListResponse,
   InvestorLoginResponse,
   InvestorResponse,
-} from "../master/_models/response/investor";
+} from "../_models/response/investor";
 import Cookies from "js-cookie";
 
 export const useGetInvestors = (params: Record<string, string>) => {

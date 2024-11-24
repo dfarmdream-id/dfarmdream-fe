@@ -1,5 +1,5 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
-import { CageListResponse, GetCageResponse } from "../master/_models/response/cage";
+import { CageListResponse, GetCageResponse } from "../_models/response/cage";
 import { useMemo } from "react";
 
 export const useGetCages = (params: Record<string, string>) => {

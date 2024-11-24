@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useDeleteCage } from "../../../_services/cage";
+import { Can } from "@/components/acl/can";
 
 type Props = {
   id: string;
@@ -46,38 +47,45 @@ export default function Actions(props: Props) {
 
   return (
     <div className="flex space-x-1">
-      <Tooltip content="View Live CCTV">
-        <Button
-          as={Link}
-          href={`/master/cages/${props.id}/cctv`}
-          isIconOnly
-          variant="light"
-          color="primary"
-        >
-          <HiEye />
-        </Button>
-      </Tooltip>
-      <Tooltip content="Klik untuk edit data">
-        <Button
-          as={Link}
-          href={`/operational/cages/${props.id}/edit`}
-          isIconOnly
-          variant="light"
-          color="primary"
-        >
-          <HiPencilAlt />
-        </Button>
-      </Tooltip>
-      <Tooltip content="Hapus Data">
-        <Button
-          isIconOnly
-          variant="light"
-          color="danger"
-          onPress={deleteDisclosure.onOpen}
-        >
-          <HiTrash />
-        </Button>
-      </Tooltip>
+      <Can action="update:cage">
+        <Tooltip content="Edit Data">
+          <Button
+            as={Link}
+            href={`/operational/cages/${props.id}/edit`}
+            isIconOnly
+            variant="light"
+            color="primary"
+          >
+            <HiPencilAlt />
+          </Button>
+        </Tooltip>
+      </Can>
+      <Can action="delete:cage">
+        <Tooltip content="Hapus Data">
+          <Button
+            isIconOnly
+            variant="light"
+            color="danger"
+            onPress={deleteDisclosure.onOpen}
+          >
+            <HiTrash />
+          </Button>
+        </Tooltip>
+      </Can>
+      <Can action="view:cage-cctv">
+        <Tooltip content="View Live CCTV">
+          <Button
+            as={Link}
+            href={`/master/cages/${props.id}/cctv`}
+            isIconOnly
+            variant="light"
+            color="primary"
+          >
+            <HiEye />
+          </Button>
+        </Tooltip>
+      </Can>
+
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

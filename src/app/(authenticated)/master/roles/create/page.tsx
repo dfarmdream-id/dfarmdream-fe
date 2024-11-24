@@ -85,11 +85,13 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
-                  {permissions.data?.data?.data.map((item) => (
-                    <Checkbox key={item.id} value={item.id}>
-                      {item.name}
-                    </Checkbox>
-                  ))}
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {permissions.data?.data?.data.map((item) => (
+                      <Checkbox key={item.id} value={item.id}>
+                        {item.name}
+                      </Checkbox>
+                    ))}
+                  </div>
                 </CheckboxGroup>
               )}
             />

@@ -22,11 +22,16 @@ import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { useGetPermissions } from "../../_services/permission";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
     key: "name",
     label: "Nama",
+  },
+  {
+    key: "key",
+    label: "Kode",
   },
   {
     key: "createdAt",
@@ -51,10 +56,13 @@ export default function Page() {
   });
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
-  })
+  });
 
   const user = useGetPermissions(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -93,15 +101,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/master/permissions/create"
-            color="primary"
-            startContent={<HiPlus />}
-className="w-full md:w-auto"
-          >
-            Tambah Permission
-          </Button>
+          <Can action="create:permission">
+            <Button
+              as={Link}
+              href="/master/permissions/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Permission
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -118,11 +128,14 @@ className="w-full md:w-auto"
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>
                   <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.code}</div>
                 </TableCell>
                 <TableCell>
                   <div>

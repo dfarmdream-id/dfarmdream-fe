@@ -21,6 +21,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
@@ -100,15 +101,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/operational/cage-racks/create"
-            color="primary"
-            startContent={<HiPlus />}
-className="w-full md:w-auto"
-          >
-            Tambah Rak
-          </Button>
+          <Can action="create:cage-rack">
+            <Button
+              as={Link}
+              href="/operational/cage-racks/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Rak
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -125,7 +128,7 @@ className="w-full md:w-auto"
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>

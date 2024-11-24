@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   GetIotDeviceResponse,
   GetListIotDeviceResponse,
-} from "../master/_models/response/iot-device";
+} from "../_models/response/iot-device";
 
 export const useGetIotDevices = (params: Record<string, string>) => {
   return useHttp<GetListIotDeviceResponse>("/v1/sensor", {

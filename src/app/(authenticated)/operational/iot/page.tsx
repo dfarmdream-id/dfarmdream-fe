@@ -21,6 +21,7 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetIotDevices } from "../../_services/iot-device";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
@@ -103,15 +104,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/operational/iot/create"
-            color="primary"
-            startContent={<HiPlus />}
-            className="w-full md:w-auto"
-          >
-            Tambah Perangkat
-          </Button>
+          <Can action="create:iot">
+            <Button
+              as={Link}
+              href="/operational/iot/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Perangkat
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -128,7 +131,7 @@ export default function Page() {
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>
