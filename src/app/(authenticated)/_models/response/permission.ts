@@ -18,6 +18,7 @@ export interface Data {
 export interface Daum {
   id: string;
   name: string;
+  code: string;
   deletedAt: any;
   createdAt: string;
   updatedAt: string;

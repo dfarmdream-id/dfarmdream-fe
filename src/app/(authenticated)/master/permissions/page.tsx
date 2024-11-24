@@ -30,6 +30,10 @@ const columns = [
     label: "Nama",
   },
   {
+    key: "key",
+    label: "Kode",
+  },
+  {
     key: "createdAt",
     label: "Tanggal Dibuat",
   },
@@ -129,6 +133,9 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.code}</div>
                 </TableCell>
                 <TableCell>
                   <div>

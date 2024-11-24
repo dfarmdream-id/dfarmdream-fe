@@ -34,7 +34,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/role"],
+            queryKey: ["/v1/permission"],
           });
           deleteDisclosure.onClose();
         },

@@ -12,6 +12,9 @@ export default function Page() {
     name: z.string({
       message: "Permission wajib diisi",
     }),
+    code: z.string({
+      message: "Id wajib diisi",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -55,6 +58,24 @@ export default function Page() {
                   type="text"
                   label="Permission"
                   placeholder="Permission"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="code"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Kode Permission"
+                  placeholder="Kode Permission"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
