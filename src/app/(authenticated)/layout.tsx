@@ -240,7 +240,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         },
         {
           label: "CCTV",
-          href: "/master/cctv",
+          href: "/operational/cctv",
           icon: <HiEye className="text-xl" />,
           can: "show:cctv",
         },
