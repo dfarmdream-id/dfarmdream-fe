@@ -17,6 +17,7 @@ import { useEffect, useMemo } from "react";
 import { useGetSites } from "../../../../_services/site";
 import { useGetRoles } from "../../../../_services/role";
 import { useGetPositions } from "../../../../_services/position";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
 
 export default function Page() {
   const schema = z.object({
@@ -45,6 +46,7 @@ export default function Page() {
       message: "Status wajib diisi",
     }),
     sites: z.string(),
+    cages:z.string(),
     roles: z.string().optional(),
   });
 
@@ -54,7 +56,8 @@ export default function Page() {
       status: true,
     },
   });
-
+  const watch = form.watch()
+  const cagesData = useGetCages(useMemo(() => ({ page: "1", limit: "100", siteId:watch.sites  }), [watch.sites]));
   const submission = useUpdateUser();
   const router = useRouter();
   const params = useParams();
@@ -84,6 +87,12 @@ export default function Page() {
           user?.data?.data?.sites?.map((v) => v.siteId).join(",")
         );
       }
+      if (user?.data?.data?.cages) {
+        form.setValue(
+          "cages",
+          user?.data?.data?.cages?.map((v) => v.cageId).join(",")
+        );
+      }
       if (user?.data?.data?.status) {
         form.setValue("status", user?.data?.data?.status === "ACTIVE");
       }
@@ -103,6 +112,7 @@ export default function Page() {
   const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   const onSubmit = form.handleSubmit((data) => {
+    console.log("Submit data :", data)
     submission.mutate(
       {
         body: {
@@ -111,6 +121,11 @@ export default function Page() {
           sites: data.sites.split(",").map((site) => {
             return {
               siteId: site,
+            };
+          }),
+          cages: data.cages.split(",").map((cage) => {
+            return {
+              cageId: cage,
             };
           }),
           roles: data.roles?.split(",").map((role) => {
@@ -128,6 +143,7 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
+          console.log("Sukses")
           toast.success("Berhasil mengubah data");
           form.reset();
           router.push("/master/users");
@@ -281,6 +297,33 @@ export default function Page() {
                   selectedKeys={field.value ? field.value.split(",") : []}
                 >
                   {sites.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="cages"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Kandang"
+                  label="Kandang"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectionMode="multiple"
+                  selectedKeys={field.value ? field.value.split(",") : []}
+                >
+                  {cagesData.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
                       {position.name}
                     </SelectItem>

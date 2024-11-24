@@ -13,7 +13,7 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteIotDevice } from "../../_services/iot-device";
+import { useDeleteCCTV } from "@/app/(authenticated)/_services/cctv";
 
 type Props = {
   id: string;
@@ -22,7 +22,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteIotDevice();
+  const deleteData = useDeleteCCTV();
 
   const queryClient = useQueryClient();
 

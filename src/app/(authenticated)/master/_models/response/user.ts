@@ -29,6 +29,7 @@ export interface Daum {
   updatedAt: string;
   positionId?: string;
   sites: Site[];
+  cages: Cage[];
   position?: Position;
   roles: Roles[];
 }
@@ -51,6 +52,17 @@ export interface Site {
   site: Site2;
 }
 
+
+export interface Cage {
+  id: string;
+  userId: string;
+  cageId: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  cage: Cage2;
+}
+
 export interface Site2 {
   id: string;
   name: string;
@@ -62,6 +74,12 @@ export interface Site2 {
   districtId: any;
   subDistrictId: any;
   address: any;
+}
+
+
+export interface Cage2 {
+  id: string;
+  name: string;
 }
 
 export interface Position {

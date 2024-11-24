@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useGetCCTVByCage } from "../../../_services/cctv";
+import { useGetCCTVByCage } from "../../../../_services/cctv"
 import { useParams } from "next/navigation";
 import {
   Card,

@@ -14,9 +14,10 @@ import { useCreateUser } from "../../../_services/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useGetPositions } from "../../../_services/position";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetSites } from "../../../_services/site";
 import { useGetRoles } from "../../../_services/role";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
 
 export default function Page() {
   const schema = z.object({
@@ -43,13 +44,16 @@ export default function Page() {
       message: "Status wajib diisi",
     }),
     sites: z.string(),
+    cages:z.string(),
     roles: z.optional(z.string()),
   });
+
 
   const positions = useGetPositions(
     useMemo(() => ({ page: "1", limit: "100" }), [])
   );
   const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
+  // const cages = useGetCages(useMemo(() => ({ page: "1", limit: "100",  }), []));
   const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
   const form = useForm<z.infer<typeof schema>>({
     schema,
@@ -57,6 +61,9 @@ export default function Page() {
       status: true,
     },
   });
+  const watch = form.watch()
+
+  const cagesData = useGetCages(useMemo(() => ({ page: "1", limit: "100", siteId:watch.sites  }), [watch.sites]));
 
   const submission = useCreateUser();
   const router = useRouter();
@@ -68,6 +75,7 @@ export default function Page() {
           ...data,
           roles: data?.roles?.split(",").map((id) => ({ roleId: id })),
           sites: data.sites.split(",").map((id) => ({ siteId: id })),
+          cages: data.cages.split(",").map((id) => ({ cageId: id })),
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },
@@ -225,6 +233,31 @@ export default function Page() {
                   selectionMode="multiple"
                 >
                   {sites.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="cages"
+              render={({ field, fieldState }) => (
+                <Select
+                  multiple
+                  labelPlacement="outside"
+                  placeholder="Pilih Kandang"
+                  label="Kandang"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectionMode="multiple"
+                >
+                  {cagesData.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
                       {position.name}
                     </SelectItem>
