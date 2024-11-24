@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useDeleteInvestor } from "../../../_services/investor";
+import { Can } from "@/components/acl/can";
 
 type Props = {
   id: string;
@@ -46,27 +47,31 @@ export default function Actions(props: Props) {
 
   return (
     <div className="flex space-x-1">
-      <Tooltip content="Edit Data">
-        <Button
-          as={Link}
-          href={`/master/investors/${props.id}/edit`}
-          isIconOnly
-          variant="light"
-          color="primary"
-        >
-          <HiPencilAlt />
-        </Button>
-      </Tooltip>
-      <Tooltip content="Hapus Data">
-        <Button
-          isIconOnly
-          variant="light"
-          color="danger"
-          onPress={deleteDisclosure.onOpen}
-        >
-          <HiTrash />
-        </Button>
-      </Tooltip>
+      <Can action="update:investor">
+        <Tooltip content="Edit Data">
+          <Button
+            as={Link}
+            href={`/master/investors/${props.id}/edit`}
+            isIconOnly
+            variant="light"
+            color="primary"
+          >
+            <HiPencilAlt />
+          </Button>
+        </Tooltip>
+      </Can>
+      <Can action="delete:investor">
+        <Tooltip content="Hapus Data">
+          <Button
+            isIconOnly
+            variant="light"
+            color="danger"
+            onPress={deleteDisclosure.onOpen}
+          >
+            <HiTrash />
+          </Button>
+        </Tooltip>
+      </Can>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

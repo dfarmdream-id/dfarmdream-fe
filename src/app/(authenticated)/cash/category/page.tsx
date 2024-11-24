@@ -121,7 +121,7 @@ className="w-full md:w-auto"
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>

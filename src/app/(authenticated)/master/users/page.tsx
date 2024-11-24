@@ -22,6 +22,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
@@ -66,7 +67,10 @@ export default function Page() {
   });
 
   const user = useGetUsers(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -105,15 +109,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/master/users/create"
-            color="primary"
-            startContent={<HiPlus />}
-            className="w-full md:w-auto"
-          >
-            Tambah Pengguna
-          </Button>
+          <Can action="create:user">
+            <Button
+              as={Link}
+              href="/master/users/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Pengguna
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -130,7 +136,7 @@ export default function Page() {
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>

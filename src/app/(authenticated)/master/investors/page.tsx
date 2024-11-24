@@ -21,6 +21,7 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetInvestors } from "../../_services/investor";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
@@ -61,7 +62,10 @@ export default function Page() {
   });
 
   const user = useGetInvestors(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -100,15 +104,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/master/investors/create"
-            color="primary"
-            startContent={<HiPlus />}
-className="w-full md:w-auto"
-          >
-            Tambah Investor
-          </Button>
+          <Can action="create:investor">
+            <Button
+              as={Link}
+              href="/master/investors/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Investor
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -125,7 +131,7 @@ className="w-full md:w-auto"
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>

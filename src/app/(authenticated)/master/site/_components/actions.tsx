@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteSite } from "../../../_services/site";
 import Link from "next/link";
+import { Can } from "@/components/acl/can";
 
 type Props = {
   id: string;
@@ -46,26 +47,32 @@ export default function Actions(props: Props) {
 
   return (
     <div className="flex space-x-1">
-      <Tooltip content="Edit Data"></Tooltip>
-      <Button
-        as={Link}
-        href={`/master/site/${props.id}/edit`}
-        isIconOnly
-        variant="light"
-        color="primary"
-      >
-        <HiPencilAlt />
-      </Button>
-      <Tooltip content="Hapus Data">
-        <Button
-          isIconOnly
-          variant="light"
-          color="danger"
-          onPress={deleteDisclosure.onOpen}
-        >
-          <HiTrash />
-        </Button>
-      </Tooltip>
+      <Can action="update:site">
+        <Tooltip content="Edit Data">
+          <Button
+            as={Link}
+            href={`/master/site/${props.id}/edit`}
+            isIconOnly
+            variant="light"
+            color="primary"
+          >
+            <HiPencilAlt />
+          </Button>
+        </Tooltip>
+      </Can>
+
+      <Can action="delete:site">
+        <Tooltip content="Hapus Data">
+          <Button
+            isIconOnly
+            variant="light"
+            color="danger"
+            onPress={deleteDisclosure.onOpen}
+          >
+            <HiTrash />
+          </Button>
+        </Tooltip>
+      </Can>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

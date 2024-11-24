@@ -12,7 +12,7 @@ import { useGetRole, useUpdateRole } from "../../../../_services/role";
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Kategori Arus Kas wajib diisi",
+      message: "Role wajib diisi",
     }),
     permissions: z.array(z.string()),
   });
@@ -69,7 +69,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Kategori Arus Kas</div>
+      <div className="text-2xl font-bold mb-10">Ubah Role</div>
       <div>
         <form onSubmit={onSubmit}>
           <div className="h-16">
@@ -81,8 +81,8 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Kategori Arus Kas"
-                  placeholder="Kategori Arus Kas"
+                  label="Role"
+                  placeholder="Role"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}

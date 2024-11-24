@@ -24,6 +24,7 @@ import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { useGetPrices } from "../../_services/price";
 import { IDR } from "@/common/helpers/currency";
+import { Can } from "@/components/acl/can";
 
 const columns = [
   {
@@ -72,7 +73,10 @@ export default function Page() {
   });
 
   const user = useGetPrices(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -111,15 +115,17 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/master/prices/create"
-            color="primary"
-            startContent={<HiPlus />}
-className="w-full md:w-auto"
-          >
-            Tambah Harga
-          </Button>
+          <Can action="create:price">
+            <Button
+              as={Link}
+              href="/master/prices/create"
+              color="primary"
+              startContent={<HiPlus />}
+              className="w-full md:w-auto"
+            >
+              Tambah Harga
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Example table with dynamic content">
           <TableHeader columns={columns}>
@@ -136,7 +142,7 @@ className="w-full md:w-auto"
             {(item) => (
               <TableRow
                 key={item.id}
-                className="odd:bg-[#75B89F]"
+                className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>
