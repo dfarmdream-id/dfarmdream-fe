@@ -9,6 +9,8 @@ import {
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import React from "react";
+import { Button } from "@nextui-org/react";
 
 export const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -27,7 +29,19 @@ http.interceptors.response.use(
     return response;
   },
   async (error) => {
-    toast.error("Gagal memuat data, silahkan coba lagi");
+    toast.error("Gagal memuat data, silahkan coba lagi", {
+      action: React.createElement(
+        Button,
+        {
+          variant: "light",
+          color: 'danger',
+          onClick: () => {
+            window.location.reload();
+          },
+        },
+        "Refresh"
+      ),
+    });
     return Promise.reject(error);
   }
 );

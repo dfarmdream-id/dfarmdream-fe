@@ -90,7 +90,7 @@ export default function Page() {
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Can action="show:investors">
+          <Can action="show:dashboard-stats-investors">
             <Link href="/master/investors">
               <StatsCard
                 icon={<HiUserPlus />}
@@ -99,7 +99,7 @@ export default function Page() {
               />
             </Link>
           </Can>
-          <Can action="show:cages">
+          <Can action="show:dashboard-stats-cages">
             <Link href="/operational/cages">
               <StatsCard
                 icon={<HiArchiveBox />}
@@ -108,7 +108,7 @@ export default function Page() {
               />
             </Link>
           </Can>
-          <Can action="show:users">
+          <Can action="show:dashboard-stats-users">
             <Link href="/master/users">
               <StatsCard
                 icon={<HiUsers />}
@@ -119,59 +119,73 @@ export default function Page() {
           </Can>
         </div>
         <div className="grid md:grid-cols-2 gap-5">
-          <Card>
-            <CardHeader className="flex flex-col items-start">
-              <div className="font-bold text-xl">Grafik Ayam</div>
-              <div>{profile?.data?.data?.site?.name}</div>
-            </CardHeader>
-            <CardBody>
-              <Chart
-                options={chart.options}
-                series={chart.series}
-                type="donut"
-              />
-            </CardBody>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-col items-start">
-              <div className="font-bold text-xl">Grafik Performa</div>
-              <div>{profile.data?.data?.site?.name}</div>
-            </CardHeader>
-            <CardBody>
-              <ul className="grid xl:grid-cols-2 gap-3">
-                <Card as="li" shadow="none">
-                  <StatsCard
-                    icon={<HiUsers />}
-                    title="Berat Telur"
-                    count={dashboard.data?.data?.weightTotal || 0}
-                  />
-                </Card>
-                <Card as="li" shadow="none">
-                  <StatsCard icon={<HiUsers />} title="FCR" count={1} />
-                </Card>
-                <Card as="li" shadow="none">
-                  <StatsCard
-                    icon={<HiUsers />}
-                    title="Berat Keseluruhan"
-                    count={dashboard.data?.data?.weightTotal || 0}
-                  />
-                </Card>
-                <Card as="li" shadow="none">
-                  <StatsCard
-                    icon={<HiUsers />}
-                    title="Total Telur"
-                    count={dashboard.data?.data?.qtyTotal || 0}
-                  />
-                </Card>
-              </ul>
-            </CardBody>
-          </Card>
+          <Can action="show:dashboard-chicken-chart">
+            <Card>
+              <CardHeader className="flex flex-col items-start">
+                <div className="font-bold text-xl">Grafik Ayam</div>
+                <div>{profile?.data?.data?.site?.name}</div>
+              </CardHeader>
+              <CardBody>
+                <Chart
+                  options={chart.options}
+                  series={chart.series}
+                  type="donut"
+                />
+              </CardBody>
+            </Card>
+          </Can>
+          <Can action="show:dashboard-performance-stats">
+            <Card>
+              <CardHeader className="flex flex-col items-start">
+                <div className="font-bold text-xl">Grafik Performa</div>
+                <div>{profile.data?.data?.site?.name}</div>
+              </CardHeader>
+              <CardBody>
+                <ul className="grid xl:grid-cols-2 gap-3">
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<HiUsers />}
+                      title="Berat Telur"
+                      count={dashboard.data?.data?.weightTotal || 0}
+                    />
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard icon={<HiUsers />} title="FCR" count={1} />
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<HiUsers />}
+                      title="Berat Keseluruhan"
+                      count={dashboard.data?.data?.weightTotal || 0}
+                    />
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<HiUsers />}
+                      title="Total Telur"
+                      count={dashboard.data?.data?.qtyTotal || 0}
+                    />
+                  </Card>
+                </ul>
+              </CardBody>
+            </Card>
+          </Can>
         </div>
-        <GrafikSuhu>Suhu Kandang</GrafikSuhu>
-        <GrafikAmonia>Kadar Amonia</GrafikAmonia>
-        <GrafikHumidity>Kadar Kelembapan</GrafikHumidity>
-        <IotDevices>Sensor Lampu</IotDevices>
-        <TableAbsen/>
+        <Can action="show:temperature-sensors">
+          <GrafikSuhu>Suhu Kandang</GrafikSuhu>
+        </Can>
+        <Can action="show:amonia-sensors">
+          <GrafikAmonia>Kadar Amonia</GrafikAmonia>
+        </Can>
+        <Can action="show:humidity-sensors">
+          <GrafikHumidity>Kadar Kelembapan</GrafikHumidity>
+        </Can>
+        <Can action="show:light-sensors">
+          <IotDevices>Sensor Lampu</IotDevices>
+        </Can>
+        <Can action="show:absences">
+          <TableAbsen />
+        </Can>
       </div>
     </Can>
   );

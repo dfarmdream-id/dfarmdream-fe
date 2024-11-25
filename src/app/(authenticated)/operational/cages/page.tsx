@@ -121,7 +121,7 @@ export default function Page() {
             </Button>
           </Can>
         </div>
-        <Table aria-label="Example table with dynamic content">
+        <Table aria-label="Data">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.key}>{column.label}</TableColumn>

@@ -123,7 +123,7 @@ className="w-full md:w-auto"
             Tambah Arus Kas
           </Button>
         </div>
-        <Table isStriped aria-label="Example table with dynamic content">
+        <Table isStriped aria-label="Data">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.key}>{column.label}</TableColumn>

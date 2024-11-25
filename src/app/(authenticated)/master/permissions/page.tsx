@@ -73,103 +73,105 @@ export default function Page() {
   }, [user.data]);
 
   return (
-    <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Permission</div>
-      <div className="space-y-5 bg-white p-5 rounded-lg">
-        <div className="flex justify-between items-center gap-3 flex-wrap">
-          <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
-            <Select
-              label="Tampilkan"
-              onChange={(e) => {
-                setLimit(e.target.value);
-              }}
-              labelPlacement="outside-left"
-              classNames={{ base: "flex items-center" }}
-              selectedKeys={[limit?.toString() || "10"]}
+    <Can action="show:permissions">
+      <div className="p-5">
+        <div className="text-3xl font-bold mb-10">Data Permission</div>
+        <div className="space-y-5 bg-white p-5 rounded-lg">
+          <div className="flex justify-between items-center gap-3 flex-wrap">
+            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
+              <Select
+                label="Tampilkan"
+                onChange={(e) => {
+                  setLimit(e.target.value);
+                }}
+                labelPlacement="outside-left"
+                classNames={{ base: "flex items-center" }}
+                selectedKeys={[limit?.toString() || "10"]}
+              >
+                <SelectItem key="10">10</SelectItem>
+                <SelectItem key="20">20</SelectItem>
+                <SelectItem key="30">30</SelectItem>
+                <SelectItem key="40">40</SelectItem>
+                <SelectItem key="50">50</SelectItem>
+              </Select>{" "}
+              <Input
+                startContent={<HiSearch />}
+                placeholder="Cari Permission"
+                variant="bordered"
+                value={search || ""}
+                onValueChange={setSearch}
+              />
+            </div>
+            <Can action="create:permission">
+              <Button
+                as={Link}
+                href="/master/permissions/create"
+                color="primary"
+                startContent={<HiPlus />}
+                className="w-full md:w-auto"
+              >
+                Tambah Permission
+              </Button>
+            </Can>
+          </div>
+          <Table aria-label="Data">
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={rows}
+              isLoading={user.isLoading}
+              loadingContent={<Spinner />}
+              emptyContent={<EmptyState />}
             >
-              <SelectItem key="10">10</SelectItem>
-              <SelectItem key="20">20</SelectItem>
-              <SelectItem key="30">30</SelectItem>
-              <SelectItem key="40">40</SelectItem>
-              <SelectItem key="50">50</SelectItem>
-            </Select>{" "}
-            <Input
-              startContent={<HiSearch />}
-              placeholder="Cari Permission"
-              variant="bordered"
-              value={search || ""}
-              onValueChange={setSearch}
+              {(item) => (
+                <TableRow
+                  key={item.id}
+                  className="odd:bg-[#cffdec]"
+                  role="button"
+                >
+                  <TableCell>
+                    <div>{item.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.code}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Actions id={item.id} />
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex justify-center">
+            <Pagination
+              color="primary"
+              total={user.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={user.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
             />
           </div>
-          <Can action="create:permission">
-            <Button
-              as={Link}
-              href="/master/permissions/create"
-              color="primary"
-              startContent={<HiPlus />}
-              className="w-full md:w-auto"
-            >
-              Tambah Permission
-            </Button>
-          </Can>
-        </div>
-        <Table aria-label="Example table with dynamic content">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            items={rows}
-            isLoading={user.isLoading}
-            loadingContent={<Spinner />}
-            emptyContent={<EmptyState />}
-          >
-            {(item) => (
-              <TableRow
-                key={item.id}
-                className="odd:bg-[#cffdec]"
-                role="button"
-              >
-                <TableCell>
-                  <div>{item.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{item.code}</div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    {DateTime.fromISO(item.createdAt).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    {DateTime.fromISO(item.createdAt).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Actions id={item.id} />
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <div className="flex justify-center">
-          <Pagination
-            color="primary"
-            total={user.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={user.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
         </div>
       </div>
-    </div>
+    </Can>
   );
 }

@@ -335,7 +335,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
-      can:"signout",
+      can: "signout",
       label: "Sign Out",
       href: "/sign-out",
       icon: <HiOutlineArrowRightOnRectangle />,
@@ -351,17 +351,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <motion.aside
           initial={{ width: "20rem" }}
           animate={{ width: open ? "5rem" : "20rem" }}
-          className="w-80 h-screen bg-[#F8F9FA] hidden md:block overflow-hidden"
+          className="w-80 h-screen bg-[#F8F9FA] hidden md:block overflow-hidden pb-10"
         >
-          <div className="h-20 flex justify-center items-center">
-            {open ? (
-              <Image className="h-16" src="/icon.png" alt="logo" />
-            ) : (
-              <Logo className="h-16" />
-            )}
-          </div>
-          <ScrollShadow className="h-full" hideScrollBar>
+          <ScrollShadow offset={0} className="h-full" hideScrollBar>
             <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
+              <li className="h-20 flex justify-center items-center sticky top-0 inset-x-0 z-[50] bg-white/90 backdrop-blur-xl">
+                {open ? (
+                  <Image className="h-16" src="/icon.png" alt="logo" />
+                ) : (
+                  <Logo className="h-16" />
+                )}
+              </li>
               {menus.map((menu) => {
                 return (
                   <Can key={menu.label} action={menu.can || ""}>
@@ -449,21 +449,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </Card>
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Actions">
-                    <DropdownItem
-                      key="update-profile"
-                      color="danger"
-                    >
-                      <Link href="/user/update-profile">
-                        Update Profile
-                      </Link>
+                    <DropdownItem key="update-profile" color="danger">
+                      <Link href="/user/update-profile">Update Profile</Link>
                     </DropdownItem>
-                    <DropdownItem
-                      key="update-password"
-                      color="danger"
-                    >
-                      <Link href="/user/update-password">
-                        Update Password
-                      </Link>
+                    <DropdownItem key="update-password" color="danger">
+                      <Link href="/user/update-password">Update Password</Link>
                     </DropdownItem>
                     <DropdownItem
                       key="delete"
