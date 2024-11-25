@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   Modal,
@@ -9,12 +10,16 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
+import { HiOutlinePrinter, HiQrCode, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useDeleteSite } from "@/app/(authenticated)/_services/site";
 import { Can } from "@/components/acl/can";
+import QRCode from "react-qr-code";
+import { useGetWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
+import { useMemo } from "react";
+import { DateTime } from "luxon";
 
 type Props = {
   id: string;
@@ -22,6 +27,7 @@ type Props = {
 
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
+  const qrDisclosure = useDisclosure();
 
   const deleteData = useDeleteSite();
 
@@ -45,8 +51,26 @@ export default function Actions(props: Props) {
     );
   };
 
+  const data = useGetWarehouseTransaction(useMemo(() => props.id, [props]));
+
   return (
     <div className="flex space-x-1">
+      <Tooltip content="Selesaikan Panen">
+        <Can action="update:warehouse-qr">
+          <Tooltip content="Print QR">
+            <Button
+              isIconOnly
+              variant="light"
+              color="primary"
+              onPress={() => {
+                qrDisclosure.onOpen();
+              }}
+            >
+              <HiQrCode />
+            </Button>
+          </Tooltip>
+        </Can>
+      </Tooltip>
       <Tooltip content="Edit Data">
         <Can action="update:warehouse-transaction">
           <Tooltip content="Edit Data">
@@ -74,6 +98,86 @@ export default function Actions(props: Props) {
           </Button>
         </Tooltip>
       </Can>
+
+      <Modal
+        onOpenChange={qrDisclosure.onOpenChange}
+        isOpen={qrDisclosure.isOpen}
+        onClose={qrDisclosure.onClose}
+        size="xl"
+      >
+        <ModalContent>
+          <ModalHeader className="gap-2">
+            <div>QR Panen {data?.data?.data?.code}</div>
+          </ModalHeader>
+          <ModalBody>
+            <div className="flex items-center w-full gap-5">
+              <div className="w-1/3">
+                <QRCode
+                  className="w-full h-fit"
+                  value={`https://dfarmdream.id/verify/${data.data?.data?.code}`}
+                />
+              </div>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Lokasi</td>
+                      <td className="px-3 py-1">{data?.data?.data?.site?.name}</td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Jenis</td>
+                      <td className="px-3 py-1">Telur</td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Jumlah</td>
+                      <td className="px-3 py-1">{data?.data?.data?.qty}</td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Berat Total</td>
+                      <td className="px-3 py-1">{data?.data?.data?.weight}</td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Karyawan Panen</td>
+                      <td className="px-3 py-1">
+                        {data.data?.data?.createdBy?.fullName}
+                      </td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Tanggal Panen</td>
+                      <td className="px-3 py-1 overflow-hidden ">
+                        <div className="w-full overflow-hidden truncate">
+                          {DateTime.fromISO(
+                            data.data?.data?.createdAt || ""
+                          ).toFormat("dd-MM-yyyy")}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="bordered"
+              color="default"
+              className="w-full"
+              onPress={qrDisclosure.onClose}
+            >
+              Batal
+            </Button>
+            <Button
+              isLoading={deleteData.isPending}
+              color="primary"
+              className="w-full"
+              startContent={<HiOutlinePrinter />}
+              onPress={handleDelete.bind(null, props.id)}
+            >
+              Print
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

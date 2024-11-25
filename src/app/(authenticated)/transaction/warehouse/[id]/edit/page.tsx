@@ -1,94 +1,236 @@
 "use client";
-import { Button, Input, Textarea } from "@nextui-org/react";
-import { Controller } from "react-hook-form";
+import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Controller, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { useGetSite, useUpdateSite } from "@/app/(authenticated)/_services/site";
+import { useMemo } from "react";
+import { InputNumber } from "@/components/ui/input";
+import { useUpdateWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
+import { useGetCages } from "@/app/(authenticated)/_services/cage";
+import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
+import { useGetProfile } from "@/app/(authenticated)/_services/profile";
 
 export default function Page() {
   const schema = z.object({
-    name: z.string({
-      message: "Nama jabatan wajib diisi",
+    cageId: z.string({
+      message: "Kandang wajib diisi",
     }),
-    address: z.string({
-      message: "Alamat wajib diisi",
+    weight: z.number({
+      message: "Berat wajib diisi",
     }),
+    type: z.string({
+      message: "Jenis wajib diisi",
+    }),
+    haversts: z.array(
+      z.object({
+        qty: z.number({
+          message: "Total Wajib DIisi",
+        }),
+        rackId: z.string({
+          message: "Rak Wajib Diisi",
+        }),
+      })
+    ),
   });
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
 
-  const params = useParams();
-  const submission = useUpdateSite();
-  const site = useGetSite(
-    useMemo(() => params.id as string, [params]) as string
-  );
+  const submission = useUpdateWarehouseTransaction();
   const router = useRouter();
+  const params = useParams();
 
-  useEffect(() => {
-    if (site.data) {
-      form.setValue("name", site?.data?.data?.name);
-      form.setValue("address", site?.data?.data?.address);
+  const onSubmit = form.handleSubmit(
+    (data) => {
+      submission.mutate(
+        {
+          body: data,
+          pathVars: {
+            id: params.id as string,
+          },
+        },
+        {
+          onError: (error) => {
+            toast.error(error.data?.message);
+          },
+          onSuccess: () => {
+            toast.success("Berhasil menambahkan data");
+            form.reset();
+            router.push("/transaction/warehouse");
+          },
+        }
+      );
+    },
+    (err) => {
+      console.log(err);
+      toast.error("Gagal menyimpan, pastikan semua isian sudah diisi");
     }
-  }, [site.data, form]);
+  );
 
-  const onSubmit = form.handleSubmit((data) => {
-    submission.mutate(
-      {
-        pathVars: { id: params.id as string },
-        body: data,
-      },
-      {
-        onError: (error) => {
-          toast.error(error.data?.message);
-        },
-        onSuccess: () => {
-          toast.success("Berhasil mengubah data");
-          form.reset();
-          router.push("/master/site");
-        },
-      }
-    );
+  const cageId = form.watch("cageId");
+
+  const profile = useGetProfile();
+
+  const cage = useGetCages(
+    useMemo(
+      () => ({
+        page: "1",
+        limit: "100",
+        siteId: profile?.data?.data?.site?.id as string,
+      }),
+      [profile]
+    )
+  );
+
+  const haversts = useFieldArray({
+    control: form.control,
+    name: "haversts",
   });
+
+  const rack = useGetCageRacks(
+    useMemo(() => ({ page: "1", limit: "100", cageId: cageId }), [cageId])
+  );
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Data Lokasi</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Gudang</div>
       <div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="space-y-5">
           <div className="h-16">
             <Controller
               control={form.control}
-              name="name"
+              name="type"
               render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
+                <Select
+                  placeholder="Pilih Jenis"
+                  label="Jenis Transaksi"
                   variant="bordered"
-                  type="text"
-                  label="Lokasi"
-                  placeholder="Lokasi"
+                  labelPlacement="outside"
                   {...field}
-                  errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                />
+                  errorMessage={fieldState.error?.message}
+                >
+                  <SelectItem key="IN">Masuk</SelectItem>
+                  <SelectItem key="OUT">Keluar</SelectItem>
+                </Select>
               )}
             />
           </div>
-          <div>
+          <div className="h-16">
             <Controller
               control={form.control}
-              name="address"
+              name="cageId"
               render={({ field, fieldState }) => (
-                <Textarea
+                <Select
+                  isLoading={cage.isLoading}
+                  labelPlacement="outside"
+                  placeholder="Pilih Kandang"
+                  label="Kandang"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {cage.data?.data?.data?.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="bg-white p-5 rounded-lg">
+            <div className="font-bold">Data Panen</div>
+            <ul className="mt-5 grid gap-5">
+              {haversts.fields.length == 0 && (
+                <div>
+                  Data Panen Kosong, Silahkan tambahkan melalui tombol dibawah
+                  ini.
+                </div>
+              )}
+              {haversts.fields.map((item, i) => {
+                return (
+                  <li key={i}>
+                    <div className="font-bold mb-3">Panen {i + 1}</div>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div className="h-16">
+                        <Controller
+                          control={form.control}
+                          name={`haversts.${i}.rackId`}
+                          render={({ field, fieldState }) => (
+                            <Select
+                              isLoading={rack.isLoading}
+                              labelPlacement="outside"
+                              placeholder="Pilih Rak"
+                              label="Rak"
+                              variant="bordered"
+                              {...field}
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={fieldState.invalid}
+                            >
+                              {rack.data?.data?.data?.map((item) => (
+                                <SelectItem key={item.id} value={item.id}>
+                                  {item.name}
+                                </SelectItem>
+                              )) || []}
+                            </Select>
+                          )}
+                        />
+                      </div>
+
+                      <div className="h-16">
+                        <Controller
+                          control={form.control}
+                          name={`haversts.${i}.qty`}
+                          render={({ field, fieldState }) => (
+                            <InputNumber
+                              labelPlacement="outside"
+                              variant="bordered"
+                              type="text"
+                              label="Jumlah Telur"
+                              placeholder="Jumlah Telur"
+                              {...field}
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={fieldState.invalid}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+
+              <li className="flex justify-center">
+                <Button
+                  type="button"
+                  className="w-full"
+                  color="primary"
+                  onPress={() => {
+                    haversts.append({ qty: 0, rackId: "" });
+                  }}
+                >
+                  Tambah Panen
+                </Button>
+              </li>
+            </ul>
+          </div>
+
+          <div className="pt-3">
+            <Controller
+              control={form.control}
+              name="weight"
+              render={({ field, fieldState }) => (
+                <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Alamat"
-                  placeholder="Alamat"
+                  label="Berat kg"
+                  placeholder="Berat kg"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -96,7 +238,6 @@ export default function Page() {
               )}
             />
           </div>
-
           <div className="mt-5 flex gap-3 justify-end">
             <Button
               variant="bordered"
