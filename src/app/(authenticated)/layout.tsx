@@ -111,7 +111,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           as={menu.href ? Link : "a"}
           href={menu.href ? menu.href : undefined}
           className={cn(
-            "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-white md:text-gray-600"
+            "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-primary md:text-gray-600"
           )}
           data-active={menu.href == path}
           shadow="none"
@@ -180,7 +180,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           href={child.href ? child.href : undefined}
                           isPressable
                           data-active={child.href == path}
-                          className="py-1 w-full bg-transparent text-white md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                          className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
                         >
                           <CardBody className="flex gap-2 flex-row items-center">
                             {child.icon}
@@ -384,7 +384,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <motion.aside
           initial={{ width: "0" }}
           animate={{ width: open ? "100%" : "0" }}
-          className="h-dvh bg-primary block md:hidden overflow-hidden"
+          className="h-dvh bg-[#F8F9FA] block md:hidden overflow-hidden"
         >
           <div className="h-20 flex justify-between items-center px-5">
             <div>
@@ -399,7 +399,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   setOpen(false);
                 }}
               >
-                <HiX className="text-2xl text-white" />
+                <HiX className="text-2xl text-primary" />
               </Button>
             </div>
           </div>
