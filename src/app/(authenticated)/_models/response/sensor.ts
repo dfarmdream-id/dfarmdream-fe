@@ -15,7 +15,7 @@ export interface ChartDataResponse {
     humidityThreshold:number
     amoniaThreshold:number
     currentTemperature:number
-    currentHumidity:number
+    currentHumidty:number
     currentAmonia:number
     lampStatus:any
   }

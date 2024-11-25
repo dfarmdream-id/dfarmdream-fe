@@ -159,7 +159,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
                 </div>
                 <div className="w-full">
                   <div className="font-bold">Sensor {item.code}</div>
-                  <div>{item.currentAmonia}</div>
+                  <div>{item.currentAmonia?item.currentAmonia.toFixed(2):'-'} PPM</div>
                   <div>
                     <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                     <div className="flex justify-between">
