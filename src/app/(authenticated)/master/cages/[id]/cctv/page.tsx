@@ -20,15 +20,14 @@ export default function ViewCCTVPage() {
     return [];
   }, [cctv.data]);
 
-  const ref = createRef<HTMLVideoElement>();
 
   return (
     <div className="px-4 py-4">
       <div className="text-2xl font-bold mb-10">Live CCTV Kandang</div>
-
       <div className="grid grid-cols-12 gap-4">
-        {rows &&
-          rows.map((item) => (
+        {rows && rows.map((item) =>{
+          const ref = createRef<HTMLVideoElement>();
+          return (
             <Card className="col-span-4" key={item.id}>
               <CardHeader className="flex gap-3">
                 <p className="text-md">{item?.name}</p>
@@ -46,7 +45,8 @@ export default function ViewCCTVPage() {
               </CardBody>
               <Divider />
             </Card>
-          ))}
+          )
+        })}
       </div>
     </div>
   );

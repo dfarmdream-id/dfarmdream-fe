@@ -5,9 +5,20 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import {  useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useUpdateProfile } from "../_services/profile";
+import { useEffect, useState } from "react";
+import { useUpdateProfile, useUploadImage } from "../_services/profile";
 import { useGetProfile } from "../../_services/profile";
+
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+registerPlugin(
+  FilePondPluginImageExifOrientation, 
+  FilePondPluginImagePreview,
+);
 
 export default function Page() {
   const schema = z.object({
@@ -66,12 +77,53 @@ export default function Page() {
     );
   });
 
+  const [file, setFile] = useState([]);
+  const uploader = useUploadImage()
+  const handleUpload = async (fileItems:any) => {
+    alert('testing');
+    if (fileItems.length > 0) {
+      alert('proses upload')
+      const formData = new FormData();
+      formData.append('file', fileItems[0].file);
+      try {
+        const response = await uploader.mutateAsync({
+          body: formData
+        })
+        console.log("Response : ", response)
+      
+        // if (response.ok) {
+        //   const result = await response.json();
+        //   console.log('Profile image updated:', result);
+        // } else {
+        //   console.error('Upload failed');
+        // }
+      } catch (error) {
+        console.error('Error uploading profile image:', error);
+      }
+    }
+  };
+
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Profile</div>
       <div>
         <form onSubmit={onSubmit}>
-          <div className="h-16">
+        <div className="mt-2">
+        <FilePond
+              files={file}
+              onupdatefiles={setFile}
+              onprocessfiles={handleUpload}
+              maxFiles={1}
+              name="profileImage"
+              acceptedFileTypes={['image/png', 'image/jpeg', 'image/gif']}
+              labelIdle='Drag & Drop your profile picture or <span class="filepond--label-action">Browse</span>'
+              imagePreviewHeight={250}
+              stylePanelLayout="compact"
+              styleButtonRemoveItemPosition="center bottom"
+              credits={false}
+          />
+          </div>
+          <div className="mt-5">
             <Controller
               control={form.control}
               name="username"
@@ -90,7 +142,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-5">
             <Controller
               control={form.control}
               name="fullName"
@@ -109,7 +161,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-5">
             <Controller
               control={form.control}
               name="email"
@@ -128,7 +180,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-5">
             <Controller
               control={form.control}
               name="phone"
@@ -147,7 +199,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-5">
             <Controller
               control={form.control}
               name="address"

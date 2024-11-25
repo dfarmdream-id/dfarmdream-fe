@@ -11,3 +11,9 @@ export const useUpdatePassword = () => {
     method: "POST",
   });
 };
+
+export const useUploadImage = ()=>{
+  return useHttpMutation<any>("v1/file/upload",{
+    method:"POST"
+  })
+}

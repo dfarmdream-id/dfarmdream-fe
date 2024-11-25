@@ -58,7 +58,7 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Tambah Data IOT</div>
       <div>
         <form onSubmit={onSubmit}>
-          <div className="h-16">
+          <div className="mt-2">
             <Controller
               control={form.control}
               name="cageId"
@@ -82,7 +82,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-2">
             <Controller
               control={form.control}
               name="name"
@@ -100,7 +100,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="h-16">
+          <div className="mt-2">
             <Controller
               control={form.control}
               name="ipAddress"
@@ -119,7 +119,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
+          <div className="mt-2">
             <Controller
               control={form.control}
               name="description"

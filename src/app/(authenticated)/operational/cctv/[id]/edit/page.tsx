@@ -63,7 +63,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/operatinal/cctv");
+          router.push("/operational/cctv");
         },
       }
     );
