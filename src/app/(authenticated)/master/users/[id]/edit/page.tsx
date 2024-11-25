@@ -46,7 +46,7 @@ export default function Page() {
       message: "Status wajib diisi",
     }),
     sites: z.string(),
-    cages:z.string(),
+    cages: z.string(),
     roles: z.string().optional(),
   });
 
@@ -56,8 +56,13 @@ export default function Page() {
       status: true,
     },
   });
-  const watch = form.watch()
-  const cagesData = useGetCages(useMemo(() => ({ page: "1", limit: "100", siteId:watch.sites  }), [watch.sites]));
+  const watch = form.watch();
+  const cagesData = useGetCages(
+    useMemo(
+      () => ({ page: "1", limit: "100", siteId: watch.sites }),
+      [watch.sites]
+    )
+  );
   const submission = useUpdateUser();
   const router = useRouter();
   const params = useParams();
@@ -112,7 +117,7 @@ export default function Page() {
   const role = useGetRoles(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   const onSubmit = form.handleSubmit((data) => {
-    console.log("Submit data :", data)
+    console.log("Submit data :", data);
     submission.mutate(
       {
         body: {
@@ -143,7 +148,7 @@ export default function Page() {
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          console.log("Sukses")
+          console.log("Sukses");
           toast.success("Berhasil mengubah data");
           form.reset();
           router.push("/master/users");
@@ -235,6 +240,7 @@ export default function Page() {
               name="positionId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={positions.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Jabatan"
                   label="Jabatan"
@@ -259,6 +265,7 @@ export default function Page() {
               name="roles"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={role.isLoading}
                   multiple
                   labelPlacement="outside"
                   placeholder="Pilih Peran"
@@ -285,6 +292,7 @@ export default function Page() {
               name="sites"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={sites.isLoading}
                   multiple
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
@@ -312,6 +320,7 @@ export default function Page() {
               name="cages"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={cagesData.isLoading}
                   multiple
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"

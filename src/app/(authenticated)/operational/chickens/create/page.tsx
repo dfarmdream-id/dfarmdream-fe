@@ -78,6 +78,7 @@ export default function Page() {
               name="rackId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={racks.isLoading}
                   multiple
                   labelPlacement="outside"
                   placeholder="Pilih Rak"

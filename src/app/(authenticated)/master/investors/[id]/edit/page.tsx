@@ -171,6 +171,7 @@ export default function Page() {
               render={({ field, fieldState }) => (
                 <Select
                   multiple
+                  isLoading={role.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Peran"
                   label="Peran"

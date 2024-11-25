@@ -25,7 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               richColors
               closeButton
               duration={3000}
-              position="top-center"
+              position="bottom-center"
             />
             <ProgressBar
               height="4px"

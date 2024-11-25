@@ -91,6 +91,7 @@ export default function Page() {
               name="cageId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={cage.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
                   label="Kandang"
@@ -114,6 +115,7 @@ export default function Page() {
               name="rackId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={rack.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Rak"
                   label="Rak"

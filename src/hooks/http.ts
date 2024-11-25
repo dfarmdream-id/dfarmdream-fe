@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 export const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -26,13 +27,8 @@ http.interceptors.response.use(
     return response;
   },
   async (error) => {
+    toast.error("Gagal memuat data, silahkan coba lagi");
     return Promise.reject(error);
-    // If the error is not 401, just reject as-is & check if the error response and add notification
-    if (error?.response?.status !== 401) {
-      // window.message.error(message)
-    } else {
-      Cookies.remove("accessToken");
-    }
   }
 );
 

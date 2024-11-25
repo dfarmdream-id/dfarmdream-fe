@@ -74,6 +74,7 @@ export default function Page() {
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
+                  isLoading={sites.isLoading}
                   label="Lokasi"
                   variant="bordered"
                   {...field}

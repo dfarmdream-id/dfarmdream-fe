@@ -80,6 +80,7 @@ export default function Page() {
               name="cageId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={sites.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
                   label="Kandang"

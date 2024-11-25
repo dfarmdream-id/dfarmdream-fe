@@ -89,7 +89,6 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
             stops: [0, 90, 100],
           },
         },
-        responsive: [],
         xaxis: {
           categories: items?.data?.data?.chart?.map((x) => x.x) ?? [],
         },
@@ -99,12 +98,13 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
 
   return (
     <div className="grid md:grid-cols-2 bg-white rounded-lg p-5 gap-3">
-      <div className="flex flex-col gap-3 w-full">
-        <div>
+      <div className="flex flex-col gap-3 w-full overflow-hidden">
+        <div className="w-full">
           <div className="text-xl text-primary font-bold text-center">
             {children}
           </div>
           <Chart
+            width="100%"
             type="area"
             options={cageTempChart.options}
             series={cageTempChart.options.series}
@@ -122,11 +122,12 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
           <SelectItem key="4">4 Jam terakhir</SelectItem>
         </Select> */}
       </div>
-      <div>
+      <div className="w-full overflow-hidden">
         <div className="grid md:grid-cols-2 gap-3">
           <Select
             variant="bordered"
             placeholder="Pilih lokasi"
+            isLoading={sites.isLoading}
             onChange={(e) => setLokasi(e.target.value)}
           >
             {sites.data?.data?.data?.map((site) => (
@@ -138,6 +139,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
           <Select
             variant="bordered"
             placeholder="Pilih kandang"
+            isLoading={cages.isLoading}
             onChange={(e) => setKandang(e.target.value)}
           >
             {cages.data?.data?.data?.map((site) => (
@@ -151,16 +153,16 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
           {items?.data?.data?.sensors &&
             items.data.data.sensors.map((item) => (
               <li
-                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
+                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
                 key={item.code}
               >
-                <div className="w-16 h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
+                <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
                   <div>
-                    <FaTemperatureEmpty className="w-8 h-8" />
+                    <FaTemperatureEmpty className="w-5 h-5 md:w-8 md:h-8" />
                   </div>
                 </div>
-                <div className="w-full">
-                  <div className="font-bold">Sensor {item.code}</div>
+                <div className="w-full flex-1">
+                  <div className="font-bold w-full break-words overflow-hidden">Sensor {item.code}</div>
                   <div>{item.currentTemperature}°C</div>
                   <div>
                     <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>

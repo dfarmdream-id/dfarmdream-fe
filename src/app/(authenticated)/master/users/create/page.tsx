@@ -177,6 +177,7 @@ export default function Page() {
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Jabatan"
+                  isLoading={positions.isLoading}
                   label="Jabatan"
                   variant="bordered"
                   {...field}
@@ -200,6 +201,7 @@ export default function Page() {
                 <Select
                   multiple
                   labelPlacement="outside"
+                  isLoading={role.isLoading}
                   placeholder="Pilih Peran"
                   label="Peran"
                   variant="bordered"
@@ -223,6 +225,7 @@ export default function Page() {
               render={({ field, fieldState }) => (
                 <Select
                   multiple
+                  isLoading={sites.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
                   label="Lokasi"
@@ -249,6 +252,7 @@ export default function Page() {
                 <Select
                   multiple
                   labelPlacement="outside"
+                  isLoading={cagesData.isLoading}
                   placeholder="Pilih Kandang"
                   label="Kandang"
                   variant="bordered"
