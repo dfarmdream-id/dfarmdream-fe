@@ -4,21 +4,18 @@ import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUpdateProfile, useUploadImage } from "../_services/profile";
 import { useGetProfile } from "../../_services/profile";
 
-import { FilePond, registerPlugin } from 'react-filepond';
-import 'filepond/dist/filepond.min.css';
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import { FilePond, registerPlugin } from "react-filepond";
+import "filepond/dist/filepond.min.css";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-registerPlugin(
-  FilePondPluginImageExifOrientation, 
-  FilePondPluginImagePreview,
-);
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 export default function Page() {
   const schema = z.object({
@@ -58,7 +55,7 @@ export default function Page() {
       }
     }
   }, [profile.data, form]);
- 
+
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
@@ -78,19 +75,19 @@ export default function Page() {
   });
 
   const [file, setFile] = useState([]);
-  const uploader = useUploadImage()
-  const handleUpload = async (fileItems:any) => {
-    alert('testing');
+  const uploader = useUploadImage();
+  const handleUpload = async (fileItems: any) => {
+    alert("testing");
     if (fileItems.length > 0) {
-      alert('proses upload')
+      alert("proses upload");
       const formData = new FormData();
-      formData.append('file', fileItems[0].file);
+      formData.append("file", fileItems[0].file);
       try {
         const response = await uploader.mutateAsync({
-          body: formData
-        })
-        console.log("Response : ", response)
-      
+          body: formData,
+        });
+        console.log("Response : ", response);
+
         // if (response.ok) {
         //   const result = await response.json();
         //   console.log('Profile image updated:', result);
@@ -98,7 +95,7 @@ export default function Page() {
         //   console.error('Upload failed');
         // }
       } catch (error) {
-        console.error('Error uploading profile image:', error);
+        console.error("Error uploading profile image:", error);
       }
     }
   };
@@ -108,20 +105,20 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Ubah Profile</div>
       <div>
         <form onSubmit={onSubmit}>
-        <div className="mt-2">
-        <FilePond
-              files={file}
-              onupdatefiles={setFile}
-              onprocessfiles={handleUpload}
+          <div className="mt-2">
+            <FilePond
+              files={file as any[]}
+              onupdatefiles={setFile as any}
+              onprocessfiles={handleUpload as any}
               maxFiles={1}
               name="profileImage"
-              acceptedFileTypes={['image/png', 'image/jpeg', 'image/gif']}
+              acceptedFileTypes={["image/png", "image/jpeg", "image/gif"]}
               labelIdle='Drag & Drop your profile picture or <span class="filepond--label-action">Browse</span>'
               imagePreviewHeight={250}
               stylePanelLayout="compact"
               styleButtonRemoveItemPosition="center bottom"
               credits={false}
-          />
+            />
           </div>
           <div className="mt-5">
             <Controller

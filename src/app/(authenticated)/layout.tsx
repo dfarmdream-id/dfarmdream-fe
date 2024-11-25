@@ -176,7 +176,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             menu.action?.();
                             router.push(child.href || "");
                           }}
-                          as={child.href ? Link : "a"}
+                            as={child.href ? Link : "a"}
                           href={child.href ? child.href : undefined}
                           isPressable
                           data-active={child.href == path}
