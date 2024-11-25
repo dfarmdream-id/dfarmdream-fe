@@ -160,11 +160,9 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
                     <FaTemperatureEmpty className="w-5 h-5 md:w-8 md:h-8" />
                   </div>
                 </div>
-                <div className="w-full flex-1">
-                  <div className="font-bold w-full break-words overflow-hidden">
-                    Sensor {item.code}
-                  </div>
-                  <div>{item.currentTemperature}</div>
+                <div className="w-full">
+                  <div className="font-bold w-full break-words overflow-hidden">Sensor {item.code}</div>
+                  <div>{item.currentHumidty}%</div>
                   <div>
                     <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                     <div className="flex justify-between">
@@ -174,7 +172,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  {item.currentTemperature ? (
+                  {item.currentHumidty ? (
                     <Chip color="primary">Hidup</Chip>
                   ) : (
                     <Chip color="danger">Mati</Chip>
