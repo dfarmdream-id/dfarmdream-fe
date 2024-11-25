@@ -29,14 +29,22 @@ export default function IotDevices({ children }: { children: ReactNode }) {
       <div>{children}</div>
       <div className="flex flex-col items-center">
         <div className="grid md:grid-cols-2 gap-3 max-w-3xl w-full">
-          <Select variant="bordered" placeholder="Pilih lokasi">
+          <Select
+            isLoading={sites.isLoading}
+            variant="bordered"
+            placeholder="Pilih lokasi"
+          >
             {sites.data?.data?.data?.map((site) => (
               <SelectItem key={site.id} value={site.id}>
                 {site.name}
               </SelectItem>
             )) || []}
           </Select>
-          <Select variant="bordered" placeholder="Pilih kandang">
+          <Select
+            isLoading={cages.isLoading}
+            variant="bordered"
+            placeholder="Pilih kandang"
+          >
             {cages.data?.data?.data?.map((site) => (
               <SelectItem key={site.id} value={site.id}>
                 {site.name}
@@ -54,9 +62,9 @@ export default function IotDevices({ children }: { children: ReactNode }) {
               key={Math.random()}
               className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
             >
-              <div className="w-16 h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
+              <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
                 <div>
-                  <HiSun className="w-8 h-8" />
+                  <HiSun className="w-5 h-5 md:w-8 md:h-8" />
                 </div>
               </div>
               <div className="w-full">

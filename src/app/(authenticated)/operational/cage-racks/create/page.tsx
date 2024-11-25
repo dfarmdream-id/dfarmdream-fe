@@ -83,6 +83,7 @@ export default function Page() {
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
                   label="Kandang"
+                  isLoading={cage.isLoading}
                   variant="bordered"
                   {...field}
                   errorMessage={fieldState.error?.message}

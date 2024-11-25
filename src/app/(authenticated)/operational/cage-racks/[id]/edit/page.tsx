@@ -97,6 +97,7 @@ export default function Page() {
                   placeholder="Pilih Kandang"
                   label="Kandang"
                   variant="bordered"
+                  isLoading={cage.isLoading}
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}

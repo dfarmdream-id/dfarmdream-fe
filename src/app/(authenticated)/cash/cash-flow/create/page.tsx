@@ -109,6 +109,7 @@ export default function Page() {
               name="categoryId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={category.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Kategori Kas"
                   label="Kategori Kas"
@@ -151,6 +152,7 @@ export default function Page() {
               name="cageId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={cage.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
                   label="Kandang"
@@ -187,7 +189,11 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end">
-                        <Button variant="bordered" color="primary" onClick={() => router.back()}>
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

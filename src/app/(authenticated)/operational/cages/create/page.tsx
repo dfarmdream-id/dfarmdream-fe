@@ -139,6 +139,7 @@ export default function Page() {
               name="siteId"
               render={({ field, fieldState }) => (
                 <Select
+                  isLoading={sites.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
                   label="Lokasi"

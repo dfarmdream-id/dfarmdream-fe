@@ -60,13 +60,13 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
       options: {
         legend: {
           show: true,
-          position: "top",
+          position: "top" as const,
           markers: {
-            shape: "rect",
+            shape: "rect" as const,
           },
         },
         chart: {
-          type: "area",
+          type: "area" as const,
         },
         dataLabels: {
           enabled: false,
@@ -97,12 +97,13 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
 
   return (
     <div className="grid md:grid-cols-2 bg-white rounded-lg p-5 gap-3">
-      <div className="flex flex-col gap-3 w-full">
-        <div>
+      <div className="flex flex-col gap-3 w-full overflow-hidden">
+        <div className="w-full">
           <div className="text-xl text-primary font-bold text-center">
             {children}
           </div>
           <Chart
+            width="100%"
             type="area"
             options={cageTempChart.options}
             series={cageTempChart.options.series}
@@ -123,6 +124,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
       <div>
         <div className="grid md:grid-cols-2 gap-3">
           <Select
+            isLoading={sites.isLoading}
             variant="bordered"
             placeholder="Pilih lokasi"
             onChange={(e) => setLokasi(e.target.value)}
@@ -134,6 +136,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
             )) || []}
           </Select>
           <Select
+            isLoading={cages.isLoading}
             variant="bordered"
             placeholder="Pilih kandang"
             onChange={(e) => setKandang(e.target.value)}
@@ -145,21 +148,23 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
             )) || []}
           </Select>
         </div>
-        <ul className="space-y-5 py-5">
+        <ul className="space-y-5 py-5 w-full">
           {items?.data?.data?.sensors &&
             items.data.data.sensors.map((item) => (
               <li
-                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
+                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
                 key={item.code}
               >
-                <div className="w-16 h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
+                <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
                   <div>
-                    <FaTemperatureEmpty className="w-8 h-8" />
+                    <FaTemperatureEmpty className="w-5 h-5 md:w-8 md:h-8" />
                   </div>
                 </div>
-                <div className="w-full">
-                  <div className="font-bold">Sensor {item.code}</div>
-                  <div>{item.currentAmonia}</div>
+                <div className="w-full flex-1">
+                  <div className="font-bold w-full break-words overflow-hidden">
+                    Sensor {item.code}
+                  </div>
+                  <div>{item.currentTemperature}</div>
                   <div>
                     <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                     <div className="flex justify-between">
@@ -169,7 +174,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  {item.currentAmonia ? (
+                  {item.currentTemperature ? (
                     <Chip color="primary">Hidup</Chip>
                   ) : (
                     <Chip color="danger">Mati</Chip>
