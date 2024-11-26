@@ -43,6 +43,9 @@ export default function Page() {
       if (user?.data?.data?.rackId) {
         form.setValue("rackId", user?.data?.data?.rackId);
       }
+      if (user?.data?.data?.status) {
+        form.setValue("status", user?.data?.data?.status);
+      }
     }
   }, [user.data, form]);
 
@@ -129,7 +132,14 @@ export default function Page() {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <Select {...field} selectedKeys={[field.value as string]}>
+                <Select
+                  variant="bordered"
+                  label="Status Ayam"
+                  placeholder="Pilih Status"
+                  labelPlacement="outside"
+                  {...field}
+                  selectedKeys={[field.value as string]}
+                >
                   <SelectItem key="ALIVE">Hidup</SelectItem>
                   <SelectItem key="DEAD">Mati</SelectItem>
                 </Select>

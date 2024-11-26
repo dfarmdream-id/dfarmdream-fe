@@ -172,7 +172,7 @@ export default function Page() {
             )}
           </TableBody>
         </Table>
-        <div className="flex justify-betweens">
+        <div className="flex justify-between">
           <Select
             label="Tampilkan"
             onChange={(e) => {

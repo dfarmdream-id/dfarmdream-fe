@@ -146,7 +146,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="bg-white p-5 rounded-lg">
+          <div className="bg-white p-5 rounded-lg md:col-span-2">
             <div className="font-bold">Data Panen</div>
             <ul className="mt-5 grid gap-5">
               {haversts.fields.length == 0 && (
