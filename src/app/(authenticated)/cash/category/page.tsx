@@ -54,7 +54,10 @@ export default function Page() {
   });
 
   const user = useGetCashFlowCategories(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -70,7 +73,6 @@ export default function Page() {
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
-            
             <Input
               variant="bordered"
               labelPlacement="outside-left"
@@ -87,7 +89,7 @@ export default function Page() {
             href="/cash/category/create"
             color="primary"
             startContent={<HiPlus />}
-className="w-full md:w-auto"
+            className="w-full md:w-auto"
           >
             Tambah Kategori Arus Kas
           </Button>
@@ -138,7 +140,7 @@ className="w-full md:w-auto"
         </Table>
         <div className="flex justify-between">
           <Select
-           className="w-40"
+            className="w-40"
             label="Tampilkan"
             onChange={(e) => {
               setLimit(e.target.value);
