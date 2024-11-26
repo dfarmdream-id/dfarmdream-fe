@@ -30,6 +30,10 @@ const columns = [
     label: "Jenis",
   },
   {
+    key: "category",
+    label: "Kategori",
+  },
+  {
     key: "site",
     label: "Lokasi",
   },
@@ -134,6 +138,9 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.type == "IN" ? "Masuk" : "Keluar"}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.category == "EGG" ? "Telur" : "Ayam"}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item.site?.name}</div>
