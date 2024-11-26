@@ -17,12 +17,6 @@ export default function Page() {
     cageId: z.string({
       message: "Kandang wajib diisi",
     }),
-    rackId: z.string({
-      message: "Rak wajib diisi",
-    }),
-    qty: z.number({
-      message: "Jumlah wajib diisi",
-    }),
     weight: z.number({
       message: "Berat wajib diisi",
     }),
@@ -215,7 +209,7 @@ export default function Page() {
               </li>
             </ul>
           </div>
-          {/* <div className="h-16">
+          <div className="h-16">
             <Controller
               control={form.control}
               name="weight"
@@ -232,7 +226,7 @@ export default function Page() {
                 />
               )}
             />
-          </div> */}
+          </div>
 
           <div className="mt-5 flex gap-3 justify-end">
             <Button
