@@ -38,10 +38,6 @@ const columns = [
     label: "Kandang",
   },
   {
-    key: "rack",
-    label: "Rack",
-  },
-  {
     key: "weight",
     label: "Berat",
   },
@@ -159,9 +155,6 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{item.cage.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{item.rack.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item.weight}</div>
