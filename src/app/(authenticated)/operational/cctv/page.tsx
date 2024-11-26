@@ -10,6 +10,8 @@ import {
   Button,
   Input,
   Spinner,
+  SelectItem,
+  Select,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
@@ -48,6 +50,9 @@ export default function Page() {
     throttleMs: 1000,
   });
   const [page, setPage] = useQueryState("page", {
+    throttleMs: 1000,
+  });
+  const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
 
@@ -122,7 +127,23 @@ export default function Page() {
             )}
           </TableBody>
         </Table>
-        <div className="flex justify-center">
+        <div className="flex justify-between">
+          <Select
+            label="Tampilkan"
+            onChange={(e) => {
+              setLimit(e.target.value);
+            }}
+            labelPlacement="outside-left"
+            className="w-40"
+            classNames={{ base: "flex items-center" }}
+            selectedKeys={[limit?.toString() || "10"]}
+          >
+            <SelectItem key="10">10</SelectItem>
+            <SelectItem key="20">20</SelectItem>
+            <SelectItem key="30">30</SelectItem>
+            <SelectItem key="40">40</SelectItem>
+            <SelectItem key="50">50</SelectItem>
+          </Select>
           <Pagination
             color="primary"
             total={cctv.data?.data?.meta?.totalPage || 1}

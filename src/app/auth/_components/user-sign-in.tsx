@@ -88,7 +88,7 @@ export default function UserSignIn() {
     [password, user]
   );
   return (
-    <form onSubmit={onSubmit} className="w-full">
+    <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5" className="w-full">
       <div className="text-3xl font-semibold mb-10">Welcome User 👋</div>
 
       {signInChooseMutation.isError && (

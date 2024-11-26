@@ -58,7 +58,6 @@ export default function Page() {
       series: [
         chartData?.data?.data?.alive || 0,
         chartData?.data?.data?.dead || 0,
-        0,
       ],
       options: {
         legend: {
@@ -78,7 +77,7 @@ export default function Page() {
         chart: {
           type: "donut",
         },
-        labels: ["Ayam Hidup", "Ayam Mati", "Ayam Afkir"],
+        labels: ["Ayam Hidup", "Ayam Mati"],
         colors: ["#0f6646", "#f3cb52", "#f3cb52"],
         responsive: [],
       },

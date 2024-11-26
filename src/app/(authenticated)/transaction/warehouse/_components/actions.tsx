@@ -20,6 +20,7 @@ import QRCode from "react-qr-code";
 import { useGetWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
+import { IDR } from "@/common/helpers/currency";
 
 type Props = {
   id: string;
@@ -122,7 +123,9 @@ export default function Actions(props: Props) {
                   <tbody>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Lokasi</td>
-                      <td className="px-3 py-1">{data?.data?.data?.site?.name}</td>
+                      <td className="px-3 py-1">
+                        {data?.data?.data?.site?.name}
+                      </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jenis</td>
@@ -149,6 +152,34 @@ export default function Actions(props: Props) {
                           {DateTime.fromISO(
                             data.data?.data?.createdAt || ""
                           ).toFormat("dd-MM-yyyy")}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">
+                        Harga{" "}
+                        {data.data?.data?.category == "CHICKEN"
+                          ? "Ayam"
+                          : "Telur"}{" "}
+                        Pada{" "}
+                        {DateTime.fromISO(
+                          data.data?.data?.price?.createdAt || ""
+                        ).toFormat("dd-MM-yyyy")}
+                      </td>
+                      <td className="px-3 py-1 overflow-hidden ">
+                        <div className="w-full overflow-hidden truncate">
+                          {IDR(data.data?.data?.price?.value || 0)} /Kg
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Total Harga</td>
+                      <td className="px-3 py-1 overflow-hidden ">
+                        <div className="w-full overflow-hidden truncate">
+                          {IDR(
+                            (data.data?.data?.price?.value ?? 0) *
+                              (data.data?.data?.weight ?? 0) || 0
+                          )}
                         </div>
                       </td>
                     </tr>

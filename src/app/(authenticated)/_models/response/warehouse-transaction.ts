@@ -1,5 +1,3 @@
-import { CreatedBy } from "./cash-flow";
-
 export interface GetWarehouseTransactionListResponse {
   message: string;
   data: Data;
@@ -16,24 +14,25 @@ export interface Data {
   data: Daum[];
   meta: Meta;
 }
-
 export interface Daum {
   id: string;
   siteId: string;
   code: string;
   cageId: string;
-  rackId: string;
   qty: number;
   weight: number;
   type: string;
   createdById: string;
   deletedAt: any;
   createdAt: string;
-  createdBy: CreatedBy;
   updatedAt: string;
+  category: string;
+  priceId?: string;
   cage: Cage;
-  rack: Rack;
   site: Site;
+  createdBy: CreatedBy;
+  items: Item[];
+  price?: Price;
 }
 
 export interface Cage {
@@ -49,15 +48,6 @@ export interface Cage {
   status: string;
 }
 
-export interface Rack {
-  id: string;
-  name: string;
-  cageId: string;
-  deletedAt: any;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface Site {
   id: string;
   name: string;
@@ -69,6 +59,47 @@ export interface Site {
   districtId: any;
   subDistrictId: any;
   address: string;
+}
+
+export interface CreatedBy {
+  id: string;
+  email: string;
+  username: string;
+  fullName: string;
+  password: string;
+  identityId: any;
+  phone: string;
+  address: string;
+  photoProfile: any;
+  status: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  positionId: string;
+}
+
+export interface Item {
+  id: string;
+  code: string;
+  qty: number;
+  rackId: string;
+  createdById: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  warehouseTransactionId: string;
+}
+
+export interface Price {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  value: number;
+  siteId: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Meta {
