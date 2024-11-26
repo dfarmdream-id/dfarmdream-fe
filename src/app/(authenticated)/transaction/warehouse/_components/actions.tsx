@@ -14,10 +14,12 @@ import { HiOutlinePrinter, HiQrCode, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteSite } from "@/app/(authenticated)/_services/site";
 import { Can } from "@/components/acl/can";
 import QRCode from "react-qr-code";
-import { useGetWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
+import {
+  useDeleteWarehouseTransaction,
+  useGetWarehouseTransaction,
+} from "@/app/(authenticated)/_services/warehouse-transaction";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
 import { IDR } from "@/common/helpers/currency";
@@ -30,7 +32,7 @@ export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
   const qrDisclosure = useDisclosure();
 
-  const deleteData = useDeleteSite();
+  const deleteData = useDeleteWarehouseTransaction();
 
   const queryClient = useQueryClient();
 
