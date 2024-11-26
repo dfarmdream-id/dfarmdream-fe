@@ -9,7 +9,14 @@ import { z } from "zod";
 import { useHttpMutation } from "@/hooks/http";
 import Cookies from "js-cookie";
 import { useDebounce } from "react-use";
-import { Button, Card, CardBody, Input, Select, SelectItem } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Input,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 
 export default function UserSignIn() {
@@ -88,7 +95,7 @@ export default function UserSignIn() {
     [password, user]
   );
   return (
-    <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5" className="w-full">
+    <form onSubmit={onSubmit} className="w-full">
       <div className="text-3xl font-semibold mb-10">Welcome User 👋</div>
 
       {signInChooseMutation.isError && (

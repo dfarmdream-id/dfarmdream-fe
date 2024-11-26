@@ -98,7 +98,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Data Gudang</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5" className="space-y-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}
