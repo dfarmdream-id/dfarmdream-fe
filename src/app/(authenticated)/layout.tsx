@@ -443,7 +443,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <DropdownTrigger>
                     <Card shadow="none" isPressable className="p-1">
                       <CardBody className="flex flex-row items-center gap-2 px-1 py-0">
-                        <Avatar />
+                        <Avatar src={data?.data?.photoProfile} />
                         {data?.data?.fullName}
                       </CardBody>
                     </Card>

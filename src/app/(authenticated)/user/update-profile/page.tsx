@@ -27,10 +27,10 @@ export default function Page() {
     }),
     phone: z.string({
       message: "Mohon isi nomor telp",
-    }),
+    }).optional(),
     address: z.string({
       message: "Mohon isi alamat",
-    }),
+    }).optional(),
     email: z.string({
       message: "Email tidak boleh kosong",
     }),
@@ -43,6 +43,7 @@ export default function Page() {
   const submission = useUpdateProfile();
   const router = useRouter();
   const profile = useGetProfile();
+  const [loading,setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (profile.data) {
@@ -56,16 +57,37 @@ export default function Page() {
     }
   }, [profile.data, form]);
 
-  const onSubmit = form.handleSubmit((data) => {
+  const onSubmit = form.handleSubmit(async(data) => {
+    setLoading(true)
+    let imageId:any = null
+    if(file && file.length>0){
+      // Proses upload file
+      const formData = new FormData();
+      formData.append("file", file[0].file)
+      try{
+        const response:any = await uploader.mutateAsync({
+          body:formData
+        })
+        imageId = response?.data?.id ?? null
+      }catch(e){
+        console.log("Failed to upload profile iamge : ", e)
+      }
+    }
+    setLoading(false)
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          imageId: imageId
+        },
       },
       {
         onError: (error) => {
+          setLoading(false)
           toast.error(error.data?.message);
         },
         onSuccess: () => {
+          setLoading(false)
           toast.success("Berhasil melakukan update profile");
           form.reset();
           router.push("/dashboard");
@@ -74,32 +96,9 @@ export default function Page() {
     );
   });
 
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState<any>([]);
   const uploader = useUploadImage();
-  const handleUpload = async (fileItems: any) => {
-    alert("testing");
-    if (fileItems.length > 0) {
-      alert("proses upload");
-      const formData = new FormData();
-      formData.append("file", fileItems[0].file);
-      try {
-        const response = await uploader.mutateAsync({
-          body: formData,
-        });
-        console.log("Response : ", response);
-
-        // if (response.ok) {
-        //   const result = await response.json();
-        //   console.log('Profile image updated:', result);
-        // } else {
-        //   console.error('Upload failed');
-        // }
-      } catch (error) {
-        console.error("Error uploading profile image:", error);
-      }
-    }
-  };
-
+  
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Profile</div>
@@ -109,7 +108,8 @@ export default function Page() {
             <FilePond
               files={file as any[]}
               onupdatefiles={setFile as any}
-              onprocessfiles={handleUpload as any}
+              // onprocessfiles={handleUpload as any}
+              allowMultiple={false}
               maxFiles={1}
               name="profileImage"
               acceptedFileTypes={["image/png", "image/jpeg", "image/gif"]}
@@ -219,7 +219,7 @@ export default function Page() {
               Kembali
             </Button>
             <Button
-              isLoading={submission.isPending}
+              isLoading={loading}
               color="primary"
               type="submit"
             >
