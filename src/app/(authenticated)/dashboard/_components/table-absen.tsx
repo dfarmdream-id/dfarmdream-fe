@@ -36,7 +36,7 @@ export default function TableAbsen() {
     },
     {
       key: "jamKeluar",
-      label: "jamKeluar",
+      label: "Jam Keluar",
     },
     {
       key: "totalJamKerja",
@@ -144,13 +144,13 @@ export default function TableAbsen() {
                   </div>
                 </TableCell>
                 <TableCell>
-                <div>{item.jamMasuk?formatJam(item.jamMasuk):'-'}</div>
+                <div>{item.jamMasuk?item.jamMasuk:'-'}</div>
                 </TableCell>
                 <TableCell>
-                <div>{item.jamKeluar?formatJam(item.jamKeluar):'-'}</div>
+                <div>{item.jamKeluar?item.jamKeluar:'-'}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.jamMasuk && item.jamKeluar ?calculateJamKerja(item.jamMasuk, item.jamKeluar):'-'}</div>
+                  <div>{item.jamMasuk && item.jamKeluar ?calculateJamKerja(item.timestampMasuk, item.timestampKeluar):'-'}</div>
                 </TableCell>
                 <TableCell>
                   <Chip

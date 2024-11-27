@@ -22,6 +22,8 @@ export interface AbsenListResponse {
     tanggal:string;
     jamMasuk:string;
     jamKeluar:string;
+    timestampMasuk:string;
+    timestampKeluar:string;
     status:number;
   }
   
