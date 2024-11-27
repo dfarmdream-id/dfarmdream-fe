@@ -1,16 +1,14 @@
 "use client";
-import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import {  useMemo, useState } from "react";
 import { useUploadDokumen } from "@/app/(authenticated)/_services/dokumen";
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { useUploadImage } from "@/app/(authenticated)/user/_services/profile";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";

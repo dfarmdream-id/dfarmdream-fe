@@ -86,11 +86,11 @@ export default function TableAbsen() {
     return formattedDate
   }
 
-  const formatJam = (tanggal:string)=>{
-    const date = DateTime.fromISO(tanggal);
-    const formattedDate = date.toFormat('HH:mm'); // Using Luxon to format the date
-    return formattedDate
-  }
+  // const formatJam = (tanggal:string)=>{
+  //   const date = DateTime.fromISO(tanggal);
+  //   const formattedDate = date.toFormat('HH:mm'); // Using Luxon to format the date
+  //   return formattedDate
+  // }
   
   return (
     <>
