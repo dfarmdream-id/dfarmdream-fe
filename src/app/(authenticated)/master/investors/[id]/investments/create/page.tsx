@@ -1,5 +1,5 @@
 "use client";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -14,6 +14,9 @@ import UploadFile from "@/components/ui/upload-file";
 
 export default function Page() {
   const schema = z.object({
+    name: z.string({
+      message: "Nama Investasi wajib diisi",
+    }),
     cageId: z.string({
       message: "Kandang wajib diisi",
     }),
@@ -84,6 +87,23 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Tambah Dokumen Investasi</div>
       <div>
         <form onSubmit={onSubmit} className=" flex flex-col gap-5">
+          <div>
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Input
+                  variant="bordered"
+                  labelPlacement="outside"
+                  label="Nama Investasi"
+                  placeholder="Nama Investasi"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
           <div>
             <Controller
               control={form.control}
