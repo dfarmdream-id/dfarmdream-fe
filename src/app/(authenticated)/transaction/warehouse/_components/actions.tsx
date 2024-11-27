@@ -57,7 +57,7 @@ export default function Actions(props: Props) {
   const data = useGetWarehouseTransaction(useMemo(() => props.id, [props]));
 
   return (
-    <div className="flex space-x-1">
+    <div className="flex space-x-1 print:hidden">
       <Tooltip content="Selesaikan Panen">
         <Can action="update:warehouse-qr">
           <Tooltip content="Print QR">
@@ -107,17 +107,18 @@ export default function Actions(props: Props) {
         isOpen={qrDisclosure.isOpen}
         onClose={qrDisclosure.onClose}
         size="xl"
+        classNames={{ closeButton: "print:hidden" }}
       >
-        <ModalContent>
-          <ModalHeader className="gap-2">
+        <ModalContent className="print:w-full print:m-0 ">
+          <ModalHeader className="gap-2 print:hidden">
             <div>QR Panen {data?.data?.data?.code}</div>
           </ModalHeader>
           <ModalBody>
-            <div className="flex items-center w-full gap-5">
+            <div className="flex items-center w-full gap-5 print:flex">
               <div className="w-1/3">
                 <QRCode
                   className="w-full h-fit"
-                  value={`https://dfarmdream.id/verify/${data.data?.data?.code}`}
+                  value={`https://dfarmdream.id/verify/${data.data?.data?.id}`}
                 />
               </div>
               <div className="flex-1">
@@ -190,7 +191,7 @@ export default function Actions(props: Props) {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="print:hidden">
             <Button
               variant="bordered"
               color="default"
@@ -204,7 +205,9 @@ export default function Actions(props: Props) {
               color="primary"
               className="w-full"
               startContent={<HiOutlinePrinter />}
-              onPress={handleDelete.bind(null, props.id)}
+              onPress={() => {
+                window.open(`/verify/${props.id}?print=true`, "_blank");
+              }}
             >
               Print
             </Button>

@@ -46,42 +46,44 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Data Lokasi</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Lokasi"
-                  placeholder="Lokasi"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div>
-            <Controller
-              control={form.control}
-              name="address"
-              render={({ field, fieldState }) => (
-                <Textarea
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Alamat"
-                  placeholder="Alamat"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
+        <form onSubmit={onSubmit}>
+          <div className="grid grid-cols-1 gap-5">
+            <div className="h-16">
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <Input
+                    labelPlacement="outside"
+                    variant="bordered"
+                    type="text"
+                    label="Lokasi"
+                    placeholder="Lokasi"
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <Controller
+                control={form.control}
+                name="address"
+                render={({ field, fieldState }) => (
+                  <Textarea
+                    labelPlacement="outside"
+                    variant="bordered"
+                    type="text"
+                    label="Alamat"
+                    placeholder="Alamat"
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
