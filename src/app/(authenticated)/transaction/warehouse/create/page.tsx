@@ -17,6 +17,9 @@ export default function Page() {
     cageId: z.string({
       message: "Kandang wajib diisi",
     }),
+    category: z.enum(["EGG", "CHICKEN"], {
+      message: "Pilih kategori",
+    }),
     weight: z.number({
       message: "Berat wajib diisi",
     }),
@@ -88,7 +91,7 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Transaksi Gudang</div>
       <div>
-        <form onSubmit={onSubmit} className=" space-y-3">
+        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="h-16">
             <Controller
               control={form.control}
@@ -112,6 +115,28 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
+              name="category"
+              render={({ fieldState, field }) => {
+                return (
+                  <Select
+                    labelPlacement="outside"
+                    variant="bordered"
+                    placeholder="Pilih kategori"
+                    label="Kategori"
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                    {...field}
+                  >
+                    <SelectItem key="CHICKEN">Ayam</SelectItem>
+                    <SelectItem key="EGG">Telur</SelectItem>
+                  </Select>
+                );
+              }}
+            />
+          </div>
+          <div className="h-16 md:col-span-2">
+            <Controller
+              control={form.control}
               name="cageId"
               render={({ field, fieldState }) => (
                 <Select
@@ -133,7 +158,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="bg-white p-5 rounded-lg">
+          <div className="bg-white p-5 rounded-lg md:col-span-2">
             <div className="font-bold">Data Panen</div>
             <ul className="mt-5 grid gap-5">
               {haversts.fields.length == 0 && (
@@ -209,26 +234,28 @@ export default function Page() {
               </li>
             </ul>
           </div>
-          <div className="h-16">
+          <div className="h-16 py-5 md:col-span-2">
             <Controller
               control={form.control}
               name="weight"
               render={({ field, fieldState }) => (
-                <InputNumber
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Berat kg"
-                  placeholder="Berat kg"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
+                <div>
+                  <InputNumber
+                    labelPlacement="outside"
+                    variant="bordered"
+                    type="text"
+                    label="Berat kg"
+                    placeholder="Berat kg"
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                  />
+                </div>
               )}
             />
           </div>
 
-          <div className="mt-5 flex gap-3 justify-end">
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button
               variant="bordered"
               color="primary"

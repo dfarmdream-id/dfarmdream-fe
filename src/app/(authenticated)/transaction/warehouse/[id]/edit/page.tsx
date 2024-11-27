@@ -98,7 +98,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Data Gudang</div>
       <div>
-        <form onSubmit={onSubmit} className="space-y-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}
@@ -143,7 +146,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="bg-white p-5 rounded-lg">
+          <div className="bg-white p-5 rounded-lg md:col-span-2">
             <div className="font-bold">Data Panen</div>
             <ul className="mt-5 grid gap-5">
               {haversts.fields.length == 0 && (
@@ -238,7 +241,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="mt-5 flex gap-3 justify-end">
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button
               variant="bordered"
               color="primary"

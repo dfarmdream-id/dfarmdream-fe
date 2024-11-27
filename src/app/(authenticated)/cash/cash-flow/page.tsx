@@ -74,7 +74,10 @@ export default function Page() {
     throttleMs: 1000,
   });
   const user = useGetCashFlows(
-    useMemo(() => ({ q: search || "", page: page || "1", limit: limit || "10" }), [search, page, limit])
+    useMemo(
+      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      [search, page, limit]
+    )
   );
 
   const rows = useMemo(() => {
@@ -90,21 +93,6 @@ export default function Page() {
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
-            <Select
-              label="Tampilkan"
-              onChange={(e) => {
-                setLimit(e.target.value);
-              }}
-              labelPlacement="outside-left"
-              classNames={{ base: "flex items-center" }}
-              selectedKeys={[limit?.toString() || "10"]}
-            >
-              <SelectItem key="10">10</SelectItem>
-              <SelectItem key="20">20</SelectItem>
-              <SelectItem key="30">30</SelectItem>
-              <SelectItem key="40">40</SelectItem>
-              <SelectItem key="50">50</SelectItem>
-            </Select>
             <Input
               startContent={<HiSearch />}
               placeholder="Cari Arus Kas"
@@ -118,7 +106,7 @@ export default function Page() {
             href="/cash/cash-flow/create"
             color="primary"
             startContent={<HiPlus />}
-className="w-full md:w-auto"
+            className="w-full md:w-auto"
           >
             Tambah Arus Kas
           </Button>
@@ -184,7 +172,23 @@ className="w-full md:w-auto"
             )}
           </TableBody>
         </Table>
-        <div className="flex justify-center">
+        <div className="flex justify-between">
+          <Select
+            label="Tampilkan"
+            onChange={(e) => {
+              setLimit(e.target.value);
+            }}
+            labelPlacement="outside-left"
+            className="w-40"
+            classNames={{ base: "flex items-center" }}
+            selectedKeys={[limit?.toString() || "10"]}
+          >
+            <SelectItem key="10">10</SelectItem>
+            <SelectItem key="20">20</SelectItem>
+            <SelectItem key="30">30</SelectItem>
+            <SelectItem key="40">40</SelectItem>
+            <SelectItem key="50">50</SelectItem>
+          </Select>
           <Pagination
             color="primary"
             total={user.data?.data?.meta?.totalPage || 1}

@@ -61,7 +61,7 @@ export default function Page() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 py-10 bg-white max-w-screen-lg mx-auto w-full rounded-xl">
         <div className="flex justify-center items-center order-2 md:order-1">
           <div className="w-full p-5">
-            <form onSubmit={onSubmit} className="w-full">
+            <form onSubmit={onSubmit}  className="w-full">
               <div className="text-3xl font-semibold mb-10">Welcome 👋</div>
 
               {signInMutation.isError && (

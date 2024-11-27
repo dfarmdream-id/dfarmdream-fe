@@ -41,9 +41,11 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Kategori Arus Kas</div>
+      <div className="text-2xl font-bold mb-10">
+        Tambah Data Kategori Arus Kas
+      </div>
       <div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="grid grid-cols-1 gap-5">
           <div className="h-16">
             <Controller
               control={form.control}
@@ -63,8 +65,12 @@ export default function Page() {
             />
           </div>
 
-          <div className="mt-5 flex gap-3 justify-end">
-                        <Button variant="bordered" color="primary" onClick={() => router.back()}>
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
+            <Button
+              variant="bordered"
+              color="primary"
+              onClick={() => router.back()}
+            >
               Kembali
             </Button>
             <Button

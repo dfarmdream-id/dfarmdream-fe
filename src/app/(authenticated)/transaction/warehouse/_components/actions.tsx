@@ -14,12 +14,15 @@ import { HiOutlinePrinter, HiQrCode, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteSite } from "@/app/(authenticated)/_services/site";
 import { Can } from "@/components/acl/can";
 import QRCode from "react-qr-code";
-import { useGetWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
+import {
+  useDeleteWarehouseTransaction,
+  useGetWarehouseTransaction,
+} from "@/app/(authenticated)/_services/warehouse-transaction";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
+import { IDR } from "@/common/helpers/currency";
 
 type Props = {
   id: string;
@@ -29,7 +32,7 @@ export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
   const qrDisclosure = useDisclosure();
 
-  const deleteData = useDeleteSite();
+  const deleteData = useDeleteWarehouseTransaction();
 
   const queryClient = useQueryClient();
 
@@ -122,7 +125,9 @@ export default function Actions(props: Props) {
                   <tbody>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Lokasi</td>
-                      <td className="px-3 py-1">{data?.data?.data?.site?.name}</td>
+                      <td className="px-3 py-1">
+                        {data?.data?.data?.site?.name}
+                      </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jenis</td>
@@ -149,6 +154,34 @@ export default function Actions(props: Props) {
                           {DateTime.fromISO(
                             data.data?.data?.createdAt || ""
                           ).toFormat("dd-MM-yyyy")}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">
+                        Harga{" "}
+                        {data.data?.data?.category == "CHICKEN"
+                          ? "Ayam"
+                          : "Telur"}{" "}
+                        Pada{" "}
+                        {DateTime.fromISO(
+                          data.data?.data?.price?.createdAt || ""
+                        ).toFormat("dd-MM-yyyy")}
+                      </td>
+                      <td className="px-3 py-1 overflow-hidden ">
+                        <div className="w-full overflow-hidden truncate">
+                          {IDR(data.data?.data?.price?.value || 0)} /Kg
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                      <td className="px-3 py-1 w-1/4">Total Harga</td>
+                      <td className="px-3 py-1 overflow-hidden ">
+                        <div className="w-full overflow-hidden truncate">
+                          {IDR(
+                            (data.data?.data?.price?.value ?? 0) *
+                              (data.data?.data?.weight ?? 0) || 0
+                          )}
                         </div>
                       </td>
                     </tr>

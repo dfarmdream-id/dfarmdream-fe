@@ -72,52 +72,52 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Ubah Role</div>
       <div>
         <form onSubmit={onSubmit}>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Role"
-                  placeholder="Role"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
+          <div className="grid grid-cols-1">
+            <div className="h-16 w-full">
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <Input
+                    labelPlacement="outside"
+                    variant="bordered"
+                    type="text"
+                    label="Role"
+                    placeholder="Role"
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                  />
+                )}
+              />
+            </div>
+            <div className="mt-5">
+              <Controller
+                control={form.control}
+                name="permissions"
+                render={({ field, fieldState }) => (
+                  <CheckboxGroup
+                    label="Permissions"
+                    color="primary"
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                  >
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {permissions.data?.data?.data.map((item) => (
+                        <Checkbox key={item.id} value={item.id}>
+                          {item.name}
+                        </Checkbox>
+                      ))}
+                    </div>
+                  </CheckboxGroup>
+                )}
+              />
+            </div>
           </div>
 
-          <div className="mt-5">
-            <Controller
-              control={form.control}
-              name="permissions"
-              render={({ field, fieldState }) => (
-                <CheckboxGroup
-                  label="Permissions"
-                  color="primary"
-                  onChange={field.onChange}
-                  defaultValue={field.value}
-                  errorMessage={fieldState.error?.message}
-                  value={field.value}
-                  isInvalid={fieldState.invalid}
-                >
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {permissions.data?.data?.data.map((item) => (
-                      <Checkbox key={item.id} value={item.id}>
-                        {item.name}
-                      </Checkbox>
-                    ))}
-                  </div>
-                </CheckboxGroup>
-              )}
-            />
-          </div>
-
-          <div className="mt-5 flex gap-3 justify-end">
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button
               variant="bordered"
               color="primary"

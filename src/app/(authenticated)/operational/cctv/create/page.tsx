@@ -57,7 +57,7 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Data IOT</div>
       <div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="mt-2">
             <Controller
               control={form.control}
@@ -137,7 +137,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="mt-5 flex gap-3 justify-end">
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button
               variant="bordered"
               color="primary"

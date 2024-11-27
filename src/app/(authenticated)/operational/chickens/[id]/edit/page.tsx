@@ -6,7 +6,10 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetChicken, useUpdateChicken } from "@/app/(authenticated)/_services/chicken";
+import {
+  useGetChicken,
+  useUpdateChicken,
+} from "@/app/(authenticated)/_services/chicken";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 
 export default function Page() {
@@ -16,6 +19,9 @@ export default function Page() {
     }),
     name: z.string({
       message: "Nama wajib diisi",
+    }),
+    status: z.string({
+      message: "Status wajib diisi",
     }),
   });
 
@@ -36,6 +42,9 @@ export default function Page() {
       }
       if (user?.data?.data?.rackId) {
         form.setValue("rackId", user?.data?.data?.rackId);
+      }
+      if (user?.data?.data?.status) {
+        form.setValue("status", user?.data?.data?.status);
       }
     }
   }, [user.data, form]);
@@ -69,7 +78,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Data Ayam</div>
       <div>
-        <form onSubmit={onSubmit}>
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}
@@ -115,8 +127,27 @@ export default function Page() {
               )}
             />
           </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <Select
+                  variant="bordered"
+                  label="Status Ayam"
+                  placeholder="Pilih Status"
+                  labelPlacement="outside"
+                  {...field}
+                  selectedKeys={[field.value as string]}
+                >
+                  <SelectItem key="ALIVE">Hidup</SelectItem>
+                  <SelectItem key="DEAD">Mati</SelectItem>
+                </Select>
+              )}
+            />
+          </div>
 
-          <div className="mt-5 flex gap-3 justify-end">
+          <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button
               variant="bordered"
               color="primary"
