@@ -18,7 +18,7 @@ import { useGetAbsen } from "../../_services/absen";
 import { useMemo } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
-const { DateTime } = require('luxon');
+import {DateTime} from 'luxon'
 
 export default function TableAbsen() {
   const columns = [
@@ -47,10 +47,6 @@ export default function TableAbsen() {
       label: "Status",
     },
   ];
-
-  const [search, setSearch] = useQueryState("q", {
-    throttleMs: 1000,
-  });
   const [page, setPage] = useQueryState("page", {
     throttleMs: 1000,
   });
@@ -60,8 +56,8 @@ export default function TableAbsen() {
 
   const attendance = useGetAbsen(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ q: "", page: page || "1", limit: limit || "10" }),
+      [ page, limit]
     )
   );
 
