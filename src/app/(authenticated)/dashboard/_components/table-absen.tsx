@@ -3,7 +3,6 @@ import {
   CardBody,
   CardHeader,
   Chip,
-  Input,
   Pagination,
   Select,
   SelectItem,
@@ -19,7 +18,7 @@ import { useGetAbsen } from "../../_services/absen";
 import { useMemo } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
-import { HiSearch } from "react-icons/hi";
+import {DateTime} from 'luxon'
 
 export default function TableAbsen() {
   const columns = [
@@ -37,7 +36,7 @@ export default function TableAbsen() {
     },
     {
       key: "jamKeluar",
-      label: "jamKeluar",
+      label: "Jam Keluar",
     },
     {
       key: "totalJamKerja",
@@ -48,10 +47,6 @@ export default function TableAbsen() {
       label: "Status",
     },
   ];
-
-  const [search, setSearch] = useQueryState("q", {
-    throttleMs: 1000,
-  });
   const [page, setPage] = useQueryState("page", {
     throttleMs: 1000,
   });
@@ -61,8 +56,8 @@ export default function TableAbsen() {
 
   const attendance = useGetAbsen(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ q: "", page: page || "1", limit: limit || "10" }),
+      [ page, limit]
     )
   );
 
@@ -73,21 +68,30 @@ export default function TableAbsen() {
     return [];
   }, [attendance.data]);
 
+  console.log("Data ABsen : ", rows)
   const calculateJamKerja = (jamMasuk: string, jamKeluar: string) => {
     if (!jamMasuk || !jamKeluar) {
       return "-";
     }
-
-    const waktuMasuk = new Date(`1970-01-01T${jamMasuk}:00`).getTime();
-    const waktuKeluar = new Date(`1970-01-01T${jamKeluar}:00`).getTime();
-
-    // Hitung selisih dalam milidetik
+    const waktuMasuk = new Date(jamMasuk).getTime();
+    const waktuKeluar = new Date(jamKeluar).getTime()
     const selisih = waktuKeluar - waktuMasuk;
-
-    // Konversi selisih milidetik ke jam
     const jamKerja = selisih / (1000 * 60 * 60);
-    return jamKerja;
+    return jamKerja?jamKerja.toFixed(2):0;
   };
+
+  const formatTanggal = (tanggal:string)=>{
+    const date = DateTime.fromISO(tanggal);
+    const formattedDate = date.toFormat('yyyy-MM-dd'); // Using Luxon to format the date
+    return formattedDate
+  }
+
+  const formatJam = (tanggal:string)=>{
+    const date = DateTime.fromISO(tanggal);
+    const formattedDate = date.toFormat('HH:mm'); // Using Luxon to format the date
+    return formattedDate
+  }
+  
   return (
     <>
       <Card>
@@ -112,14 +116,6 @@ export default function TableAbsen() {
                 <SelectItem key="40">40</SelectItem>
                 <SelectItem key="50">50</SelectItem>
               </Select>
-              <Input
-                variant="bordered"
-                labelPlacement="outside-left"
-                placeholder="Cari"
-                value={search || ""}
-                onValueChange={(e) => setSearch(e)}
-                endContent={<HiSearch />}
-              />
               <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
             </div>
           </div>
@@ -129,42 +125,42 @@ export default function TableAbsen() {
                 <TableColumn key={column.key}>{column.label}</TableColumn>
               )}
             </TableHeader>
-            <TableBody
-              items={rows}
+            <TableBody items={rows}
               isLoading={attendance.isLoading}
               loadingContent={<Spinner />}
-              emptyContent={<EmptyState />}
-            >
-              {(item) => (
-                <TableRow
+              emptyContent={<EmptyState />}>
+                {(item) => (
+              <TableRow
                   key={item.id}
                   className="odd:bg-[#75B89F]"
                   role="button"
                 >
-                  <TableCell>
-                    <div>{item.name}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.jamMasuk}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.jamKeluar}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      {calculateJamKerja(item.jamMasuk, item.jamKeluar)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
+                <TableCell>
+                <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {item.tanggal?formatTanggal(item.tanggal):'-'}
+                  </div>
+                </TableCell>
+                <TableCell>
+                <div>{item.jamMasuk?item.jamMasuk:'-'}</div>
+                </TableCell>
+                <TableCell>
+                <div>{item.jamKeluar?item.jamKeluar:'-'}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.jamMasuk && item.jamKeluar ?calculateJamKerja(item.timestampMasuk, item.timestampKeluar):'-'}</div>
+                </TableCell>
+                <TableCell>
+                  <Chip
                       color={item.status === 1 ? "success" : "danger"}
                       className="text-white"
                     >
-                      {item.status === 0 ? "Masuk" : "Absen"}
-                    </Chip>
-                  </TableCell>
-                </TableRow>
-              )}
+                      {item.status === 1 ? "Masuk" : "Absen"}
+                    </Chip></TableCell>
+              </TableRow>
+                )}
             </TableBody>
           </Table>
           <div className="flex justify-center mt-3">

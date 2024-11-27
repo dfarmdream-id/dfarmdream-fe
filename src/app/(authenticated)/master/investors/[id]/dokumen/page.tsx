@@ -18,10 +18,11 @@ import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 import Link from "next/link";
-import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
-import { useGetInvestors } from "../../_services/investor";
 import { Can } from "@/components/acl/can";
+import { useGetDokumen } from "@/app/(authenticated)/_services/dokumen";
+import { useParams } from "next/navigation";
+import UploadAction from "../../_components/upload-action";
 
 const columns = [
   {
@@ -29,24 +30,8 @@ const columns = [
     label: "Nama",
   },
   {
-    key: "role",
-    label: "No NIK",
-  },
-  {
-    key: "phone",
-    label: "No HP",
-  },
-  {
-    key: "address",
-    label: "Alamat",
-  },
-  {
-    key: "username",
-    label: "Username",
-  },
-  {
-    key:'status',
-    label:"Status"
+    key: "url",
+    label: "Url",
   },
   {
     key: "action",
@@ -64,25 +49,26 @@ export default function Page() {
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
+  const params = useParams();
 
-  const user = useGetInvestors(
+  const dokumen = useGetDokumen(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      () => ({ investorId: params.id as string, q: search || "", page: page || "1", limit: limit || "10" }),
       [search, page, limit]
     )
   );
 
   const rows = useMemo(() => {
-    if (user.data) {
-      return user.data?.data?.data || [];
+    if (dokumen.data) {
+      return dokumen.data?.data?.data || [];
     }
     return [];
-  }, [user.data]);
+  }, [dokumen.data]);
 
   return (
     <Can action="show:investors">
       <div className="p-5">
-        <div className="text-3xl font-bold mb-10">Data Investor</div>
+        <div className="text-3xl font-bold mb-10">Dokumen Investor</div>
         <div className="space-y-5 bg-white p-5 rounded-lg">
           <div className="flex justify-between items-center gap-3 flex-wrap">
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
@@ -97,12 +83,12 @@ export default function Page() {
             <Can action="create:investor">
               <Button
                 as={Link}
-                href="/master/investors/create"
+                href={`/master/investors/${params.id as string}/dokumen/upload`}
                 color="primary"
                 startContent={<HiPlus />}
                 className="w-full md:w-auto"
               >
-                Tambah Investor
+                Upload Dokumen
               </Button>
             </Can>
           </div>
@@ -114,7 +100,7 @@ export default function Page() {
             </TableHeader>
             <TableBody
               items={rows}
-              isLoading={user.isLoading}
+              isLoading={dokumen.isLoading}
               loadingContent={<Spinner />}
               emptyContent={<EmptyState />}
             >
@@ -125,28 +111,13 @@ export default function Page() {
                   role="button"
                 >
                   <TableCell>
-                    <div>{item.fullName}</div>
+                    <div>{item?.name}</div>
                   </TableCell>
                   <TableCell>
-                    <div>{item?.identityId}</div>
+                    <div><a href={item?.url} target="_blank">{item?.url}</a></div>
                   </TableCell>
                   <TableCell>
-                    <div>{item.phone}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.address}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.username}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/master/investors/${item.id}/dokumen`}>
-                      <Button color="warning">Lihat Data Investor</Button>
-                    </Link>
-                  </TableCell>
-
-                  <TableCell>
-                    <Actions id={item.id} />
+                    <UploadAction id={item.id}></UploadAction>
                   </TableCell>
                 </TableRow>
               )}
@@ -171,9 +142,9 @@ export default function Page() {
             </Select>
             <Pagination
               color="primary"
-              total={user.data?.data?.meta?.totalPage || 1}
+              total={dokumen.data?.data?.meta?.totalPage || 1}
               initialPage={1}
-              page={user.data?.data?.meta?.page || 1}
+              page={dokumen.data?.data?.meta?.page || 1}
               onChange={(page) => setPage(page.toString())}
             />
           </div>

@@ -11,6 +11,7 @@ export interface Data {
   fullName: string
   password: string
   identityId: any
+  photoProfile:string
   phone: string
   address: string
   status: string
