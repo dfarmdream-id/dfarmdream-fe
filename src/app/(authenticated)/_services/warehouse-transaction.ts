@@ -38,3 +38,9 @@ export const useGetWarehouseTransaction = (id: string) => {
     useMemo(() => `/v1/warehouse-transaction/${id}`, [id])
   );
 };
+
+export const useGetWarehouseTransactionPublic = (id: string) => {
+  return useHttp<GetWarehouseTransactionResponse>(
+    useMemo(() => `/v1/public/warehouse-transaction/${id}`, [id])
+  );
+};

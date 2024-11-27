@@ -9,12 +9,13 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiDocument, HiTrash } from "react-icons/hi2";
+import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteInvestor } from "../../../_services/investor";
 import { Can } from "@/components/acl/can";
+import { useDeleteDocumentInvestment } from "@/app/(authenticated)/_services/document-investment";
+import { usePathname } from "next/navigation";
 
 type Props = {
   id: string;
@@ -23,7 +24,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteInvestor();
+  const deleteData = useDeleteDocumentInvestment();
 
   const queryClient = useQueryClient();
 
@@ -34,7 +35,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/investor"],
+            queryKey: ["/v1/document-investment"],
           });
           deleteDisclosure.onClose();
         },
@@ -45,13 +46,15 @@ export default function Actions(props: Props) {
     );
   };
 
+  const path = usePathname();
+
   return (
     <div className="flex space-x-1">
       <Can action="update:investor">
         <Tooltip content="Edit Data">
           <Button
             as={Link}
-            href={`/master/investors/${props.id}/edit`}
+            href={`${path}/${props.id}/edit`}
             isIconOnly
             variant="light"
             color="primary"
@@ -69,19 +72,6 @@ export default function Actions(props: Props) {
             onPress={deleteDisclosure.onOpen}
           >
             <HiTrash />
-          </Button>
-        </Tooltip>
-      </Can>
-      <Can action="create:investor-create-investment">
-        <Tooltip content="Tambah Investasi">
-          <Button
-            as={Link}
-            href={`/master/investors/${props.id}/investments`}
-            isIconOnly
-            variant="light"
-            color="default"
-          >
-            <HiDocument />
           </Button>
         </Tooltip>
       </Can>

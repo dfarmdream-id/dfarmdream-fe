@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const publicURLs = ["/", "/"];
+  const publicURLs = ["/", "/verify"];
   if (publicURLs.includes(request.nextUrl.pathname)) {
     return NextResponse.next();
   }

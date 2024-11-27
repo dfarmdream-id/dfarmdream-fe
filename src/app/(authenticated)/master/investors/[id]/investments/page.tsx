@@ -20,8 +20,11 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
-import { useGetInvestors } from "../../_services/investor";
+import { DateTime } from "luxon";
 import { Can } from "@/components/acl/can";
+import { useGetDocumentInvestments } from "@/app/(authenticated)/_services/document-investment";
+import { useParams, usePathname } from "next/navigation";
+import { useGetInvestor } from "@/app/(authenticated)/_services/investor";
 
 const columns = [
   {
@@ -29,20 +32,24 @@ const columns = [
     label: "Nama",
   },
   {
-    key: "role",
-    label: "No NIK",
+    key: "site",
+    label: "Lokasi",
   },
   {
-    key: "phone",
-    label: "No HP",
+    key: "cage",
+    label: "Kandang",
   },
   {
-    key: "address",
-    label: "Alamat",
+    key: "amount",
+    label: "Total Investasi",
   },
   {
-    key: "username",
-    label: "Username",
+    key: "createdAt",
+    label: "Tanggal Dibuat",
+  },
+  {
+    key: "updatedAt",
+    label: "Tanggal Diubah",
   },
   {
     key: "action",
@@ -61,10 +68,17 @@ export default function Page() {
     throttleMs: 1000,
   });
 
-  const user = useGetInvestors(
+  const params = useParams();
+
+  const user = useGetDocumentInvestments(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({
+        q: search || "",
+        page: page || "1",
+        limit: limit || "10",
+        investorId: params.id as string,
+      }),
+      [search, page, limit, params]
     )
   );
 
@@ -75,30 +89,36 @@ export default function Page() {
     return [];
   }, [user.data]);
 
+  const { data } = useGetInvestor(params.id as string);
+
+  const path = usePathname();
+
   return (
-    <Can action="show:investors">
+    <Can action="show:roles">
       <div className="p-5">
-        <div className="text-3xl font-bold mb-10">Data Investor</div>
+        <div className="text-3xl font-bold mb-10">
+          Dokumen Investasi {data?.data?.fullName}
+        </div>
         <div className="space-y-5 bg-white p-5 rounded-lg">
           <div className="flex justify-between items-center gap-3 flex-wrap">
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
               <Input
                 startContent={<HiSearch />}
-                placeholder="Cari Investor"
+                placeholder="Cari Dokumen Investasi"
                 variant="bordered"
                 value={search || ""}
                 onValueChange={setSearch}
               />
             </div>
-            <Can action="create:investor">
+            <Can action="create:role">
               <Button
                 as={Link}
-                href="/master/investors/create"
+                href={`${path}/create`}
                 color="primary"
                 startContent={<HiPlus />}
                 className="w-full md:w-auto"
               >
-                Tambah Investor
+                Tambah Dokumen Investasi
               </Button>
             </Can>
           </div>
@@ -121,19 +141,33 @@ export default function Page() {
                   role="button"
                 >
                   <TableCell>
-                    <div>{item.fullName}</div>
+                    <div>
+                      Investasi{" "}
+                      {DateTime.fromISO(item.createdAt)
+                        .toLocal()
+                        .toFormat("dd LLLL yyyy")}
+                    </div>
+                  </TableCell>
+                  <TableCell>{item.site?.name}</TableCell>
+                  <TableCell>{item.cage?.name}</TableCell>
+                  <TableCell>
+                    {Intl.NumberFormat("id-ID").format(item.amount)}
                   </TableCell>
                   <TableCell>
-                    <div>{item?.identityId}</div>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <div>{item.phone}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.address}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{item.username}</div>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Actions id={item.id} />
