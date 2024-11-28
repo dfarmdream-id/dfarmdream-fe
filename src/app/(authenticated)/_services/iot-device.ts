@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import {
   GetIotDeviceResponse,
   GetListIotDeviceResponse,
+  GetListRelayObjectResponse
 } from "../_models/response/iot-device";
 import { ChartDataResponse } from "../_models/response/sensor";
 
@@ -50,4 +51,10 @@ export const useGetHumidityData = (params: Record<string, string>)=>{
   return useHttp<ChartDataResponse>("/v1/sensor/humidity", {
     params,
   });
+}
+
+export const useGetRelayLogData = (params: Record<string, string>)=>{
+  return useHttp<GetListRelayObjectResponse>("/v1/sensor/relay-log",{
+    params
+  })
 }
