@@ -49,7 +49,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/master/iot");
+          router.push("/operational/iot");
         },
       }
     );

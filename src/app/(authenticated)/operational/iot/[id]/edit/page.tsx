@@ -79,7 +79,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/master/iot");
+          router.push("/operational/iot");
         },
       }
     );
@@ -191,7 +191,7 @@ export default function Page() {
             />
           </div>
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
-            <Button variant="bordered" color="primary">
+            <Button variant="bordered" color="primary" onClick={()=> router.push('/operational/iot')}>
               Kembali
             </Button>
             <Button
