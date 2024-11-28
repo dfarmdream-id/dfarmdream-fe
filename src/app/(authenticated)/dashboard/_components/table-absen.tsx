@@ -68,7 +68,6 @@ export default function TableAbsen() {
     return [];
   }, [attendance.data]);
 
-  console.log("Data ABsen : ", rows)
   const calculateJamKerja = (jamMasuk: string, jamKeluar: string) => {
     if (!jamMasuk || !jamKeluar) {
       return "-";
