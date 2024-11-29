@@ -12,6 +12,9 @@ import { useGetIotDevice, useUpdateIotDevice } from "../../../../_services/iot-d
 
 export default function Page() {
   const schema = z.object({
+    name: z.string({
+      message: "Mohon isi dengan nama perangkat IOT",
+    }),
     code: z.string({
       message: "Mohon isi dengan kode perangkat IOT",
     }),
@@ -41,6 +44,9 @@ export default function Page() {
 
   useEffect(() => {
     if (item.data) {
+      if (item?.data?.data?.name) {
+        form.setValue("name", item?.data?.data?.name);
+      }
       if (item?.data?.data?.code) {
         form.setValue("code", item?.data?.data?.code);
       }

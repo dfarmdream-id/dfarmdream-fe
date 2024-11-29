@@ -61,7 +61,7 @@ export default function Page() {
                   variant="bordered"
                   type="text"
                   label="Nama Kategori"
-                  placeholder="Kategori Arus Kas"
+                  placeholder="Nama Kategori"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}

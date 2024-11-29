@@ -161,7 +161,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="w-full">
-                  <div className="font-bold w-full break-words overflow-hidden">Sensor {item.code}</div>
+                  <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.name}</div>
                   <div>{item.currentHumidty}%</div>
                   <div>
                     <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>

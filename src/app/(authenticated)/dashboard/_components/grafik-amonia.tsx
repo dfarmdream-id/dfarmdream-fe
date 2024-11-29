@@ -161,7 +161,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="w-full flex-1">
-                  <div className="font-bold w-full break-words overflow-hidden">Sensor {item.code}</div>
+                  <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.name}</div>
                   <div>
                     {item.currentAmonia ? item.currentAmonia.toFixed(2) : "-"}{" "}
                     PPM

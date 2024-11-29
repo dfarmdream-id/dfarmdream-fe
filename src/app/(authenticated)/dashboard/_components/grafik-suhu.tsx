@@ -225,7 +225,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                   </div>
                   <div className="w-full flex-1">
                     <div className="font-bold w-full break-words overflow-hidden">
-                      Sensor {item.code}
+                      Sensor: {item.name}
                     </div>
                     <div>{item.currentTemperature}°C</div>
                     <div>
