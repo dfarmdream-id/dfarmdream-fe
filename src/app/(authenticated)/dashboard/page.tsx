@@ -13,6 +13,7 @@ import TableAbsen from "./_components/table-absen";
 import GrafikSuhu from "./_components/grafik-suhu";
 import GrafikAmonia from "./_components/grafik-amonia";
 import GrafikHumidity from "./_components/grafik-humidity";
+import ForbiddenState from "@/components/state/forbidden";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -85,7 +86,7 @@ export default function Page() {
   }, [chartData]);
 
   return (
-    <Can action="show:dashboard">
+    <Can action="show:dashboard" fallback={<ForbiddenState />}>
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

@@ -28,12 +28,20 @@ export default function Page() {
     }),
     haversts: z.array(
       z.object({
-        qty: z.number({
-          message: "Total Wajib DIisi",
-        }),
-        rackId: z.string({
-          message: "Rak Wajib Diisi",
-        }),
+        qty: z
+          .number({
+            message: "Total Wajib DIisi",
+          })
+          .min(1, {
+            message: "Total Wajib DIisi",
+          }),
+        rackId: z
+          .string({
+            message: "Rak Wajib Diisi",
+          })
+          .min(1, {
+            message: "Rak Wajib Diisi",
+          }),
       })
     ),
   });
@@ -91,7 +99,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Transaksi Gudang</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}
@@ -169,7 +180,7 @@ export default function Page() {
               )}
               {haversts.fields.map((item, i) => {
                 return (
-                  <li key={i}>
+                  <li key={i} className="py-4">
                     <div className="font-bold mb-3">Panen {i + 1}</div>
                     <div className="grid md:grid-cols-2 gap-3">
                       <div className="h-16">

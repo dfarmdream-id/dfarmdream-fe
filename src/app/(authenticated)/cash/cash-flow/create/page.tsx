@@ -54,7 +54,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/master/cash-flow");
+          router.push("/cash/cash-flow");
         },
       }
     );
