@@ -116,7 +116,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                  selectionMode="multiple"
+                  selectedKeys={[field.value as string]}
                 >
                   {racks.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
