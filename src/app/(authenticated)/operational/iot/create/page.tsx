@@ -12,6 +12,9 @@ import { useCreateIotDevice } from "../../../_services/iot-device";
 
 export default function Page() {
   const schema = z.object({
+    name: z.string({
+      message: "Mohon isi dengan nama perangkat",
+    }),
     code: z.string({
       message: "Mohon isi dengan kode perangkat IOT",
     }),

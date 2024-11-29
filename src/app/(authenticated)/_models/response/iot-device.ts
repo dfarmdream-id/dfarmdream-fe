@@ -17,6 +17,7 @@ export interface Data {
 
 export interface Daum {
   id: string;
+  name:string;
   code: string;
   tempThreshold: number;
   humidityThreshold: number;

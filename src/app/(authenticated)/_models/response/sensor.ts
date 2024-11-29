@@ -10,6 +10,7 @@ export interface ChartDataResponse {
   }
 
   export interface Sensor {
+    name:string
     code:string
     tempThreshold:number
     humidityThreshold:number

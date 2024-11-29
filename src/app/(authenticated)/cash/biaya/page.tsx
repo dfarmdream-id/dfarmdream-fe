@@ -18,19 +18,20 @@ import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 import Link from "next/link";
-import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
-import { useGetIotDevices } from "../../_services/iot-device";
-import { Can } from "@/components/acl/can";
+import { DateTime } from "luxon";
+import Actions from "./_components/actions";
+import { useGetListBiaya } from "../../_services/biaya";
+import { IDR } from "@/common/helpers/currency";
 
 const columns = [
   {
-    key: "name",
-    label: "Nama Perangkat",
+    key: "tanggal",
+    label: "Tanggal",
   },
   {
-    key: "sensorId",
-    label: "ID Sensor",
+    key: "kategoriId",
+    label: "Kategori",
   },
   {
     key: "siteId",
@@ -41,16 +42,20 @@ const columns = [
     label: "Kandang",
   },
   {
-    key: "tempTreshold",
-    label: "Temp Threshold",
+    key: "userId",
+    label: "Karyawan",
   },
   {
-    key: "humidityThreshold",
-    label: "Humidity Threshold",
+    key: "biaya",
+    label: "Biaya",
   },
   {
-    key: "amoniaThreshold",
-    label: "Amonia Threshold",
+    key: "keterangan",
+    label: "Keterangan",
+  },
+  {
+    key: "createdAt",
+    label: "Tanggal Dibuat",
   },
   {
     key: "action",
@@ -62,14 +67,16 @@ export default function Page() {
   const [search, setSearch] = useQueryState("q", {
     throttleMs: 1000,
   });
+  
   const [page, setPage] = useQueryState("page", {
     throttleMs: 1000,
   });
+
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
 
-  const iot = useGetIotDevices(
+  const user = useGetListBiaya(
     useMemo(
       () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
       [search, page, limit]
@@ -77,37 +84,38 @@ export default function Page() {
   );
 
   const rows = useMemo(() => {
-    if (iot.data) {
-      return iot.data?.data?.data || [];
+    if (user.data) {
+      return user.data?.data?.data || [];
     }
     return [];
-  }, [iot.data]);
+  }, [user.data]);
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Perangkat IOT</div>
+      <div className="text-3xl font-bold mb-10">Data Biaya</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
-              startContent={<HiSearch />}
-              placeholder="Cari Perangkat"
               variant="bordered"
+              labelPlacement="outside-left"
+              placeholder="Cari"
               value={search || ""}
-              onValueChange={setSearch}
+              onValueChange={(e) => setSearch(e)}
+              endContent={<HiSearch />}
             />
+            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
           </div>
-          <Can action="create:iot">
-            <Button
-              as={Link}
-              href="/operational/iot/create"
-              color="primary"
-              startContent={<HiPlus />}
-              className="w-full md:w-auto"
-            >
-              Tambah Perangkat
-            </Button>
-          </Can>
+
+          <Button
+            as={Link}
+            href="/cash/biaya/create"
+            color="primary"
+            startContent={<HiPlus />}
+            className="w-full md:w-auto"
+          >
+            Tambah Biaya
+          </Button>
         </div>
         <Table aria-label="Data">
           <TableHeader columns={columns}>
@@ -117,7 +125,7 @@ export default function Page() {
           </TableHeader>
           <TableBody
             items={rows}
-            isLoading={iot.isLoading}
+            isLoading={user.isLoading}
             loadingContent={<Spinner />}
             emptyContent={<EmptyState />}
           >
@@ -128,25 +136,40 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.name}</div>
+                  <div>{item.tanggal}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item.code}</div>
+                  <div>{item.kategoriBiaya?.namaKategori}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item?.cage?.site?.name}</div>
+                  <div>{item.site?.name}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item?.cage?.name}</div>
+                  <div>{item.cage?.name}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item.tempThreshold}°</div>
+                  <div>{item.user?.fullName}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item.humidityThreshold}</div>
+                  <div>{IDR(item.biaya)}</div>
                 </TableCell>
+
                 <TableCell>
-                  <div>{item.amoniaThreshold} PPM</div>
+                  <div>{item.keterangan}</div>
+                </TableCell>
+
+                <TableCell>
+                  <div>
+                    {DateTime.fromISO(item.createdAt).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      { locale: "id" }
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Actions id={item.id} />
@@ -157,12 +180,12 @@ export default function Page() {
         </Table>
         <div className="flex justify-between">
           <Select
+            className="w-40"
             label="Tampilkan"
             onChange={(e) => {
               setLimit(e.target.value);
             }}
             labelPlacement="outside-left"
-            className="w-40"
             classNames={{ base: "flex items-center" }}
             selectedKeys={[limit?.toString() || "10"]}
           >
@@ -174,9 +197,9 @@ export default function Page() {
           </Select>
           <Pagination
             color="primary"
-            total={iot.data?.data?.meta?.totalPage || 1}
+            total={user.data?.data?.meta?.totalPage || 1}
             initialPage={1}
-            page={iot.data?.data?.meta?.page || 1}
+            page={user.data?.data?.meta?.page || 1}
             onChange={(page) => setPage(page.toString())}
           />
         </div>
