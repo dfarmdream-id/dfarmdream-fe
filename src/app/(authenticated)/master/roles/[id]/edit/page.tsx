@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useGetPermissions } from "../../../../_services/permission";
 import { useGetRole, useUpdateRole } from "../../../../_services/role";
+import Loader from "@/components/state/loading";
 
 export default function Page() {
   const schema = z.object({
@@ -35,7 +36,7 @@ export default function Page() {
         position?.data?.data?.permissions?.map((item) => item.permissionId)
       );
     }
-  }, [position.data, form]);
+  }, [position, form]);
 
   const permissions = useGetPermissions(
     useMemo(() => {
@@ -101,10 +102,16 @@ export default function Page() {
                     color="primary"
                     onChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                     errorMessage={fieldState.error?.message}
                     isInvalid={fieldState.invalid}
                   >
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {permissions.isLoading && (
+                        <div className="w-full min-h-52 flex items-center justify-center">
+                          <Loader />
+                        </div>
+                      )}
                       {permissions.data?.data?.data.map((item) => (
                         <Checkbox key={item.id} value={item.id}>
                           {item.name}
