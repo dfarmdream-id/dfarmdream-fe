@@ -45,10 +45,6 @@ const columns = [
     label: "Username",
   },
   {
-    key:'status',
-    label:"Status"
-  },
-  {
     key: "action",
     label: "Aksi",
   },
@@ -138,11 +134,6 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <div>{item.username}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/master/investors/${item.id}/dokumen`}>
-                      <Button color="warning">Lihat Data Investor</Button>
-                    </Link>
                   </TableCell>
 
                   <TableCell>

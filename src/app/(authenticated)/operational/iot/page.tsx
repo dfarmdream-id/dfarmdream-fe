@@ -29,6 +29,10 @@ const columns = [
     label: "ID Sensor",
   },
   {
+    key: "siteId",
+    label: "Lokasi",
+  },
+  {
     key: "cageId",
     label: "Kandang",
   },
@@ -121,6 +125,9 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.code}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item?.cage?.site?.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>{item?.cage?.name}</div>

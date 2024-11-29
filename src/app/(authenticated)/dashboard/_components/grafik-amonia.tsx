@@ -73,7 +73,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
         },
         series: [
           {
-            name: "Temperature",
+            name: "Ammonia",
             data: items?.data?.data?.chart?.map((x) => x.y) ?? [],
           },
         ],

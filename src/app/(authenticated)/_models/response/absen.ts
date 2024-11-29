@@ -24,7 +24,37 @@ export interface AbsenListResponse {
     jamKeluar:string;
     timestampMasuk:string;
     timestampKeluar:string;
+    user:User
     status:number;
+  }
+
+  export interface User{
+    id:string;
+    name:string;
+    sites: Site[]
+  }
+
+  export interface Site {
+    id: string;
+    userId: string;
+    siteId: string;
+    deletedAt: any;
+    createdAt: string;
+    updatedAt: string;
+    site: Site2;
+  }
+  
+  export interface Site2 {
+    id: string;
+    name: string;
+    deletedAt: any;
+    createdAt: string;
+    updatedAt: string;
+    provinceId: any;
+    cityId: any;
+    districtId: any;
+    subDistrictId: any;
+    address: any;
   }
   
  

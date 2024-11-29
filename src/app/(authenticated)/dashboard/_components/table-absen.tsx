@@ -27,6 +27,10 @@ export default function TableAbsen() {
       label: "Nama",
     },
     {
+      key: "siteId",
+      label: "Lokasi",
+    },
+    {
       key: "tanggal",
       label: "Tanggal",
     },
@@ -68,7 +72,6 @@ export default function TableAbsen() {
     return [];
   }, [attendance.data]);
 
-  console.log("Data ABsen : ", rows)
   const calculateJamKerja = (jamMasuk: string, jamKeluar: string) => {
     if (!jamMasuk || !jamKeluar) {
       return "-";
@@ -136,7 +139,14 @@ export default function TableAbsen() {
                   role="button"
                 >
                 <TableCell>
-                <div>{item.name}</div>
+                  <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  {item.user && item.user.sites && item.user.sites.length>0 && (
+                    <>
+                      {item.user.sites[0].site.name}
+                    </>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div>
