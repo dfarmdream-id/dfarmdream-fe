@@ -64,7 +64,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/oeprational/chickens");
+          router.push("/operational/chickens");
         },
       }
     );
