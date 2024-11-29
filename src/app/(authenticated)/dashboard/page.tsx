@@ -14,6 +14,8 @@ import GrafikSuhu from "./_components/grafik-suhu";
 import GrafikAmonia from "./_components/grafik-amonia";
 import GrafikHumidity from "./_components/grafik-humidity";
 import ForbiddenState from "@/components/state/forbidden";
+import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
+import { GiNestEggs } from "react-icons/gi";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -155,24 +157,24 @@ export default function Page() {
                 <ul className="grid xl:grid-cols-2 gap-3">
                   <Card as="li" shadow="none">
                     <StatsCard
-                      icon={<HiUsers />}
+                      icon={<FaEgg />}
                       title="Berat Telur"
                       count={dashboard.data?.data?.weightTotal || 0}
                     />
                   </Card>
                   <Card as="li" shadow="none">
-                    <StatsCard icon={<HiUsers />} title="FCR" count={1} />
+                    <StatsCard icon={<FaChartPie />} title="FCR" count={1} />
                   </Card>
                   <Card as="li" shadow="none">
                     <StatsCard
-                      icon={<HiUsers />}
+                      icon={<FaWeight />}
                       title="Berat Keseluruhan"
                       count={dashboard.data?.data?.weightTotal || 0}
                     />
                   </Card>
                   <Card as="li" shadow="none">
                     <StatsCard
-                      icon={<HiUsers />}
+                      icon={<GiNestEggs />}
                       title="Total Telur"
                       count={dashboard.data?.data?.qtyTotal || 0}
                     />
