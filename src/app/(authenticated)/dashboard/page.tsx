@@ -86,7 +86,18 @@ export default function Page() {
   }, [chartData]);
 
   return (
-    <Can action="show:dashboard" fallback={<ForbiddenState />}>
+    <Can
+      action="show:dashboard"
+      loader={
+        <div className="min-h-screen flex justify-center items-center">
+          <div className="flex justify-center flex-col">
+            <Spinner />
+            <div>Loading...</div>
+          </div>
+        </div>
+      }
+      fallback={<ForbiddenState />}
+    >
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

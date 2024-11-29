@@ -90,7 +90,6 @@ export default function Page() {
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
-            
             <Input
               startContent={<HiSearch />}
               placeholder="Cari Pengguna"
@@ -168,7 +167,7 @@ export default function Page() {
         </Table>
         <div className="flex justify-between">
           <Select
-           className="w-40"
+            className="w-40"
             label="Tampilkan"
             onChange={(e) => {
               setLimit(e.target.value);

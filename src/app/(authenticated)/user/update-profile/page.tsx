@@ -14,6 +14,7 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { useQueryClient } from "@tanstack/react-query";
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
@@ -25,12 +26,16 @@ export default function Page() {
     fullName: z.string({
       message: "Mohon isi nama lengkap",
     }),
-    phone: z.string({
-      message: "Mohon isi nomor telp",
-    }).optional(),
-    address: z.string({
-      message: "Mohon isi alamat",
-    }).optional(),
+    phone: z
+      .string({
+        message: "Mohon isi nomor telp",
+      })
+      .optional(),
+    address: z
+      .string({
+        message: "Mohon isi alamat",
+      })
+      .optional(),
     email: z.string({
       message: "Email tidak boleh kosong",
     }),
@@ -40,10 +45,12 @@ export default function Page() {
     schema,
   });
 
+  const queryClient = useQueryClient();
+
   const submission = useUpdateProfile();
   const router = useRouter();
   const profile = useGetProfile();
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (profile.data) {
@@ -57,39 +64,42 @@ export default function Page() {
     }
   }, [profile.data, form]);
 
-  const onSubmit = form.handleSubmit(async(data) => {
-    setLoading(true)
-    let imageId:any = null
-    if(file && file.length>0){
+  const onSubmit = form.handleSubmit(async (data) => {
+    setLoading(true);
+    let imageId: string | null = null;
+    if (file && file.length > 0) {
       // Proses upload file
       const formData = new FormData();
-      formData.append("file", file[0].file)
-      try{
-        const response:any = await uploader.mutateAsync({
-          body:formData
-        })
-        imageId = response?.data?.id ?? null
-      }catch(e){
-        console.log("Failed to upload profile iamge : ", e)
+      formData.append("file", file[0].file);
+      try {
+        const response: any = await uploader.mutateAsync({
+          body: formData,
+        });
+        imageId = response?.data?.id ?? null;
+      } catch (e) {
+        console.log("Failed to upload profile iamge : ", e);
       }
     }
-    setLoading(false)
+    setLoading(false);
     submission.mutate(
       {
         body: {
           ...data,
-          imageId: imageId
+          imageId: imageId,
         },
       },
       {
         onError: (error) => {
-          setLoading(false)
+          setLoading(false);
           toast.error(error.data?.message);
         },
         onSuccess: () => {
-          setLoading(false)
+          setLoading(false);
           toast.success("Berhasil melakukan update profile");
           form.reset();
+          queryClient.refetchQueries({
+            queryKey: ["/v1/auth/profile"],
+          });
           router.push("/dashboard");
         },
       }
@@ -98,12 +108,15 @@ export default function Page() {
 
   const [file, setFile] = useState<any>([]);
   const uploader = useUploadImage();
-  
+
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Profile</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="mt-2">
             <FilePond
               files={file as any[]}
@@ -218,11 +231,7 @@ export default function Page() {
             <Button variant="bordered" color="primary">
               Kembali
             </Button>
-            <Button
-              isLoading={loading}
-              color="primary"
-              type="submit"
-            >
+            <Button isLoading={loading} color="primary" type="submit">
               Simpan
             </Button>
           </div>

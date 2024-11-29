@@ -12,6 +12,7 @@ import {
   DropdownTrigger,
   Image,
   ScrollShadow,
+  Skeleton,
 } from "@nextui-org/react";
 import {
   HiChevronRight,
@@ -178,7 +179,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             menu.action?.();
                             router.push(child.href || "");
                           }}
-                            as={child.href ? Link : "a"}
+                          as={child.href ? Link : "a"}
                           href={child.href ? child.href : undefined}
                           isPressable
                           data-active={child.href == path}
@@ -385,7 +386,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </li>
               {menus.map((menu) => {
                 return (
-                  <Can key={menu.label} action={menu.can || ""}>
+                  <Can
+                    key={menu.label}
+                    action={menu.can || ""}
+                    loader={
+                      <div className="flex gap-4 h-16 relative justify-center items-center p-4">
+                        <Skeleton className="w-full h-full absolute z-0 rounded-xl" />
+                        <div>
+                          <Skeleton className="w-8 h-8 rounded-xl" />
+                        </div>
+                        <div className="flex-1 space-y-3">
+                          <Skeleton className="w-full h-2 rounded-xl" />
+                          <Skeleton className="w-full h-2 rounded-xl" />
+                        </div>
+                      </div>
+                    }
+                  >
                     <SidebarMenuItem
                       id={menu.key || ""}
                       label={menu.label as string}
@@ -416,7 +432,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 isIconOnly
                 variant="light"
                 onPress={() => {
-                  console.log(open);
                   setOpen(false);
                 }}
               >
