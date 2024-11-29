@@ -18,7 +18,6 @@ import {
   HiEye,
   HiOutlineArrowRightOnRectangle,
   HiOutlineBars3,
-  HiOutlineCircleStack,
   HiOutlineClock,
   HiOutlineCog6Tooth,
   HiOutlineCurrencyDollar,
@@ -30,6 +29,7 @@ import {
   HiOutlineUsers,
   HiOutlineWindow,
 } from "react-icons/hi2";
+import { GiChicken } from "react-icons/gi";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
@@ -48,7 +48,9 @@ import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
 import { MdSensors } from "react-icons/md";
 import Link from "next/link";
-
+import { VscVariableGroup } from "react-icons/vsc";
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { TbCashRegister } from "react-icons/tb";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
@@ -260,14 +262,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           can: "show:chickens",
           label: "Ayam",
           href: "/operational/chickens",
-          icon: <HiOutlineCircleStack className="text-xl" />,
+          icon: <GiChicken className="text-xl" />,
         },
       ],
     },
     {
       can: "show:cash-flow",
       icon: <HiOutlineCurrencyDollar className="text-xl" />,
-      label: "Arus Kas",
+      label: "Keuangan",
       key: "cash",
       children: [
         {
@@ -281,6 +283,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Arus Kas",
           href: "/cash/cash-flow",
           icon: <HiOutlineCurrencyDollar className="text-xl" />,
+        },
+
+        {
+          can: "show:kategori-biaya",
+          label: "Kategori Biaya",
+          href: "/cash/kategori-biaya",
+          icon: <VscVariableGroup className="text-xl" />,
+        },
+        {
+          can: "show:biaya",
+          label: "Biaya",
+          href: "/cash/biaya",
+          icon: <FaMoneyBillAlt className="text-xl" />,
+        },
+        {
+          can: "show:penerimaan-modal",
+          label: "Penerimaan Modal",
+          href: "/cash/penerimaan-modal",
+          icon: <TbCashRegister className="text-xl" />,
         },
       ],
     },

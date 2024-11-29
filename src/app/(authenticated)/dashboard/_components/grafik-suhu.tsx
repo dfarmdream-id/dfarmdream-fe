@@ -80,7 +80,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
     },
     {
       key: "status",
-      label: "Jam Keluar",
+      label: "Status",
     },
     {
       key: "relayDesc",
