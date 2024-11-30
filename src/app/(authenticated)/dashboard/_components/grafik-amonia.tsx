@@ -89,7 +89,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
         },
         responsive: [],
         xaxis: {
-          categories: items?.data?.data?.chart?.map((x) => `${x.x} ppm`) ?? [],
+          categories: items?.data?.data?.chart?.map((x) => `${x.x}`) ?? [],
         },
       },
     };

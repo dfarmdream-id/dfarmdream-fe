@@ -94,7 +94,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   // const [limit, setLimit] = useQueryState("limit", {
   //   throttleMs: 1000,
   // });
-  const limit:string = "20";
+  const limit:string = "5";
 
   const relayLogs = useGetRelayLogData(
     useMemo(
