@@ -123,21 +123,31 @@ export default function Page() {
         body: {
           ...data,
           status: data.status ? "ACTIVE" : "INACTIVE",
-          sites: data.sites.split(",").map((site) => {
-            return {
-              siteId: site,
-            };
-          }),
-          cages: data.cages.split(",").map((cage) => {
-            return {
-              cageId: cage,
-            };
-          }),
-          roles: data.roles?.split(",").map((role) => {
-            return {
-              roleId: role,
-            };
-          }),
+          sites: data.sites
+            .split(",")
+            .filter(Boolean)
+            .map((site) => {
+              return {
+                siteId: site,
+              };
+            })
+            .filter(Boolean),
+          cages: data.cages
+            .split(",")
+            .filter(Boolean)
+            .map((cage) => {
+              return {
+                cageId: cage,
+              };
+            }),
+          roles: data.roles
+            ?.split(",")
+            .filter(Boolean)
+            .map((role) => {
+              return {
+                roleId: role,
+              };
+            }),
         },
         pathVars: {
           id: params.id as string,
@@ -161,7 +171,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Data Pengguna</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}
