@@ -16,7 +16,7 @@ import {
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/state/empty";
 import Actions from "./_components/actions";
@@ -28,6 +28,10 @@ const columns = [
   {
     key: "namaBarang",
     label: "Nama Barang",
+  },
+  {
+    key: "tipeBarang",
+    label: "Tipe",
   },
   {
     key: "qty",
@@ -66,10 +70,15 @@ export default function Page() {
     throttleMs: 1000,
   });
 
+  const [tipeBarang, setTipeBarang] = useQueryState("tipeBarang", {
+    throttleMs: 1000,
+  })
+
+
   const user = useGetListPersediaanBarang(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ q: search || "", page: page || "1", limit: limit || "10", tipeBarang:tipeBarang?.toUpperCase() || "" }),
+      [search, page, limit, tipeBarang]
     )
   );
 
@@ -82,8 +91,7 @@ export default function Page() {
   }, [user.data]);
 
 
-  console.log("Rows : ", rows)
-
+  console.log("Tipe Barang : ", tipeBarang)
   return (
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Persediaan Barang</div>
@@ -98,6 +106,19 @@ export default function Page() {
               onValueChange={(e) => setSearch(e)}
               endContent={<HiSearch />}
             />
+           <Select
+                  labelPlacement="outside"
+                  placeholder="Pilih Tipe Barang"
+                  variant="bordered"
+                  onChange={(e)=>setTipeBarang(e.target.value)}
+                >
+                  <SelectItem key="pakan" value="PAKAN">
+                    PAKAN
+                  </SelectItem>
+                  <SelectItem key="obat" value="OBAT">
+                    OBAT
+                  </SelectItem>
+                </Select>
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
           </div>
 
@@ -131,6 +152,10 @@ export default function Page() {
               >
                 <TableCell>
                   <div>{item.namaBarang}</div>
+                </TableCell>
+
+                <TableCell>
+                  <div>{item.tipeBarang}</div>
                 </TableCell>
 
                 <TableCell>
