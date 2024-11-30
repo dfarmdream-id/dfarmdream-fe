@@ -125,7 +125,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                  selectionMode="multiple"
+                  selectedKeys={[field.value]}
                 >
                   {investorData.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
@@ -143,7 +143,6 @@ export default function Page() {
               name="siteId"
               render={({ field, fieldState }) => (
                 <Select
-                  multiple
                   isLoading={siteData.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
@@ -152,6 +151,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
+                  selectedKeys={[field.value]}
                 >
                   {siteData.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
@@ -169,7 +169,6 @@ export default function Page() {
               name="cageId"
               render={({ field, fieldState }) => (
                 <Select
-                  multiple
                   isLoading={cagesData.isLoading}
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
@@ -178,7 +177,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                  selectionMode="multiple"
+                  selectedKeys={[field.value]}
                 >
                   {cagesData.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
