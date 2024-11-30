@@ -16,7 +16,7 @@ import {
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/state/empty";
 import Actions from "./_components/actions";
