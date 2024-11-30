@@ -4,7 +4,7 @@ import Lootie from "lottie-react";
 
 export default function ForbiddenState() {
   return (
-    <div>
+    <div className="flex flex-col items-center gap-2 text-center">
       <Lootie className="max-w-xs mx-auto" animationData={Empty} />
       <div className="mt-3 text-slate-600">
         <div className="text-2xl font-semibold text-primary">

@@ -52,6 +52,7 @@ import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
+import SwitchSite from "./_components/switch-site";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
@@ -465,14 +466,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 bg-default-50 w-full overflow-y-auto">
           <nav className="bg-white w-full sticky top-0 h-16 flex justify-center items-center px-5 z-30">
             <div className="w-full flex justify-between items-center">
-              <div>
-                <Button
-                  variant="light"
-                  isIconOnly
-                  onClick={() => setOpen(!open)}
-                >
-                  {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}
-                </Button>
+              <div className="flex gap-3 w-full items-center">
+                <div>
+                  <Button
+                    variant="light"
+                    isIconOnly
+                    onClick={() => setOpen(!open)}
+                  >
+                    {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}
+                  </Button>
+                </div>
+                <SwitchSite />
               </div>
               <div>
                 <Dropdown>
