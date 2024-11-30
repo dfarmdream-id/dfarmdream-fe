@@ -50,8 +50,9 @@ import { useAuthStore } from "../auth/_store/auth";
 import { MdSensors } from "react-icons/md";
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
-import { FaMoneyBillAlt } from "react-icons/fa";
+import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
+import { PiDotDuotone } from "react-icons/pi";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
@@ -303,6 +304,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Penerimaan Modal",
           href: "/cash/penerimaan-modal",
           icon: <TbCashRegister className="text-xl" />,
+        },
+      ],
+    },
+    {
+      can: "show:persediaan-barang",
+      icon: <FaBox className="text-xl" />,
+      label: "Barang",
+      key: "cash",
+      children: [
+        {
+          can: "show:persediaan-barang",
+          label: "Persediaan Barang",
+          href: "/stock/persediaan-barang",
+          icon: <PiDotDuotone className="text-xl" />,
         },
       ],
     },
