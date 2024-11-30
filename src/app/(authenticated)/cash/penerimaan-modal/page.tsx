@@ -21,7 +21,6 @@ import Link from "next/link";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import Actions from "./_components/actions";
-import { useGetListBiaya } from "../../_services/biaya";
 import { IDR } from "@/common/helpers/currency";
 import { useGetListPenerimaanModal } from "../../_services/penerimaan-modal";
 
