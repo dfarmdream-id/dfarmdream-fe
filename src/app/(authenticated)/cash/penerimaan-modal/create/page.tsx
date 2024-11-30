@@ -5,9 +5,6 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import {
-  useGetListKategoriBiaya,
-} from "@/app/(authenticated)/_services/kategori-biaya";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useMemo } from "react";
 import { useGetSites } from "@/app/(authenticated)/_services/site";
@@ -43,9 +40,6 @@ export default function Page() {
   const submission = useCreatePenerimaanModal();
   const router = useRouter();
 
-  const kategoriData = useGetListKategoriBiaya(
-    useMemo(() => ({ page: "1", limit: "1000" }), [])
-  );
   const siteData = useGetSites(
     useMemo(() => ({ page: "1", limit: "10000" }), [])
   );
