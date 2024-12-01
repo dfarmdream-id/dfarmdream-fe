@@ -152,36 +152,33 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
           {items?.data?.data?.sensors &&
             items.data.data.sensors.map((item) => (
               <li
-                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
-                key={item.code}
-              >
-                <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
-                  <div>
-                    <FaTemperatureEmpty className="w-5 h-5 md:w-8 md:h-8" />
+              className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
+              key={item.code}
+            >
+              <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
+                <div>
+                  <FaTemperatureEmpty className="w-5 h-5 md:w-8 md:h-8" />
+                </div>
+              </div>
+              <div className="w-full">
+                <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.name}</div>
+                <div>{item.currentAmonia?item.currentAmonia.toFixed(2):'-'} ppm</div>
+                <div>
+                  <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
+                  <div className="flex justify-between">
+                    <div>Bad</div>
+                    <div>Good</div>
                   </div>
                 </div>
-                <div className="w-full flex-1">
-                  <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.name}</div>
-                  <div>
-                    {item.currentAmonia ? item.currentAmonia.toFixed(2) : "-"}{" "}
-                    PPM
-                  </div>
-                  <div>
-                    <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
-                    <div className="flex justify-between">
-                      <div>Bad</div>
-                      <div>Good</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  {item.currentTemperature ? (
-                    <Chip color="primary">Hidup</Chip>
-                  ) : (
-                    <Chip color="danger">Mati</Chip>
-                  )}
-                </div>
-              </li>
+              </div>
+              <div className="flex items-center">
+                {item.currentAmonia ? (
+                  <Chip color="primary">Hidup</Chip>
+                ) : (
+                  <Chip color="danger">Mati</Chip>
+                )}
+              </div>
+            </li>
             ))}
         </ul>
       </div>
