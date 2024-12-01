@@ -36,9 +36,7 @@ export default function SwitchSite() {
             {
               onSuccess: ({ data: { token } }) => {
                 Cookies.set("accessToken", token);
-                queryClient.refetchQueries({
-                  queryKey: ["/v1/auth/profile"],
-                });
+                queryClient.invalidateQueries();
                 toast.success("Berhasil mengganti lokasi");
               },
               onError: () => {
