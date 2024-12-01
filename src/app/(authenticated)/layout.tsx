@@ -320,6 +320,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           href: "/stock/persediaan-barang",
           icon: <PiDotDuotone className="text-xl" />,
         },
+        {
+          can: "show:kartu-stok",
+          label: "Kartu Stok Pakan Obat",
+          href: "/stock/transaksi",
+          icon: <PiDotDuotone className="text-xl" />,
+        },
       ],
     },
     {
