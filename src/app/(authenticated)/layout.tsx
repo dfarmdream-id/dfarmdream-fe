@@ -276,6 +276,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       key: "cash",
       children: [
         {
+          can: "show:group-coa",
+          label: "Group COA",
+          href: "/cash/group-coa",
+          icon: <HiOutlineListBullet className="text-xl" />,
+        },
+        {
+          can: "show:coa",
+          label: "COA",
+          href: "/cash/coa",
+          icon: <HiOutlineListBullet className="text-xl" />,
+        },
+        {
           can: "show:cash-flow-category",
           label: "Jenis Arus Kas",
           href: "/cash/category",
