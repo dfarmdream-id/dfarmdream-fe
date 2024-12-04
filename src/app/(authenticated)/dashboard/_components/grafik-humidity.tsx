@@ -3,7 +3,6 @@ import { Chip, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
 import { ReactNode, useMemo, useState } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
-import { useGetSites } from "../../_services/site";
 import dynamic from "next/dynamic";
 import { useGetHumidityData } from "../../_services/iot-device";
 
@@ -20,7 +19,6 @@ const Chart = dynamic(
 );
 
 export default function GrafikHumidity({ children }: { children: ReactNode }) {
-  const [lokasi, setLokasi] = useState<string | null>(null);
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
 
@@ -28,20 +26,10 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
     useMemo(
       () => ({
         tanggal: tanggal || "",
-        siteId: lokasi || "",
         cageId: kandang || "",
       }),
-      [lokasi, kandang, tanggal]
+      [kandang, tanggal]
     )
-  );
-
-  const sites = useGetSites(
-    useMemo(() => {
-      return {
-        page: "1",
-        limit: "100",
-      };
-    }, [])
   );
 
   const cages = useGetCages(
@@ -96,8 +84,8 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
   }, [items]);
 
   return (
-    <div className="grid md:grid-cols-2 bg-white rounded-lg p-5 gap-3">
-      <div className="flex flex-col gap-3 w-full overflow-hidden">
+    <div className="grid lg:grid-cols-2 bg-white rounded-lg p-5 gap-3">
+      <div className="flex flex-col gap-3 w-full overflow-hidden space-y-5">
         <div className="w-full">
           <div className="text-xl text-primary font-bold text-center">
             {children}
@@ -121,20 +109,8 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
           <SelectItem key="4">4 Jam terakhir</SelectItem>
         </Select> */}
       </div>
-      <div>
-        <div className="grid md:grid-cols-2 gap-3">
-          <Select
-            variant="bordered"
-            placeholder="Pilih lokasi"
-            isLoading={sites.isLoading}
-            onChange={(e) => setLokasi(e.target.value)}
-          >
-            {sites.data?.data?.data?.map((site) => (
-              <SelectItem key={site.id} value={site.id}>
-                {site.name}
-              </SelectItem>
-            )) || []}
-          </Select>
+      <div className="mt-5">  
+        <div className="grid gap-3">
           <Select
             variant="bordered"
             placeholder="Pilih kandang"
@@ -152,7 +128,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
           {items?.data?.data?.sensors &&
             items.data.data.sensors.map((item) => (
               <li
-                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
+                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
                 key={item.code}
               >
                 <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">

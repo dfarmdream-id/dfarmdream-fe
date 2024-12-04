@@ -16,7 +16,6 @@ import {
 import { ReactNode, useMemo, useState } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
-import { useGetSites } from "../../_services/site";
 import dynamic from "next/dynamic";
 import {
   useGetRelayLogData,
@@ -24,7 +23,7 @@ import {
 } from "../../_services/iot-device";
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
-import {DateTime} from 'luxon'
+import { DateTime } from 'luxon'
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -39,7 +38,6 @@ const Chart = dynamic(
 );
 
 export default function GrafikSuhu({ children }: { children: ReactNode }) {
-  const [lokasi, setLokasi] = useState<string | null>(null);
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
 
@@ -47,22 +45,10 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
     useMemo(
       () => ({
         tanggal: tanggal || "",
-        siteId: lokasi || "",
         cageId: kandang || "",
       }),
-      [lokasi, kandang, tanggal]
+      [kandang, tanggal]
     )
-  );
-
-  console.log("Items : ", items);
-
-  const sites = useGetSites(
-    useMemo(() => {
-      return {
-        page: "1",
-        limit: "100",
-      };
-    }, [])
   );
 
   const columns = [
@@ -94,14 +80,15 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   // const [limit, setLimit] = useQueryState("limit", {
   //   throttleMs: 1000,
   // });
-  const limit:string = "5";
+  const limit: string = "5";
 
   const relayLogs = useGetRelayLogData(
     useMemo(
-      () => ({ q: "", page: page || "1", limit: limit || "10", tanggal: tanggal || "",
-        siteId: lokasi || "",
-        cageId: kandang || "" }),
-      [page, limit,tanggal, lokasi,kandang]
+      () => ({
+        q: "", page: page || "1", limit: limit || "10", tanggal: tanggal || "",
+        cageId: kandang || ""
+      }),
+      [page, limit, tanggal, kandang]
     )
   );
 
@@ -113,7 +100,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   }, [relayLogs.data]);
 
   const cages = useGetCages(
-    useMemo(() => ({ page: "1", limit: "100", siteId: lokasi ?? "" }), [lokasi])
+    useMemo(() => ({ page: "1", limit: "100",  }), [])
   );
 
   const cageTempChart = useMemo<{
@@ -159,7 +146,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
 
   return (
     <div className="bg-white rounded-lg p-5 gap-3">
-      <div className="grid md:grid-cols-2">
+      <div className="grid">
         <div className="flex flex-col gap-3 w-full overflow-hidden">
           <div className="w-full">
             <div className="text-xl text-primary font-bold text-center">
@@ -184,20 +171,8 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
           <SelectItem key="4">4 Jam terakhir</SelectItem>
         </Select> */}
         </div>
-        <div className="w-full overflow-hidden">
-          <div className="grid md:grid-cols-2 gap-3">
-            <Select
-              variant="bordered"
-              placeholder="Pilih lokasi"
-              isLoading={sites.isLoading}
-              onChange={(e) => setLokasi(e.target.value)}
-            >
-              {sites.data?.data?.data?.map((site) => (
-                <SelectItem key={site.id} value={site.id}>
-                  {site.name}
-                </SelectItem>
-              )) || []}
-            </Select>
+        <div className="w-full overflow-hidden space-y-3 mt-5">
+          <div className="grid gap-3">
             <Select
               variant="bordered"
               placeholder="Pilih kandang"
@@ -211,11 +186,11 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
               )) || []}
             </Select>
           </div>
-          <ul className="space-y-5 py-5">
+          <ul className="space-y-5 py-5 mt-5">
             {items?.data?.data?.sensors &&
               items.data.data.sensors.map((item) => (
                 <li
-                  className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
+                  className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
                   key={item.code}
                 >
                   <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
@@ -275,9 +250,9 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                 </TableCell>
                 <TableCell>
                   <div>{DateTime.fromISO(item.createdAt).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}</div>
+                    DateTime.DATETIME_MED_WITH_WEEKDAY,
+                    { locale: "id" }
+                  )}</div>
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -290,7 +265,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                 <TableCell>
                   <div>{item.relayDesc}</div>
                 </TableCell>
-                
+
               </TableRow>
             )}
           </TableBody>
