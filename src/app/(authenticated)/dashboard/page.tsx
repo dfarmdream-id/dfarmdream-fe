@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
+import {Card, CardBody, CardHeader, DatePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
 import dynamic from "next/dynamic";
-import { ReactNode, useMemo } from "react";
+import {ReactNode, useCallback, useMemo, useState} from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
@@ -16,6 +16,9 @@ import GrafikHumidity from "./_components/grafik-humidity";
 import ForbiddenState from "@/components/state/forbidden";
 import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
 import { GiNestEggs } from "react-icons/gi";
+import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
+import {useGetCages} from "@/app/(authenticated)/_services/cage";
+import debounce from "lodash.debounce";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -23,15 +26,39 @@ const Chart = dynamic(
 );
 
 export default function Page() {
-  const dashboard = useDashboardSummary();
-  const chartData = useDashboardChart();
+  const [chickenCageChartSelected, setChickenCageChartSelected] = useState<string | null>(null);
+
+  const [performanceCageChartSelected, setPerformanceCageChartSelected] = useState<string | null>(null);
+  const [performanceChartDate, setPerformanceChartDate] = useState<string | null>(null);
+
   const profile = useGetProfile();
 
+  // Memoize dashboard summary data
+  const dashboard = useDashboardSummary(
+    useMemo(() => ({
+      date: performanceChartDate || new Date().toISOString().split("T")[0],
+      cageId: performanceCageChartSelected || "",
+    }), [performanceChartDate, performanceCageChartSelected])
+  );
+
+  // Memoize chart data
+  const chartData = useDashboardChart(
+    useMemo(() => ({
+      cageId: chickenCageChartSelected || "",
+    }), [chickenCageChartSelected])
+  );
+
+  // Fetch cages data
+  const cages = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
+
+  // Debounced handlers
+  const debouncedSetPerformanceChartDate = useCallback(debounce(setPerformanceChartDate, 300), []);
+
   const StatsCard = ({
-    title,
-    count,
-    icon,
-  }: {
+                       title,
+                       count,
+                       icon,
+                     }: {
     title: string;
     count: number;
     icon: ReactNode;
@@ -53,40 +80,38 @@ export default function Page() {
     );
   };
 
+  // Memoize chart configuration
   const chart = useMemo<{
     series: number[];
     options: ApexCharts.ApexOptions;
-  }>(() => {
-    return {
-      series: [
-        chartData?.data?.data?.alive || 0,
-        chartData?.data?.data?.dead || 0,
-      ],
-      options: {
-        legend: {
-          show: true,
-          position: "top",
-          markers: {
-            shape: "rect",
-          },
+  }>(() => ({
+    series: [
+      chartData?.data?.data?.alive || 0,
+      chartData?.data?.data?.dead || 0,
+    ],
+    options: {
+      legend: {
+        show: true,
+        position: "top",
+        markers: {
+          shape: "rect",
         },
-        plotOptions: {
-          pie: {
-            donut: {
-              size: "50%",
-            },
-          },
-        },
-        chart: {
-          type: "donut",
-        },
-        labels: ["Ayam Hidup", "Ayam Mati"],
-        colors: ["#0f6646", "#f3cb52", "#f3cb52"],
-        responsive: [],
       },
-    };
-  }, [chartData]);
-
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "50%",
+          },
+        },
+      },
+      chart: {
+        type: "donut",
+      },
+      labels: ["Ayam Hidup", "Ayam Mati"],
+      colors: ["#0f6646", "#f3cb52"],
+    },
+  }), [chartData]);
+  
   return (
     <Can
       action="show:dashboard"
@@ -144,6 +169,20 @@ export default function Page() {
                   series={chart.series}
                   type="donut"
                 />
+                <div className="flex gap-3 mt-10">
+                  <Select
+                    variant="bordered"
+                    placeholder="Pilih kandang"
+                    isLoading={cages.isLoading}
+                    onChange={(e) => setChickenCageChartSelected(e.target.value)}
+                  >
+                    {cages.data?.data?.data?.map((site) => (
+                      <SelectItem key={site.id} value={site.id}>
+                        {site.name}
+                      </SelectItem>
+                    )) || []}
+                  </Select>
+                </div>
               </CardBody>
             </Card>
           </Can>
@@ -180,6 +219,23 @@ export default function Page() {
                     />
                   </Card>
                 </ul>
+                <div className="flex gap-3 mt-10">
+                  <DatePicker onChange={
+                    (e) => debouncedSetPerformanceChartDate(e?.toString() || "")
+                  } />
+                  <Select
+                    variant="bordered"
+                    placeholder="Pilih kandang"
+                    isLoading={cages.isLoading}
+                    onChange={(e) => setPerformanceCageChartSelected(e.target.value)}
+                  >
+                    {cages.data?.data?.data?.map((site) => (
+                      <SelectItem key={site.id} value={site.id}>
+                        {site.name}
+                      </SelectItem>
+                    )) || []}
+                  </Select>
+                </div>
               </CardBody>
             </Card>
           </Can>
@@ -195,6 +251,9 @@ export default function Page() {
         </Can>
         <Can action="show:light-sensors">
           <IotDevices>Sensor Lampu</IotDevices>
+        </Can>
+        <Can action="show:cctv-dashboard">
+          <CctvDevice /> 
         </Can>
         <Can action="show:absences">
           <TableAbsen />

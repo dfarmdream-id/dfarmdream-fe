@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardBody,
@@ -19,6 +21,7 @@ import { useMemo } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
 import {DateTime} from 'luxon'
+import SvgWhatsappIcon from "@/app/(authenticated)/dashboard/_components/whatsapp";
 
 export default function TableAbsen() {
   const columns = [
@@ -49,6 +52,10 @@ export default function TableAbsen() {
     {
       key: "status",
       label: "Status",
+    },
+    {
+      key: "action",
+      label: "Action",
     },
   ];
   const [page, setPage] = useQueryState("page", {
@@ -169,6 +176,22 @@ export default function TableAbsen() {
                     >
                       {item.status === 1 ? "Masuk" : "Absen"}
                     </Chip></TableCell>
+              {/* icon wa to redirect to wa */}
+                <TableCell>
+                  <div className="flex gap-3">
+                    <a
+                      href={`https://wa.me/${
+                        item.user?.phone?.startsWith("08")
+                          ? `62${item.user.phone.slice(1)}`
+                          : item.user?.phone
+                      }`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <SvgWhatsappIcon className="cursor-pointer"/>
+                    </a>
+                  </div>
+                </TableCell>
               </TableRow>
                 )}
             </TableBody>

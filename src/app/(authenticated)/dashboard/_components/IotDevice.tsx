@@ -2,16 +2,14 @@
 import { Chip, Select, SelectItem } from "@nextui-org/react";
 import { ReactNode, useMemo, useState } from "react";
 import { useGetCages } from "../../_services/cage";
-import { useGetSites } from "../../_services/site";
 import { HiSun } from "react-icons/hi2";
 import { useGetHumidityData } from "../../_services/iot-device";
 
 export default function IotDevices({ children }: { children: ReactNode }) {
-  const [site, setSite] = useState<string | null>(null);
   const [cage, setCage] = useState<string | null>(null);
 
   const items = useGetHumidityData(
-    useMemo(() => ({ siteId: site || "", cageId: cage || "" }), [site, cage])
+    useMemo(() => ({ cageId: cage || "" }), [ cage])
   );
 
   const sensors = useMemo(() => {
@@ -20,15 +18,6 @@ export default function IotDevices({ children }: { children: ReactNode }) {
     }
     return [];
   }, [items.data]);
-
-  const sites = useGetSites(
-    useMemo(() => {
-      return {
-        page: "1",
-        limit: "100",
-      };
-    }, [])
-  );
 
   const cages = useGetCages(
     useMemo(() => {
@@ -44,20 +33,20 @@ export default function IotDevices({ children }: { children: ReactNode }) {
       <div>{children}</div>
       <div className="flex flex-col items-center">
         <div className="grid md:grid-cols-2 gap-3 max-w-3xl w-full">
-          <Select
-            isLoading={sites.isLoading}
-            variant="bordered"
-            placeholder="Pilih lokasi"
-            onChange={(e) => {
-              setSite(e.target.value);
-            }}
-          >
-            {sites.data?.data?.data?.map((site) => (
-              <SelectItem key={site.id} value={site.id}>
-                {site.name}
-              </SelectItem>
-            )) || []}
-          </Select>
+          {/*<Select*/}
+          {/*  isLoading={sites.isLoading}*/}
+          {/*  variant="bordered"*/}
+          {/*  placeholder="Pilih lokasi"*/}
+          {/*  onChange={(e) => {*/}
+          {/*    setSite(e.target.value);*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  {sites.data?.data?.data?.map((site) => (*/}
+          {/*    <SelectItem key={site.id} value={site.id}>*/}
+          {/*      {site.name}*/}
+          {/*    </SelectItem>*/}
+          {/*  )) || []}*/}
+          {/*</Select>*/}
           <Select
             isLoading={cages.isLoading}
             variant="bordered"

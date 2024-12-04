@@ -69,13 +69,13 @@ const columns = [
 
 export default function Page() {
   const [search, setSearch] = useQueryState("q", {
-    throttleMs: 1000,
+    throttleMs: 10000,
   });
   const [page, setPage] = useQueryState("page", {
-    throttleMs: 1000,
+    throttleMs: 10000,
   });
   const [limit, setLimit] = useQueryState("limit", {
-    throttleMs: 1000,
+    throttleMs: 10000,
   });
 
   const data = useGetWarehouseTransactions(
@@ -159,17 +159,17 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>
-                    {DateTime.fromISO(item.createdAt).toLocaleString(
+                    {DateTime.fromISO(item.createdAt, { zone: 'local' }).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
+                      { locale: 'id' }
                     )}
                   </div>
                 </TableCell>
                 <TableCell>
                   <div>
-                    {DateTime.fromISO(item.createdAt).toLocaleString(
+                    {DateTime.fromISO(item.updatedAt, { zone: 'local' }).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
+                      { locale: 'id' }
                     )}
                   </div>
                 </TableCell>

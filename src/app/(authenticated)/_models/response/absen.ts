@@ -31,6 +31,7 @@ export interface AbsenListResponse {
   export interface User{
     id:string;
     name:string;
+    phone?: string;
     sites: Site[]
   }
 
