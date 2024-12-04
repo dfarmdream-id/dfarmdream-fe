@@ -2,7 +2,7 @@
 
 import {Card, CardBody, CardHeader, DatePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
 import dynamic from "next/dynamic";
-import {ReactNode, useCallback, useMemo, useState} from "react";
+import {ReactNode, useMemo, useState} from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
 import { useDashboardChart, useDashboardSummary } from "../_services/dashboard";
 import Link from "next/link";
@@ -18,7 +18,6 @@ import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
 import { GiNestEggs } from "react-icons/gi";
 import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
-import debounce from "lodash.debounce";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -36,15 +35,15 @@ export default function Page() {
   // Memoize dashboard summary data
   const dashboard = useDashboardSummary(
     useMemo(() => ({
-      date: performanceChartDate || new Date().toISOString().split("T")[0],
-      cageId: performanceCageChartSelected || "",
+      date: performanceChartDate,
+      cageId: performanceCageChartSelected,
     }), [performanceChartDate, performanceCageChartSelected])
   );
 
   // Memoize chart data
   const chartData = useDashboardChart(
     useMemo(() => ({
-      cageId: chickenCageChartSelected || "",
+      cageId: chickenCageChartSelected,
     }), [chickenCageChartSelected])
   );
 
@@ -52,7 +51,7 @@ export default function Page() {
   const cages = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   // Debounced handlers
-  const debouncedSetPerformanceChartDate = useCallback(debounce(setPerformanceChartDate, 300), []);
+  // const debouncedSetPerformanceChartDate = useCallback(useDebounce(setPerformanceChartDate, 300), []);
 
   const StatsCard = ({
                        title,
@@ -221,7 +220,9 @@ export default function Page() {
                 </ul>
                 <div className="flex gap-3 mt-10">
                   <DatePicker onChange={
-                    (e) => debouncedSetPerformanceChartDate(e?.toString() || "")
+                    (e) => {
+                      setPerformanceChartDate(e?.toString() || "");
+                    }
                   } />
                   <Select
                     variant="bordered"

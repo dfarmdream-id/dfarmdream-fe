@@ -6,8 +6,8 @@ export const useDashboardSummary = ({
                                       date,
                                       cageId,
                                     }: {
-  date: string;
-  cageId: string;
+  date: string | null; 
+  cageId: string | null;
 }) => {
   return useHttp<DashboardSummaryResponse>("/v1/dashboard", {
     params: {
@@ -20,7 +20,7 @@ export const useDashboardSummary = ({
 export const useDashboardChart = ({
                                     cageId,
                                   }: {
-  cageId: string;
+  cageId: string | null;
 }) => {
   return useHttp<DashboardChartResponse>("/v1/dashboard/chart", {
     params: {
