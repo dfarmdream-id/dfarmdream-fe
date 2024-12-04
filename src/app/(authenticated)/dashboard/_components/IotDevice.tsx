@@ -9,7 +9,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
   const [cage, setCage] = useState<string | null>(null);
 
   const items = useGetHumidityData(
-    useMemo(() => ({ cageId: cage || "" }), [ cage])
+    useMemo(() => ({ cageId: cage || "" }), [cage])
   );
 
   const sensors = useMemo(() => {
@@ -32,21 +32,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
     <div className="grid bg-white rounded-lg p-5 gap-3">
       <div>{children}</div>
       <div className="flex flex-col items-center">
-        <div className="grid md:grid-cols-2 gap-3 max-w-3xl w-full">
-          {/*<Select*/}
-          {/*  isLoading={sites.isLoading}*/}
-          {/*  variant="bordered"*/}
-          {/*  placeholder="Pilih lokasi"*/}
-          {/*  onChange={(e) => {*/}
-          {/*    setSite(e.target.value);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  {sites.data?.data?.data?.map((site) => (*/}
-          {/*    <SelectItem key={site.id} value={site.id}>*/}
-          {/*      {site.name}*/}
-          {/*    </SelectItem>*/}
-          {/*  )) || []}*/}
-          {/*</Select>*/}
+        <div className="grid gap-3 max-w-3xl w-full">
           <Select
             isLoading={cages.isLoading}
             variant="bordered"
