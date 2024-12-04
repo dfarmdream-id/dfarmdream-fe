@@ -63,7 +63,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
           </Select>
         </div>
       </div>
-      <ul className="py-5 grid gap-5 md:grid-cols-3 lg:grid-cols-5">
+      <ul className="py-5 grid gap-5 lg:grid-cols-3 xl:grid-cols-5">
         {sensors &&
           sensors.map((x, index) => (
             <li
@@ -76,8 +76,8 @@ export default function IotDevices({ children }: { children: ReactNode }) {
                 </div>
               </div>
               <div className="w-full">
-                <div className="font-bold">Lampu {index+1}</div>
-                {x.lampStatus==0? <Chip color="danger">Mati</Chip>:<Chip color="primary">Hidup</Chip>}
+                <div className="font-bold">Lampu {index + 1}</div>
+                {x.lampStatus == 0 ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
               </div>
             </li>
           ))}

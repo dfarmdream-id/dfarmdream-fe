@@ -126,7 +126,7 @@ export default function Page() {
     >
       <div className="p-5 space-y-5">
         <div className="text-3xl font-bold mb-10">Data Peternakan</div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <Can action="show:dashboard-stats-investors">
             <Link href="/master/investors">
               <StatsCard
@@ -155,7 +155,7 @@ export default function Page() {
             </Link>
           </Can>
         </div>
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid lg:grid-cols-2 gap-5">
           <Can action="show:dashboard-chicken-chart">
             <Card>
               <CardHeader className="flex flex-col items-start">

@@ -84,7 +84,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
   }, [items]);
 
   return (
-    <div className="grid md:grid-cols-2 bg-white rounded-lg p-5 gap-3">
+    <div className="grid lg:grid-cols-2 bg-white rounded-lg p-5 gap-3">
       <div className="flex flex-col gap-3 w-full overflow-hidden">
         <div className="w-full">
           <div className="text-xl text-primary font-bold text-center">

@@ -23,7 +23,7 @@ import {
 } from "../../_services/iot-device";
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
-import {DateTime} from 'luxon'
+import { DateTime } from 'luxon'
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -80,7 +80,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   // const [limit, setLimit] = useQueryState("limit", {
   //   throttleMs: 1000,
   // });
-  const limit:string = "5";
+  const limit: string = "5";
 
   const relayLogs = useGetRelayLogData(
     useMemo(
@@ -144,7 +144,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
 
   return (
     <div className="bg-white rounded-lg p-5 gap-3">
-      <div className="grid md:grid-cols-2">
+      <div className="grid">
         <div className="flex flex-col gap-3 w-full overflow-hidden">
           <div className="w-full">
             <div className="text-xl text-primary font-bold text-center">
@@ -196,11 +196,11 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
               )) || []}
             </Select>
           </div>
-          <ul className="space-y-5 py-5">
+          <ul className="space-y-5 py-5 mt-5">
             {items?.data?.data?.sensors &&
               items.data.data.sensors.map((item) => (
                 <li
-                  className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
+                  className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
                   key={item.code}
                 >
                   <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
@@ -271,9 +271,9 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                 </TableCell>
                 <TableCell>
                   <div>{DateTime.fromISO(item.createdAt).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}</div>
+                    DateTime.DATETIME_MED_WITH_WEEKDAY,
+                    { locale: "id" }
+                  )}</div>
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -286,7 +286,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                 <TableCell>
                   <div>{item.relayDesc}</div>
                 </TableCell>
-                
+
               </TableRow>
             )}
           </TableBody>

@@ -84,8 +84,8 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
   }, [items]);
 
   return (
-    <div className="grid md:grid-cols-2 bg-white rounded-lg p-5 gap-3">
-      <div className="flex flex-col gap-3 w-full overflow-hidden">
+    <div className="grid lg:grid-cols-2 bg-white rounded-lg p-5 gap-3">
+      <div className="flex flex-col gap-3 w-full overflow-hidden space-y-5">
         <div className="w-full">
           <div className="text-xl text-primary font-bold text-center">
             {children}
@@ -140,7 +140,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
           {items?.data?.data?.sensors &&
             items.data.data.sensors.map((item) => (
               <li
-                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md flex-wrap"
+                className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
                 key={item.code}
               >
                 <div className="w-8 h-8 md:w-16 md:h-16 bg-primary text-white flex justify-center items-center aspect-square rounded-lg">
