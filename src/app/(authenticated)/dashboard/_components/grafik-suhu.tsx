@@ -203,7 +203,18 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                       Sensor: {item.name}
                     </div>
                     <div>{item.currentTemperature}°C</div>
-                    <div>
+                    <div className="relative w-full">
+                                           <div
+                         className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
+                         style={{
+                           right: `${
+                             item.currentTemperature <= item.tempThreshold
+                               ? (item.currentTemperature / item.tempThreshold) * 50 // Left of center (Good side)
+                               : 50 + ((item.currentTemperature - item.tempThreshold) / item.tempThreshold) * 50 // Right of center (Bad side)
+                           }%`,
+                           top: '0px'
+                         }}
+                       ></div>
                       <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                       <div className="flex justify-between">
                         <div>Bad</div>

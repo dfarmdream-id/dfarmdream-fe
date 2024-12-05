@@ -3,7 +3,6 @@ import Logo from "@/components/assets/logo";
 import { useGetWarehouseTransactionPublic } from "../../(authenticated)/_services/warehouse-transaction";
 import { useParams } from "next/navigation";
 import { DateTime } from "luxon";
-import { IDR } from "@/common/helpers/currency";
 import QRCode from "react-qr-code";
 import { useSearchParam } from "react-use";
 import { useEffect } from "react";
@@ -62,31 +61,31 @@ export default function Verify() {
                 </div>
               </td>
             </tr>
-            <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-              <td className="px-3 py-1 w-1/4">
-                Harga{" "}
-                {data.data?.data?.category == "CHICKEN" ? "Ayam" : "Telur"} Pada{" "}
-                {DateTime.fromISO(
-                  data.data?.data?.price?.createdAt || ""
-                ).toFormat("dd-MM-yyyy")}
-              </td>
-              <td className="px-3 py-1 overflow-hidden ">
-                <div className="w-full overflow-hidden truncate">
-                  {IDR(data.data?.data?.price?.value || 0)} /Kg
-                </div>
-              </td>
-            </tr>
-            <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-              <td className="px-3 py-1 w-1/4">Total Harga</td>
-              <td className="px-3 py-1 overflow-hidden ">
-                <div className="w-full overflow-hidden truncate">
-                  {IDR(
-                    (data.data?.data?.price?.value ?? 0) *
-                      (data.data?.data?.weight ?? 0) || 0
-                  )}
-                </div>
-              </td>
-            </tr>
+            {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+            {/*  <td className="px-3 py-1 w-1/4">*/}
+            {/*    Harga{" "}*/}
+            {/*    {data.data?.data?.category == "CHICKEN" ? "Ayam" : "Telur"} Pada{" "}*/}
+            {/*    {DateTime.fromISO(*/}
+            {/*      data.data?.data?.price?.createdAt || ""*/}
+            {/*    ).toFormat("dd-MM-yyyy")}*/}
+            {/*  </td>*/}
+            {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+            {/*    <div className="w-full overflow-hidden truncate">*/}
+            {/*      {IDR(data.data?.data?.price?.value || 0)} /Kg*/}
+            {/*    </div>*/}
+            {/*  </td>*/}
+            {/*</tr>*/}
+            {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+            {/*  <td className="px-3 py-1 w-1/4">Total Harga</td>*/}
+            {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+            {/*    <div className="w-full overflow-hidden truncate">*/}
+            {/*      {IDR(*/}
+            {/*        (data.data?.data?.price?.value ?? 0) **/}
+            {/*          (data.data?.data?.weight ?? 0) || 0*/}
+            {/*      )}*/}
+            {/*    </div>*/}
+            {/*  </td>*/}
+            {/*</tr>*/}
           </tbody>
         </table>{" "}
       </div>
@@ -132,32 +131,32 @@ export default function Verify() {
                   </div>
                 </td>
               </tr>
-              <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                <td className="px-3 py-1 w-1/4">
-                  Harga{" "}
-                  {data.data?.data?.category == "CHICKEN" ? "Ayam" : "Telur"}{" "}
-                  Pada{" "}
-                  {DateTime.fromISO(
-                    data.data?.data?.price?.createdAt || ""
-                  ).toFormat("dd-MM-yyyy")}
-                </td>
-                <td className="px-3 py-1 overflow-hidden ">
-                  <div className="w-full overflow-hidden truncate">
-                    {IDR(data.data?.data?.price?.value || 0)} /Kg
-                  </div>
-                </td>
-              </tr>
-              <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                <td className="px-3 py-1 w-1/4">Total Harga</td>
-                <td className="px-3 py-1 overflow-hidden ">
-                  <div className="w-full overflow-hidden truncate">
-                    {IDR(
-                      (data.data?.data?.price?.value ?? 0) *
-                        (data.data?.data?.weight ?? 0) || 0
-                    )}
-                  </div>
-                </td>
-              </tr>
+              {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+              {/*  <td className="px-3 py-1 w-1/4">*/}
+              {/*    Harga{" "}*/}
+              {/*    {data.data?.data?.category == "CHICKEN" ? "Ayam" : "Telur"}{" "}*/}
+              {/*    Pada{" "}*/}
+              {/*    {DateTime.fromISO(*/}
+              {/*      data.data?.data?.price?.createdAt || ""*/}
+              {/*    ).toFormat("dd-MM-yyyy")}*/}
+              {/*  </td>*/}
+              {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+              {/*    <div className="w-full overflow-hidden truncate">*/}
+              {/*      {IDR(data.data?.data?.price?.value || 0)} /Kg*/}
+              {/*    </div>*/}
+              {/*  </td>*/}
+              {/*</tr>*/}
+              {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+              {/*  <td className="px-3 py-1 w-1/4">Total Harga</td>*/}
+              {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+              {/*    <div className="w-full overflow-hidden truncate">*/}
+              {/*      {IDR(*/}
+              {/*        (data.data?.data?.price?.value ?? 0) **/}
+              {/*          (data.data?.data?.weight ?? 0) || 0*/}
+              {/*      )}*/}
+              {/*    </div>*/}
+              {/*  </td>*/}
+              {/*</tr>*/}
             </tbody>
           </table>
         </div>

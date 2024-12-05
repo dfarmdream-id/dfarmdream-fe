@@ -191,7 +191,7 @@ export default function Page() {
               isLoading={submission.isPending}
               color="primary"
               type="submit"
-            >
+            > 
               Simpan
             </Button>
           </div>
