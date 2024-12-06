@@ -54,10 +54,12 @@ import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
 import { PiDotDuotone } from "react-icons/pi";
+import useLocationStore from "@/stores/useLocationStore";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
   const { setPermissions } = useAuthStore((state) => state);
+  const { setSiteId } = useLocationStore();
 
   useEffect(() => {
     if (data?.data && data?.data?.roles?.length > 0) {
@@ -72,6 +74,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       );
     }
   }, [data, setPermissions]);
+
+  useEffect(() => {
+    if (data?.data?.site?.id) {
+      setSiteId(data?.data?.site?.id);
+    }
+  }, [data, setSiteId]);
 
   const SidebarMenuItem = (menu: {
     can: string;

@@ -1,14 +1,15 @@
 "use client";
-import { Button, Input, Select, SelectItem, Switch } from "@nextui-org/react";
-import { Controller } from "react-hook-form";
-import { z } from "zod";
-import { useForm } from "@/hooks/form";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { InputNumber } from "@/components/ui/input";
-import { useGetSites } from "../../../_services/site";
-import { useMemo } from "react";
-import { useCreatePrice } from "../../../_services/price";
+import {Button, Input, Select, SelectItem, Switch} from "@nextui-org/react";
+import {Controller} from "react-hook-form";
+import {z} from "zod";
+import {useForm} from "@/hooks/form";
+import {toast} from "sonner";
+import {useRouter} from "next/navigation";
+import {InputNumber} from "@/components/ui/input";
+import {useGetSites} from "../../../_services/site";
+import {useEffect, useMemo} from "react";
+import {useCreatePrice} from "../../../_services/price";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function Page() {
   const schema = z.object({
@@ -36,9 +37,16 @@ export default function Page() {
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
-  const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
+  const sites = useGetSites(useMemo(() => ({page: "1", limit: "100"}), []));
   const submission = useCreatePrice();
   const router = useRouter();
+  const {siteId} = useLocationStore();
+
+  useEffect(() => {
+    if (siteId) {
+      form.setValue("siteId", siteId ?? ""); // Mengatur default value ke form
+    }
+  }, [siteId, form]);
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
@@ -70,7 +78,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="siteId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Lokasi"
@@ -94,7 +102,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="name"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -112,7 +120,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="value"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
@@ -131,7 +139,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="type"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   variant="bordered"
@@ -152,7 +160,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="status"
-              render={({ field }) => (
+              render={({field}) => (
                 <Switch
                   defaultChecked
                   isSelected={field.value}
