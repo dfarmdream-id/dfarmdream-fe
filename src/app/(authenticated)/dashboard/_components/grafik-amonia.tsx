@@ -324,16 +324,16 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="w-full">
-                  <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.name}</div>
-                  <div>{item.currentAmonia ? item.currentAmonia.toFixed(2) : '-'} ppm</div>
+                  <div className="font-bold w-full break-words overflow-hidden">Sensor: {item.code}</div>
+                  <div>{item.lastestValue ? item.lastestValue.toFixed(2) : '-'} ppm</div>
                   <div className="relative w-full">
                                      <div
                      className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
                      style={{
                        right: `${
-                         item.currentAmonia <= item.amoniaThreshold
-                           ? (item.currentAmonia / item.amoniaThreshold) * 50 // Left of center (Good side)
-                           : 50 + ((item.currentAmonia - item.amoniaThreshold) / item.amoniaThreshold) * 50 // Right of center (Bad side)
+                         item.lastestValue <= item.IotSensor.amoniaThreshold
+                           ? (item.lastestValue / item.IotSensor.amoniaThreshold) * 50 // Left of center (Good side)
+                           : 50 + ((item.lastestValue - item.IotSensor.amoniaThreshold) / item.IotSensor.amoniaThreshold) * 50 // Right of center (Bad side)
                        }%`,
                        top: '0px'
                      }}
@@ -346,7 +346,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  {item.currentAmonia ? (
+                  {item.lastestValue ? (
                     <Chip color="primary">Hidup</Chip>
                   ) : (
                     <Chip color="danger">Mati</Chip>

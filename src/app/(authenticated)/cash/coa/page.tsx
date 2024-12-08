@@ -106,7 +106,7 @@ export default function Page() {
 
           <Button
             as={Link}
-            href="/cash/group-coa/create"
+            href="/cash/coa/create"
             color="primary"
             startContent={<HiPlus />}
             className="w-full md:w-auto"

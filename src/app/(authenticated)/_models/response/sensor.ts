@@ -10,17 +10,23 @@ export interface ChartDataResponse {
   }
 
   export interface Sensor {
-    name:string
+    id:string
     code:string
-    tempThreshold:number
-    humidityThreshold:number
-    amoniaThreshold:number
-    currentTemperature:number
-    currentHumidty:number
-    currentAmonia:number
-    lampStatus:any
+    type:number
+    lastestValue:number
+    IotSensor:IotSensor
   }
   
+  export interface IotSensor{
+    id:string;
+    name:string;
+    code:string;
+    cageId:string;
+    tempThreshold:number;
+    humidityThreshold:number;
+    amoniaThreshold:number;
+    lampStatus:number
+  }
   export interface Data {
     chart: Chart[]
     sensors: Sensor[]

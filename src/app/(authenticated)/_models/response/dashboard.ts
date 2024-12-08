@@ -22,3 +22,26 @@ export interface Chart {
   alive: number;
   dead: number;
 }
+
+
+export interface LdrListDataResonse{
+  message:string;
+  data:LdrObject[],
+  status:number
+}
+
+
+export interface LdrObject{
+  id:string;
+  code:string;
+  lastestValue:number;
+  type:string;
+  IotSensor:IotSensor
+}
+
+export interface IotSensor{
+  id:string;
+  name:string;
+  code:string;
+  cageId:string;
+}
