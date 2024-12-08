@@ -6,38 +6,28 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { InputNumber } from "@/components/ui/input";
-import { useGetCages } from "../../../_services/cage";
-import { useCreateIotDevice } from "../../../_services/iot-device";
+import {  useGetIotDevices } from "../../../_services/iot-device";
+import { useCreateSensorDevice } from "@/app/(authenticated)/_services/sensor-device";
 
 export default function Page() {
   const schema = z.object({
-    name: z.string({
-      message: "Mohon isi dengan nama perangkat",
-    }),
     code: z.string({
       message: "Mohon isi dengan kode perangkat IOT",
     }),
-    cageId: z.string({
-      message: "Pilih kandang terlebih dahulu",
+    type: z.string({
+      message: "Pilih tipe sensor",
     }),
-    tempThreshold: z.number({
-      message: "Isi Temperature Threshold",
-    }),
-    humidityThreshold: z.number({
-      message: "Isi humidity Threshold",
-    }),
-    amoniaThreshold: z.number({
-      message: "Isi Amonia Threshold",
+    deviceId: z.string({
+      message: "Pilih perangkat",
     }),
   });
 
-  const sites = useGetCages(useMemo(() => ({ page: "1", limit: "1000000" }), []));
+  const devices = useGetIotDevices(useMemo(() => ({ page: "1", limit: "1000000" }), []));
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
 
-  const submission = useCreateIotDevice();
+  const submission = useCreateSensorDevice();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
@@ -52,7 +42,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/operational/iot");
+          router.push("/operational/sensor-device");
         },
       }
     );
@@ -72,7 +62,7 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Kode Perangkat"
+                  label="CODE Sensor"
                   placeholder="Masukkan kode yang tertera pada perangkat"
                   {...field}
                   errorMessage={fieldState.error?.message}
@@ -85,37 +75,18 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nama Perangkat"
-                  placeholder="Masukkan Nama Perangkat"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="cageId"
+              name="deviceId"
               render={({ field, fieldState }) => (
                 <Select
                   labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
+                  placeholder="Pilih Perangkat IOT"
+                  label="Perangkat IOT"
                   variant="bordered"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
-                  {sites.data?.data?.data?.map((position) => (
+                  {devices.data?.data?.data?.map((position) => (
                     <SelectItem key={position.id} value={position.id}>
                       {position.name}
                     </SelectItem>
@@ -128,58 +99,26 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="tempThreshold"
+              name="type"
               render={({ field, fieldState }) => (
-                <InputNumber
+                <Select
                   labelPlacement="outside"
+                  placeholder="Pilih Tipe Sensor"
+                  label="Tipe Sensor"
                   variant="bordered"
-                  type="text"
-                  label="Temperature Threshold"
-                  placeholder="Ketikkan threshold suhu"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="humidityThreshold"
-              render={({ field, fieldState }) => (
-                <InputNumber
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Humidity Threshold"
-                  placeholder="Threshold Humidity"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
+                >
+                  <SelectItem  key="TEMP" value="TEMP">Temperature</SelectItem>
+                  <SelectItem  key="HUMIDITY" value="HUMIDITY">Kelembapan</SelectItem>
+                  <SelectItem  key="GAS" value="GAS">Amonia</SelectItem>
+                  <SelectItem  key="LDR" value="LDR">LDR</SelectItem>
+                </Select>
               )}
             />
           </div>
 
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="amoniaThreshold"
-              render={({ field, fieldState }) => (
-                <InputNumber
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Amonia Threshold"
-                  placeholder="Ketikkan Threshold Amonia"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button variant="bordered" color="primary" onClick={()=>router.push("/operational/iot")}>
               Kembali

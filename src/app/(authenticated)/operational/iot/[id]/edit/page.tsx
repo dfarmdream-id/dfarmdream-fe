@@ -93,7 +93,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Data Kandang</div>
+      <div className="text-2xl font-bold mb-10">Ubah Data Perangkat IOT</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="h-16">
@@ -105,8 +105,27 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="CODE Perangkat"
+                  label="Kode Perangkat"
                   placeholder="Masukkan kode yang tertera pada perangkat"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Nama Perangkat"
+                  placeholder="Ketikkan nama perangkat"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
