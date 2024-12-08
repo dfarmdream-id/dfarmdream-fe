@@ -10,10 +10,10 @@ import {
 } from "@/app/(authenticated)/_services/kategori-biaya";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useMemo } from "react";
-import { useGetSites } from "@/app/(authenticated)/_services/site";
 import { useGetUsers } from "@/app/(authenticated)/_services/user";
 import { InputNumber } from "@/components/ui/input";
 import { useCreateBiaya } from "@/app/(authenticated)/_services/biaya";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function Page() {
   const schema = z.object({
@@ -44,21 +44,22 @@ export default function Page() {
     schema,
   });
 
-  const watch = form.watch();
+  // const watch = form.watch();
 
   const submission = useCreateBiaya();
   const router = useRouter();
+  const {siteId} = useLocationStore();
 
   const kategoriData = useGetListKategoriBiaya(
     useMemo(() => ({ page: "1", limit: "1000" }), [])
   );
-  const siteData = useGetSites(
-    useMemo(() => ({ page: "1", limit: "10000" }), [])
-  );
+  // const siteData = useGetSites(
+  //   useMemo(() => ({ page: "1", limit: "10000" }), [])
+  // );
   const cagesData = useGetCages(
     useMemo(
-      () => ({ page: "1", limit: "10000", siteId: watch.siteId }),
-      [watch.siteId]
+      () => ({ page: "1", limit: "10000", siteId: siteId ?? "" }),
+      [siteId]
     )
   );
   const userData = useGetUsers(
@@ -138,31 +139,33 @@ export default function Page() {
             />
           </div>
 
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="siteId"
-              render={({ field, fieldState }) => (
-                <Select
-                  multiple
-                  isLoading={siteData.isLoading}
-                  labelPlacement="outside"
-                  placeholder="Pilih Lokasi"
-                  label="Lokasi"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {siteData.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
+          {/*<div className="h-16">*/}
+          {/*  <Controller*/}
+          {/*    control={form.control}*/}
+          {/*    name="siteId"*/}
+          {/*    render={({ field, fieldState }) => (*/}
+          {/*      <Select*/}
+          {/*        multiple*/}
+          {/*        isLoading={siteData.isLoading}*/}
+          {/*        labelPlacement="outside"*/}
+          {/*        placeholder="Pilih Lokasi"*/}
+          {/*        label="Lokasi"*/}
+          {/*        variant="bordered"*/}
+          {/*        disabled={true}*/}
+          {/*        defaultSelectedKeys={[siteId ?? ""]}*/}
+          {/*        {...field}*/}
+          {/*        errorMessage={fieldState.error?.message}*/}
+          {/*        isInvalid={fieldState.invalid}*/}
+          {/*      >*/}
+          {/*        {siteData.data?.data?.data?.map((position) => (*/}
+          {/*          <SelectItem key={position.id} value={position.id}>*/}
+          {/*            {position.name}*/}
+          {/*          </SelectItem>*/}
+          {/*        )) || []}*/}
+          {/*      </Select>*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*</div>*/}
 
           <div className="h-16">
             <Controller

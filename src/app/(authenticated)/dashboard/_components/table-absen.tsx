@@ -172,19 +172,24 @@ export default function TableAbsen() {
                     </Chip></TableCell>
               {/* icon wa to redirect to wa */}
                 <TableCell>
-                  <div className="flex gap-3">
-                    <a
-                      href={`https://wa.me/${
-                        item.user?.phone?.startsWith("08")
-                          ? `62${item.user.phone.slice(1)}`
-                          : item.user?.phone
-                      }`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <SvgWhatsappIcon className="cursor-pointer"/>
-                    </a>
-                  </div>
+                  {
+                    item.status === 1 ? (
+                      <div className="flex gap-3">
+                        <a
+                          href={`https://wa.me/${
+                            item.user?.phone?.startsWith("08")
+                              ? `62${item.user.phone.slice(1)}`
+                              : item.user?.phone
+                          }`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <SvgWhatsappIcon className="cursor-pointer"/>
+                        </a>
+                      </div>
+                    ) : null
+                  }
+                  
                 </TableCell>
               </TableRow>
                 )}

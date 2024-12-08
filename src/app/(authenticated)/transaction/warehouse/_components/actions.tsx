@@ -135,11 +135,11 @@ export default function Actions(props: Props) {
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jumlah</td>
-                      <td className="px-3 py-1">{data?.data?.data?.qty}</td>
+                      <td className="px-3 py-1">{data?.data?.data?.qty} Butir</td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Berat Total</td>
-                      <td className="px-3 py-1">{data?.data?.data?.weight}</td>
+                      <td className="px-3 py-1">{data?.data?.data?.weight} KG</td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Karyawan Panen</td>

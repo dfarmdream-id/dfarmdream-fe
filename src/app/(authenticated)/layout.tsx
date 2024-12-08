@@ -12,7 +12,7 @@ import {
   DropdownTrigger,
   Image,
   ScrollShadow,
-  Skeleton,
+  Skeleton, Tooltip,
 } from "@nextui-org/react";
 import {
   HiChevronRight,
@@ -54,10 +54,12 @@ import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
 import { PiDotDuotone } from "react-icons/pi";
+import useLocationStore from "@/stores/useLocationStore";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
   const { setPermissions } = useAuthStore((state) => state);
+  const { setSiteId } = useLocationStore();
 
   useEffect(() => {
     if (data?.data && data?.data?.roles?.length > 0) {
@@ -72,6 +74,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       );
     }
   }, [data, setPermissions]);
+
+  useEffect(() => {
+    if (data?.data?.site?.id) {
+      setSiteId(data?.data?.site?.id);
+    }
+  }, [data, setSiteId]);
 
   const SidebarMenuItem = (menu: {
     can: string;
@@ -167,32 +175,71 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-3 space-y-2"
+                  className={cn(
+                    menu.expanded ? "p-3 space-y-2" : "p-1 space-y-1"
+                  )}
                 >
                   {menu.childrens.map((child) => (
                     <li key={child.label}>
-                      <Can action={child.can || ""}>
-                        <Card
-                          shadow="none"
-                          onPress={() => {
-                            if (menu.mobile) {
-                              menu.onClick?.();
-                            }
-                            menu.action?.();
-                            router.push(child.href || "");
-                          }}
-                          as={child.href ? Link : "a"}
-                          href={child.href ? child.href : undefined}
-                          isPressable
-                          data-active={child.href == path}
-                          className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
-                        >
-                          <CardBody className="flex gap-2 flex-row items-center">
-                            {child.icon}
-                            {child.label}
-                          </CardBody>
-                        </Card>
-                      </Can>
+                      {
+                        menu.expanded ? (
+                          <Can action={child.can || ""}>
+                            <Card
+                              shadow="none"
+                              onPress={() => {
+                                /*if (menu.mobile) {
+                                  menu.onClick?.();
+                                }*/
+                                menu.action?.();
+                                router.push(child.href || "");
+                              }}
+                              as={child.href ? Link : "a"}
+                              href={child.href ? child.href : undefined}
+                              isPressable
+                              data-active={child.href == path}
+                              className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                            >
+                              <CardBody className="flex gap-2 flex-row items-center test">
+                                {child.icon}
+                                {menu.expanded ? child.label : !menu.mobile ? null : child.label}
+                              </CardBody>
+                            </Card>
+                          </Can>
+                        ) : (
+                          <Can action={child.can || ""}>
+                            <Tooltip
+                              content={child.label}
+                              placement="right"
+                              offset={10}
+                            >
+                              <Card
+                                shadow="none"
+                                onPress={() => {
+                                  /*if (menu.mobile) {
+                                    menu.onClick?.();
+                                  }*/
+                                  menu.action?.();
+                                  router.push(child.href || "");
+
+                                  if (menu.mobile) {
+                                    menu.onClick?.();
+                                  }
+                                }}
+                                as={child.href ? Link : "a"}
+                                href={child.href ? child.href : undefined}
+                                isPressable
+                                data-active={child.href == path}
+                                className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
+                              >
+                                <CardBody className="flex gap-2 flex-row items-center kedu">
+                                  {child.icon}
+                                  {menu.expanded ? child.label : !menu.mobile ? null : child.label}
+                                </CardBody>
+                              </Card>
+                            </Tooltip>
+                          </Can>
+                        )
+                      }
                     </li>
                   ))}
                 </motion.ul>
@@ -298,6 +345,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label:"Journal Type",
           href:"/cash/journal-type",
           icon:<MdOutlineCollectionsBookmark className="text-xl" />
+        },
+        {
+          can: "show:template-journal-and-detail",
+          label: "Template Jurnal dan Detail",
+          href: "/cash/template-journal",
+          icon: <HiOutlineListBullet className="text-xl" />,
+        },
+        {
+          can: "show:journal",
+          label: "Jurnal dan Detail",
+          href: "/cash/journal",
+          icon: <HiOutlineListBullet className="text-xl" />,
         },
         {
           can: "show:cash-flow-category",

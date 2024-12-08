@@ -7,8 +7,11 @@ import {
 import Cookies from "js-cookie";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function SwitchSite() {
+  const { setSiteId } = useLocationStore();
+  
   const profile = useGetProfile();
   const sites = useGetSiteAvailable();
   const switchSite = useSwitchSite();
@@ -17,6 +20,7 @@ export default function SwitchSite() {
   return (
     <div className="flex items-center w-full">
       <Select
+        aria-label="Pilih Lokasi"
         items={sites.data?.data || []}
         labelPlacement="outside-left"
         className="max-w-xs w-full"
@@ -35,6 +39,7 @@ export default function SwitchSite() {
             },
             {
               onSuccess: ({ data: { token } }) => {
+                setSiteId(id.target.value.toString());
                 Cookies.set("accessToken", token);
                 queryClient.invalidateQueries();
                 toast.success("Berhasil mengganti lokasi");
