@@ -1,28 +1,35 @@
-export interface GetListJournalTypeResponse {
-  message: string;
-  data: ListJournalTypeData;
-  status: number;
-}
-
-export interface GetJournalTypeResponse {
-  message: string;
-  data: SingleJournalTypeData;
-  status: number;
-}
-
-export interface ListJournalTypeData {
-  data: SingleJournalTypeData[];
-  meta: Meta;
-}
-
-export interface SingleJournalTypeData {
-  id: string;
-  name: string;
-}
-
+export interface JournalTypeListResponse {
+    message: string;
+    data: Data;
+    status: number;
+  }
+  
+  export interface JournalTypeResponse {
+    message: string;
+    data: Daum;
+    status: number;
+  }
+  
+  export interface Data {
+    data: Daum[];
+    meta: Meta;
+  }
+  
+  
 export interface Meta {
-  limit: number;
-  page: number;
-  totalData: number;
-  totalPage: number;
-}
+    limit: number;
+    page: number;
+    totalData: number;
+    totalPage: number;
+  }
+
+  
+  export interface Daum {
+    id: string;
+    name: string;
+    code:number;
+    status: string;
+    deletedAt: any;  
+    createdAt: string;
+    updatedAt: string;
+  }
