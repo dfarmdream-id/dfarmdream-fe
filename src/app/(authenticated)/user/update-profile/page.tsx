@@ -98,7 +98,7 @@ export default function Page() {
           toast.success("Berhasil melakukan update profile");
           form.reset();
           queryClient.refetchQueries({
-            queryKey: ["/v1/auth/profile"],
+            queryKey: ["/v1/auth/profile", "/v1/auth/sites"],
           });
           router.push("/dashboard");
         },

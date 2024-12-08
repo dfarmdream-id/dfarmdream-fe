@@ -17,6 +17,9 @@ export default function Page() {
     cageId: z.string({
       message: "Id kandang",
     }),
+    createdAt: z.string({
+      message: "Tanggal Dibuat wajib diisi",
+    })
   });
 
   const cage = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
@@ -54,7 +57,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="name"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -73,7 +76,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
@@ -90,6 +93,28 @@ export default function Page() {
                     </SelectItem>
                   )) || []}
                 </Select>
+              )}
+            />
+          </div>
+          <div>
+            {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
+            <Controller
+              control={form.control}
+              name="createdAt"
+              defaultValue={
+                new Date().toISOString().split("T")[0]
+              }
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="date"
+                  label="Tanggal Dibuat"
+                  placeholder="Tanggal Dibuat"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
               )}
             />
           </div>
