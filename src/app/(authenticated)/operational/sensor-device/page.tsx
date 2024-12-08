@@ -124,7 +124,7 @@ export default function Page() {
                   <div>{item.type}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.latestValue}</div>
+                  <div>{item.lastestValue?item.lastestValue:'-'}</div>
                 </TableCell>
                 <TableCell>
                   <div>
