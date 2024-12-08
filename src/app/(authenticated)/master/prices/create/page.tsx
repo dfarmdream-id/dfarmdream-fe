@@ -86,6 +86,8 @@ export default function Page() {
                   label="Lokasi"
                   variant="bordered"
                   {...field}
+                  disabled={true}
+                  defaultSelectedKeys={[siteId ?? ""]}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >

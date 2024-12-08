@@ -20,6 +20,7 @@ export default function SwitchSite() {
   return (
     <div className="flex items-center w-full">
       <Select
+        aria-label="Pilih Lokasi"
         items={sites.data?.data || []}
         labelPlacement="outside-left"
         className="max-w-xs w-full"

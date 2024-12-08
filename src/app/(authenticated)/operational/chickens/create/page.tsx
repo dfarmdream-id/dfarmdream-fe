@@ -17,6 +17,9 @@ export default function Page() {
     name: z.string({
       message: "Nama wajib diisi",
     }),
+    createdAt: z.string({
+      message: "Tanggal Dibuat wajib diisi",
+    }),
   });
 
   const racks = useGetCageRacks(
@@ -95,6 +98,29 @@ export default function Page() {
                     </SelectItem>
                   )) || []}
                 </Select>
+              )}
+            />
+          </div>
+          
+          <div>
+          {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
+            <Controller
+              control={form.control}
+              name="createdAt"
+              defaultValue={
+                new Date().toISOString().split("T")[0]
+              }
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="date"
+                  label="Tanggal Dibuat"
+                  placeholder="Tanggal Dibuat"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
               )}
             />
           </div>

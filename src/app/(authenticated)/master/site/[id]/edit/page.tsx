@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useGetSite, useUpdateSite } from "../../../../_services/site";
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import {useQueryClient} from "@tanstack/react-query";
 
 export default function Page() {
   const schema = z.object({
@@ -18,6 +19,8 @@ export default function Page() {
       message: "Alamat wajib diisi",
     }),
   });
+
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
@@ -49,6 +52,9 @@ export default function Page() {
         },
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
+          queryClient.invalidateQueries({
+            queryKey: ["/v1/site", "/v1/auth/profile", "/v1/auth/sites"],
+          });
           form.reset();
           router.push("/master/site");
         },

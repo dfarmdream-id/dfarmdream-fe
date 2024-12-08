@@ -22,6 +22,7 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { Can } from "@/components/acl/can";
+import {DateTime} from "luxon";
 
 const columns = [
   {
@@ -36,7 +37,14 @@ const columns = [
     key: "sites",
     label: "Lokasi",
   },
-
+  {
+    key: "createdAt",
+    label: "Tanggal Dibuat",
+  },
+  {
+    key: "updatedAt",
+    label: "Tanggal Diubah",
+  },
   {
     key: "action",
     label: "Aksi",
@@ -67,7 +75,25 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (rack.data) {
-      return rack.data?.data?.data || [];
+      // Ambil data
+      const rawData = rack.data?.data?.data || [];
+
+      // Sorting data berdasarkan hierarki
+      return rawData.sort((a, b) => {
+        // Urutkan berdasarkan cage.name (case-insensitive)
+        const cageNameA = a.cage.name.toLowerCase();
+        const cageNameB = b.cage.name.toLowerCase();
+        if (cageNameA < cageNameB) return -1;
+        if (cageNameA > cageNameB) return 1;
+
+        // Jika cage.name sama, urutkan berdasarkan name dengan natural sort
+        const rackNameA = a.name.toLowerCase();
+        const rackNameB = b.name.toLowerCase();
+        return rackNameA.localeCompare(rackNameB, undefined, {
+          numeric: true, // Perhatikan angka saat sorting
+          sensitivity: 'base', // Case-insensitive
+        });
+      });
     }
     return [];
   }, [rack.data]);
@@ -124,6 +150,22 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{item?.cage?.site?.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {DateTime.fromISO(item.createdAt, {zone: 'local'}).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      {locale: 'id'}
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    {DateTime.fromISO(item.updatedAt, {zone: 'local'}).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      {locale: 'id'}
+                    )}
+                  </div>
                 </TableCell>
 
                 <TableCell>
