@@ -47,7 +47,7 @@ import {
 import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
-import { MdSensors } from "react-icons/md";
+import { MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
@@ -250,9 +250,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           can: "show:cctv",
         },
         {
-          label: "Sensor IOT",
+          label: "Perangkat IOT",
           href: "/operational/iot",
           icon: <MdSensors className="text-xl" />,
+          can: "show:sensor-iot",
+        },
+        {
+          label: "Sensor IOT",
+          href: "/operational/sensor-device",
+          icon: <MdOutlineDeviceThermostat className="text-xl" />,
           can: "show:sensor-iot",
         },
         {
