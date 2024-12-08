@@ -31,12 +31,11 @@ const groupByJournalId = (rows: SingleJournalData[]) => {
 export default function Page() {
   const [search, setSearch] = useQueryState("q", { throttleMs: 1000 });
   const [page, setPage] = useQueryState("page", { throttleMs: 1000 });
-  const [limit, setLimit] = useQueryState("limit", { throttleMs: 1000 });
 
   const journalData = useGetListJournal(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ q: search || "", page: page || "1", limit: "10" }),
+      [search, page]
     )
   );
 
