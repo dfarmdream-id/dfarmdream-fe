@@ -19,7 +19,7 @@ export interface GetListGroupCOAResponse {
     id: string;
     code: number;
     name: string;
-    status: string;
+    status: number;
     createdAt: string;
     updatedAt?: string;
   }

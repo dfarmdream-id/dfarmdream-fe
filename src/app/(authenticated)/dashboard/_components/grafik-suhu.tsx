@@ -146,8 +146,8 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
 
   return (
     <div className="bg-white rounded-lg p-5 gap-3">
-      <div className="grid">
-        <div className="flex flex-col gap-3 w-full overflow-hidden">
+      <div className="grid lg:grid-cols-2 bg-white rounded-lg p-5 gap-3">
+        <div className="flex flex-col gap-3 w-full overflow-hidden space-y-5">
           <div className="w-full">
             <div className="text-xl text-primary font-bold text-center">
               {children}
@@ -200,17 +200,17 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                   </div>
                   <div className="w-full flex-1">
                     <div className="font-bold w-full break-words overflow-hidden">
-                      Sensor: {item.name}
+                      Sensor: {item.code}
                     </div>
-                    <div>{item.currentTemperature}°C</div>
+                    <div>{item.lastestValue}°C</div>
                     <div className="relative w-full">
                                            <div
                          className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
                          style={{
                            right: `${
-                             item.currentTemperature <= item.tempThreshold
-                               ? (item.currentTemperature / item.tempThreshold) * 50 // Left of center (Good side)
-                               : 50 + ((item.currentTemperature - item.tempThreshold) / item.tempThreshold) * 50 // Right of center (Bad side)
+                             item.lastestValue <= item.IotSensor.tempThreshold
+                               ? (item.lastestValue / item.IotSensor.tempThreshold) * 50 // Left of center (Good side)
+                               : 50 + ((item.lastestValue - item.IotSensor.tempThreshold) / item.IotSensor.tempThreshold) * 50 // Right of center (Bad side)
                            }%`,
                            top: '0px'
                          }}
@@ -223,7 +223,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    {item.currentTemperature ? (
+                    {item.lastestValue ? (
                       <Chip color="primary">Hidup</Chip>
                     ) : (
                       <Chip color="danger">Mati</Chip>

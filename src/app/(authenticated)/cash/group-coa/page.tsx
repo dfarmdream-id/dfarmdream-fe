@@ -33,6 +33,10 @@ const columns = [
     label: "Nama Group",
   },
   {
+    key: "status",
+    label: "Status",
+  },
+  {
     key: "createdAt",
     label: "Tanggal Dibuat",
   },
@@ -121,6 +125,9 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{item.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.status==1?'CREDIT':'DEBIT'}</div>
                 </TableCell>
              
                 <TableCell>

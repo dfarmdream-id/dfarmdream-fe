@@ -3,18 +3,18 @@ import { Chip, Select, SelectItem } from "@nextui-org/react";
 import { ReactNode, useMemo, useState } from "react";
 import { useGetCages } from "../../_services/cage";
 import { HiSun } from "react-icons/hi2";
-import { useGetHumidityData } from "../../_services/iot-device";
+import { useGetLdrData } from "../../_services/dashboard";
 
 export default function IotDevices({ children }: { children: ReactNode }) {
   const [cage, setCage] = useState<string | null>(null);
 
-  const items = useGetHumidityData(
+  const items = useGetLdrData(
     useMemo(() => ({ cageId: cage || "" }), [cage])
   );
 
   const sensors = useMemo(() => {
     if (items.data) {
-      return items.data?.data?.sensors || [];
+      return items.data?.data || [];
     }
     return [];
   }, [items.data]);
@@ -63,7 +63,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
               </div>
               <div className="w-full">
                 <div className="font-bold">Lampu {index + 1}</div>
-                {x.lampStatus == 0 ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
+                {x.lastestValue > 500 ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
               </div>
             </li>
           ))}

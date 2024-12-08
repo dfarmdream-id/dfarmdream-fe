@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -16,6 +16,9 @@ export default function Page() {
     name: z.string({
       message: "Nama Wajib Diisi",
     }),
+    status:z.string({
+      message:"Mohon pilih status group"
+    })
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -30,7 +33,7 @@ export default function Page() {
       {
         body: {
             ...data,
-            status:"1"
+            status:parseInt(data.status)
         },
       },
       {
@@ -84,6 +87,25 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="status"
+              render={({ field, fieldState }) => (
+                <RadioGroup
+                  label="Status"
+                  orientation="horizontal"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  <Radio value="0">DEBIT</Radio>
+                  <Radio value="1">KREDIT</Radio>
+                </RadioGroup>
               )}
             />
           </div>

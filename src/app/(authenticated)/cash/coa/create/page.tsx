@@ -115,7 +115,7 @@ export default function Page() {
                   isLoading={groupCoas.isLoading}
                   multiple
                   labelPlacement="outside"
-                  placeholder="Pilih Rak"
+                  placeholder="Pilih Group"
                   label="Group COOA"
                   variant="bordered"
                   {...field}
