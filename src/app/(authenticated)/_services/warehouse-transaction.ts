@@ -44,3 +44,9 @@ export const useGetWarehouseTransactionPublic = (id: string) => {
     useMemo(() => `/v1/public/warehouse-transaction/${id}`, [id])
   );
 };
+
+export const useSendCashierTransaction = () => {
+  return useHttpMutation("/v1/warehouse-transaction/cashier/{id}", {
+    method: "POST",
+  });
+};

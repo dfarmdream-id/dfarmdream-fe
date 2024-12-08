@@ -28,6 +28,7 @@ export interface Daum {
   updatedAt: string;
   category: string;
   priceId?: string;
+  CashierDeliveryAt?:string;
   cage: Cage;
   site: Site;
   createdBy: CreatedBy;

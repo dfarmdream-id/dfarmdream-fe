@@ -19,19 +19,24 @@ import QRCode from "react-qr-code";
 import {
   useDeleteWarehouseTransaction,
   useGetWarehouseTransaction,
+  useSendCashierTransaction,
 } from "@/app/(authenticated)/_services/warehouse-transaction";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
+import { IoMdSend } from "react-icons/io";
 
 type Props = {
   id: string;
+  CashierDeliveryAt?: string;
 };
 
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
   const qrDisclosure = useDisclosure();
+  const sendCashierClosure = useDisclosure();
 
   const deleteData = useDeleteWarehouseTransaction();
+  const sendCashier = useSendCashierTransaction();
 
   const queryClient = useQueryClient();
 
@@ -42,9 +47,27 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/site"],
+            queryKey: ["/v1/warehouse-transaction"],
           });
           deleteDisclosure.onClose();
+        },
+        onError: () => {
+          toast.error("Gagal menghapus data");
+        },
+      }
+    );
+  };
+
+  const handleSendToCashier = (id: string) => {
+    sendCashier.mutate(
+      { pathVars: { id } },
+      {
+        onSuccess: () => {
+          toast.success("Berhasil mengirim data ke cashier");
+          queryClient.invalidateQueries({
+            queryKey: ["/v1/warehouse-transaction"],
+          });
+          sendCashierClosure.onClose();
         },
         onError: () => {
           toast.error("Gagal menghapus data");
@@ -101,6 +124,20 @@ export default function Actions(props: Props) {
         </Tooltip>
       </Can>
 
+      {!props.CashierDeliveryAt && (
+        <Can action="update:warehouse-transaction">
+          <Tooltip content="Kirim ke gudang kasir">
+            <Button
+              isIconOnly
+              variant="light"
+              onPress={sendCashierClosure.onOpen}
+            >
+              <IoMdSend />
+            </Button>
+          </Tooltip>
+        </Can>
+      )}
+
       <Modal
         onOpenChange={qrDisclosure.onOpenChange}
         isOpen={qrDisclosure.isOpen}
@@ -135,11 +172,15 @@ export default function Actions(props: Props) {
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jumlah</td>
-                      <td className="px-3 py-1">{data?.data?.data?.qty} Butir</td>
+                      <td className="px-3 py-1">
+                        {data?.data?.data?.qty} Butir
+                      </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Berat Total</td>
-                      <td className="px-3 py-1">{data?.data?.data?.weight} KG</td>
+                      <td className="px-3 py-1">
+                        {data?.data?.data?.weight} KG
+                      </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Karyawan Panen</td>
@@ -240,6 +281,38 @@ export default function Actions(props: Props) {
               onPress={handleDelete.bind(null, props.id)}
             >
               Hapus
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        onOpenChange={sendCashierClosure.onOpenChange}
+        isOpen={sendCashierClosure.isOpen}
+        onClose={sendCashierClosure.onClose}
+      >
+        <ModalContent>
+          <ModalHeader className="gap-2">
+            <div>Konfirmasi Kirim Transaksi</div>
+          </ModalHeader>
+          <ModalBody>
+            <p>Apakah anda yakin ingin mengirim transaksi ini ke kasir?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="bordered"
+              color="default"
+              onPress={sendCashierClosure.onClose}
+            >
+              Batal
+            </Button>
+            <Button
+              isLoading={sendCashier.isPending}
+              color="danger"
+              startContent={<IoMdSend />}
+              onPress={handleSendToCashier.bind(null, props.id)}
+            >
+              Ya Kirim
             </Button>
           </ModalFooter>
         </ModalContent>

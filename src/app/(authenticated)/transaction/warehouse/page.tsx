@@ -62,6 +62,10 @@ const columns = [
     label: "Tanggal Diubah",
   },
   {
+    key: "CashierDeliveryAt",
+    label: "Tanggal Kirim Kasir",
+  },
+  {
     key: "action",
     label: "Aksi",
   },
@@ -157,6 +161,7 @@ export default function Page() {
                 <TableCell>
                   <div>{item.createdBy.fullName}</div>
                 </TableCell>
+               
                 <TableCell>
                   <div>
                     {DateTime.fromISO(item.createdAt, { zone: 'local' }).toLocaleString(
@@ -175,7 +180,17 @@ export default function Page() {
                 </TableCell>
 
                 <TableCell>
-                  <Actions id={item.id} />
+                  {item.CashierDeliveryAt ?   <div>
+                    {DateTime.fromISO(item.CashierDeliveryAt!, { zone: 'local' }).toLocaleString(
+                      DateTime.DATETIME_MED_WITH_WEEKDAY,
+                      { locale: 'id' }
+                    )}
+                  </div>:'-' }
+                
+                </TableCell>
+
+                <TableCell>
+                  <Actions id={item.id} CashierDeliveryAt={item.CashierDeliveryAt} />
                 </TableCell>
               </TableRow>
             )}
