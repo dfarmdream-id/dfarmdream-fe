@@ -6,10 +6,11 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useCreateGroupCOA } from "@/app/(authenticated)/_services/group-coa";
+import { InputNumber } from "@/components/ui/input";
 
 export default function Page() {
   const schema = z.object({
-    code: z.string({
+    code: z.number({
       message: "Kode Wajib Diisi",
     }),
     name: z.string({
@@ -55,7 +56,7 @@ export default function Page() {
               control={form.control}
               name="code"
               render={({ field, fieldState }) => (
-                <Input
+                <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"

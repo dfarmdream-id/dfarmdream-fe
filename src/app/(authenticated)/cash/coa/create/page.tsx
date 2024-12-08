@@ -12,7 +12,7 @@ import { useCreateCOA } from "@/app/(authenticated)/_services/coa";
 
 export default function Page() {
   const schema = z.object({
-    code: z.string({
+    code: z.number({
       message: "Kode Wajib Diisi",
     }),
     name: z.string({
@@ -74,7 +74,7 @@ export default function Page() {
               control={form.control}
               name="code"
               render={({ field, fieldState }) => (
-                <Input
+                <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
