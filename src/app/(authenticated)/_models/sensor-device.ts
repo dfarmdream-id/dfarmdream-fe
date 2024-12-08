@@ -19,7 +19,7 @@ export interface GetListSensorDeviceResponse {
     id: string;
     code:string;
     type:string;
-    latestValue:number;
+    lastestValue:number;
     lastUpdatedAt:number;
     deviceId: string;
     device:Device

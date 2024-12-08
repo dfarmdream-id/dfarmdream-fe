@@ -13,8 +13,8 @@ import { HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteIotDevice } from "../../../_services/iot-device";
 import { Can } from "@/components/acl/can";
+import { useDeleteSensorDevice } from "@/app/(authenticated)/_services/sensor-device";
 
 type Props = {
   id: string;
@@ -23,7 +23,7 @@ type Props = {
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeleteIotDevice();
+  const deleteData = useDeleteSensorDevice();
 
   const queryClient = useQueryClient();
 
@@ -34,7 +34,7 @@ export default function Actions(props: Props) {
         onSuccess: () => {
           toast.success("Berhasil menghapus data");
           queryClient.invalidateQueries({
-            queryKey: ["/v1/sensor"],
+            queryKey: ["/v1/sensor-device"],
           });
           deleteDisclosure.onClose();
         },
@@ -51,7 +51,7 @@ export default function Actions(props: Props) {
         <Tooltip content="Edit Data">
           <Button
             as={Link}
-            href={`/operational/iot/${props.id}/edit`}
+            href={`/operational/sensor-device/${props.id}/edit`}
             isIconOnly
             variant="light"
             color="primary"
