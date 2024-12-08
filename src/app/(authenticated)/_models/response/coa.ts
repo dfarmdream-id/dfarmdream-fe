@@ -17,7 +17,7 @@ export interface GetListCOAResponse {
   
   export interface Daum {
     id: string;
-    code:string;
+    code:number;
     name:string;
     level:number;
     isBalanceSheet:boolean;

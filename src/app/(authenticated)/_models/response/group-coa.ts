@@ -17,7 +17,7 @@ export interface GetListGroupCOAResponse {
   
   export interface Daum {
     id: string;
-    code: string;
+    code: number;
     name: string;
     status: string;
     createdAt: string;

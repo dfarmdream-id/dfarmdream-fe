@@ -8,10 +8,11 @@ import { useParams, useRouter } from "next/navigation";
 
 import { useGetGroupCOA, useUpdateGroupCOA } from "@/app/(authenticated)/_services/group-coa";
 import { useEffect, useMemo } from "react";
+import { InputNumber } from "@/components/ui/input";
 
 export default function Page() {
   const schema = z.object({
-    code: z.string({
+    code: z.number({
         message: "Kode Group COA Wajib diisi",
       }),
     name: z.string({
@@ -71,7 +72,7 @@ export default function Page() {
               control={form.control}
               name="code"
               render={({ field, fieldState }) => (
-                <Input
+                <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
