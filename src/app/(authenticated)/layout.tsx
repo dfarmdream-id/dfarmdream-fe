@@ -47,7 +47,7 @@ import {
 import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
-import { MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
+import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
@@ -292,6 +292,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "COA",
           href: "/cash/coa",
           icon: <HiOutlineListBullet className="text-xl" />,
+        },
+        {
+          can:"show:journal-type",
+          label:"Journal Type",
+          href:"/cash/journal-type",
+          icon:<MdOutlineCollectionsBookmark className="text-xl" />
         },
         {
           can: "show:cash-flow-category",
