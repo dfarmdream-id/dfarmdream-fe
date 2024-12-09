@@ -48,6 +48,6 @@ export interface JournalTemplateDetail {
 }
 
 export interface Coa {
-  code: string;
+  code: number;
   name: string;
 }

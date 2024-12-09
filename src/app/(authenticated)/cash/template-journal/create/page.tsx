@@ -61,7 +61,7 @@ export default function Page() {
   const onAddDetail = () => {
     form.setValue("details", [
       ...form.getValues("details"),
-      { coaCode: "", status: "1", typeLedger: "DEBIT" },
+      { coaCode: 0, status: "1", typeLedger: "DEBIT" },
     ]);
   };
 
@@ -215,7 +215,7 @@ export default function Page() {
                         labelPlacement="outside"
                         selectedKeys={[detail.coaCode]}
                         onChange={(value) =>
-                          form.setValue(`details.${index}.coaCode`, value.target.value)
+                          form.setValue(`details.${index}.coaCode`, Number(value.target.value))
                         }
                       >
                         {coas.data?.data?.data?.map((coa) => (
