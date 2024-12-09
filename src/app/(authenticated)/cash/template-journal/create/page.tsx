@@ -32,7 +32,7 @@ export default function Page() {
       .array(
         z.object({
           id: z.string().optional(),
-          coaCode: z.string({ message: "COA wajib diisi" }),
+          coaCode: z.number({ message: "COA wajib diisi" }),
           status: z.string({ message: "Status wajib diisi" }),
           typeLedger: z.enum(["DEBIT", "CREDIT"], {
             message: "Type Ledger harus DEBIT atau CREDIT",

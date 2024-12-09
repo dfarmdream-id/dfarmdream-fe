@@ -33,7 +33,7 @@ export default function Page() {
     details: z
       .array(
         z.object({
-          coaCode: z.string().optional(),
+          coaCode: z.number().optional(),
           coaName: z.string().optional(),
           debit: z.number({ message: "Nilai debit wajib diisi" }),
           credit: z.number({ message: "Nilai kredit wajib diisi" }),
