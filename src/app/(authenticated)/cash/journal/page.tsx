@@ -63,7 +63,8 @@ export default function Page() {
           </div>
           <Button
             as={Link}
-            href="/cash/journal/create"
+            // journalData.data?.data?.meta?.totalData // JN-12-24-01
+            href={`/cash/journal/create/?journalCode=JN-${DateTime.now().toFormat("yy-MM")}-${(journalData.data?.data?.meta?.totalData ?? 1).toString().padStart(2, "0")}`}
             color="primary"
             startContent={<HiPlus />}
             className="w-full md:w-auto"

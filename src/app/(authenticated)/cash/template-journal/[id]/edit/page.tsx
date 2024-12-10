@@ -79,15 +79,10 @@ export default function Page() {
       // Konversi journalTemplateDetails ke format yang sesuai dengan schema
       const details = journalTemplateDetails.map((detail) => ({
         id: detail.id,
-        coaCode: detail.coa?.code || "", // Pastikan `coa.code` selalu ada atau default menjadi ""
+        coaCode: detail.coa?.code.toString() || "", // Pastikan `coa.code` selalu ada atau default menjadi ""
         status: detail.status,
         typeLedger: detail.typeLedger as "DEBIT" | "CREDIT", // Sesuaikan dengan enum
       })) as z.infer<typeof schema>["details"];
-      
-      console.log(name);
-      console.log(code);
-      console.log(jurnalType.id);
-      console.log(details);
 
       // Set nilai pada form
       form.setValue("name", name);
@@ -114,7 +109,14 @@ export default function Page() {
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          details: data.details.map((detail) => ({
+            coaCode: Number(detail.coaCode),
+            status: detail.status,
+            typeLedger: detail.typeLedger,
+          })),
+        },
       },
       {
         onError: (error) => {

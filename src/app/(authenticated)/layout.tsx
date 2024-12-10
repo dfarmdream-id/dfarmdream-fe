@@ -15,6 +15,7 @@ import {
   Skeleton, Tooltip,
 } from "@nextui-org/react";
 import {
+  HiBookmark, HiBookOpen,
   HiChevronRight,
   HiEye,
   HiOutlineArrowRightOnRectangle,
@@ -50,7 +51,7 @@ import { useAuthStore } from "../auth/_store/auth";
 import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
-import { FaBox, FaMoneyBillAlt } from "react-icons/fa";
+import {FaBalanceScale, FaBox, FaMoneyBillAlt} from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
 import { PiDotDuotone } from "react-icons/pi";
@@ -329,6 +330,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       key: "cash",
       children: [
         {
+          can: "show:penerimaan-modal",
+          label: "Penerimaan Modal",
+          href: "/cash/penerimaan-modal",
+          icon: <TbCashRegister className="text-xl" />,
+        },
+        {
+          can: "show:kategori-biaya",
+          label: "Kategori Biaya",
+          href: "/cash/kategori-biaya",
+          icon: <VscVariableGroup className="text-xl" />,
+        },
+        {
+          can: "show:biaya",
+          label: "Biaya",
+          href: "/cash/biaya",
+          icon: <FaMoneyBillAlt className="text-xl" />,
+        },
+        {
           can: "show:group-coa",
           label: "Group COA",
           href: "/cash/group-coa",
@@ -350,44 +369,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           can: "show:template-journal-and-detail",
           label: "Template Jurnal dan Detail",
           href: "/cash/template-journal",
-          icon: <HiOutlineListBullet className="text-xl" />,
+          icon: <HiBookmark className="text-xl" />,
         },
         {
           can: "show:journal",
-          label: "Jurnal dan Detail",
+          label: "Jurnal",
           href: "/cash/journal",
-          icon: <HiOutlineListBullet className="text-xl" />,
+          icon: <HiBookOpen  className="text-xl" />,
         },
         {
-          can: "show:cash-flow-category",
-          label: "Jenis Arus Kas",
-          href: "/cash/category",
-          icon: <HiOutlineListBullet className="text-xl" />,
-        },
-        {
-          can: "show:cash-flow",
-          label: "Arus Kas",
-          href: "/cash/cash-flow",
-          icon: <HiOutlineCurrencyDollar className="text-xl" />,
-        },
-
-        {
-          can: "show:kategori-biaya",
-          label: "Kategori Biaya",
-          href: "/cash/kategori-biaya",
-          icon: <VscVariableGroup className="text-xl" />,
-        },
-        {
-          can: "show:biaya",
-          label: "Biaya",
-          href: "/cash/biaya",
-          icon: <FaMoneyBillAlt className="text-xl" />,
-        },
-        {
-          can: "show:penerimaan-modal",
-          label: "Penerimaan Modal",
-          href: "/cash/penerimaan-modal",
-          icon: <TbCashRegister className="text-xl" />,
+          can: "show:balance-sheet",
+          label: "Neraca",
+          href: "/cash/balance-sheet",
+          icon: <FaBalanceScale className="text-xl" />,
         },
       ],
     },
