@@ -1,11 +1,12 @@
 "use client";
+
 import {
   Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
-  ModalHeader,
+  ModalHeader, Select, SelectItem,
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
@@ -21,9 +22,10 @@ import {
   useGetWarehouseTransaction,
   useSendCashierTransaction,
 } from "@/app/(authenticated)/_services/warehouse-transaction";
-import { useMemo } from "react";
+import {useMemo, useState} from "react";
 import { DateTime } from "luxon";
 import { IoMdSend } from "react-icons/io";
+import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 
 type Props = {
   id: string;
@@ -39,6 +41,14 @@ export default function Actions(props: Props) {
   const sendCashier = useSendCashierTransaction();
 
   const queryClient = useQueryClient();
+
+  const journalTypes = useGetListJournalType(
+    useMemo(() => ({ page: "1", limit: "10000" }), [])
+  );
+  
+  const [journalType, setJournalType] = useState<
+    { typeSell: string, typeCash: string }
+  >({ typeSell: "", typeCash: "" });
 
   const handleDelete = (id: string) => {
     deleteData.mutate(
@@ -60,7 +70,12 @@ export default function Actions(props: Props) {
 
   const handleSendToCashier = (id: string) => {
     sendCashier.mutate(
-      { pathVars: { id } },
+      { pathVars: { id },
+        body: {
+          typeSell: journalType.typeSell,
+          typeCash: journalType.typeCash,
+        },
+      },
       {
         onSuccess: () => {
           toast.success("Berhasil mengirim data ke cashier");
@@ -297,6 +312,48 @@ export default function Actions(props: Props) {
           </ModalHeader>
           <ModalBody>
             <p>Apakah anda yakin ingin mengirim transaksi ini ke kasir?</p>
+            <Select
+              label="Jurnal Penjualan"
+              placeholder="Pilih Jurnal Penjualan"
+              variant="bordered"
+              labelPlacement="outside"
+              isLoading={journalTypes.isLoading}
+              onChange={(e) => {
+                setJournalType({
+                  ...journalType,
+                  typeSell: e.target.value,
+                });
+              }}
+            >
+              {journalTypes.data?.data?.data?.map((type) => (
+                <SelectItem key={type.id} value={type.id}>
+                  {
+                    `${type.code} - ${type.name}`
+                  }
+                </SelectItem>
+              )) ?? []}
+            </Select>
+            <Select
+              label="Jurnal Penerimaan Uang"
+              placeholder="Pilih Jurnal Penerimaan Uang"
+              variant="bordered"
+              labelPlacement="outside"
+              isLoading={journalTypes.isLoading}
+              onChange={(e) => {
+                setJournalType({
+                  ...journalType,
+                  typeCash: e.target.value,
+                });
+              }}
+            >
+              {journalTypes.data?.data?.data?.map((type) => (
+                <SelectItem key={type.id} value={type.id}>
+                  {
+                    `${type.code} - ${type.name}`
+                  }
+                </SelectItem>
+              )) ?? []}
+            </Select>
           </ModalBody>
           <ModalFooter>
             <Button

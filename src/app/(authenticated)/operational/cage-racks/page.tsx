@@ -11,7 +11,7 @@ import {
   Input,
   Spinner,
   Select,
-  SelectItem,
+  SelectItem, SortDescriptor,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
@@ -61,6 +61,9 @@ export default function Page() {
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
+  const [sort, setSort] = useQueryState("sort", {
+    throttleMs: 1000,
+  });
 
   const rack = useGetCageRacks(
     useMemo(
@@ -68,10 +71,19 @@ export default function Page() {
         q: search || "",
         page: page || "1",
         limit: limit?.toString() || "10",
+        sort: sort || "name:asc",
       }),
-      [search, page, limit]
+      [search, page, limit, sort]
     )
   );
+  
+  const handleSortChange = async (key: SortDescriptor) => {
+    if (key) {
+      const sortKey = key.column as string;
+      const sortDirection = key.direction === "ascending" ? "asc" : "desc";
+      await setSort(`${sortKey}:${sortDirection}`);
+    }
+  }
 
   const rows = useMemo(() => {
     if (rack.data) {
@@ -124,10 +136,13 @@ export default function Page() {
             </Button>
           </Can>
         </div>
-        <Table aria-label="Data">
+        <Table aria-label="Data"
+               sortDescriptor={{ column: "name", direction: "ascending" }}
+               onSortChange={(key) => handleSortChange(key)}
+        >
           <TableHeader columns={columns}>
             {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
+              <TableColumn allowsSorting key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
           <TableBody

@@ -1,8 +1,8 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
 import { useMemo } from "react";
-import { GetJournalResponse, GetListJournalResponse } from "../_models/response/journal";
+import { GetJournalResponse, GetListJournalResponse, GetJournalBalanceSheetResponse } from "../_models/response/journal";
 
-export const useGetListJournal = (params: Record<string, string>) => {
+export const useGetListJournal = (params: Record<string, any>) => {
   return useHttp<GetListJournalResponse>("/v1/journal", {
     params,
   });
@@ -29,3 +29,9 @@ export const useUpdateJournal = (id: string) => {
 export const useGetJournal = (id: string) => {
   return useHttp<GetJournalResponse>(useMemo(() => `/v1/journal/${id}`, [id]));
 };
+
+export const useGetJournalBalanceSheet = (params: Record<string, string>) => {
+  return useHttp<GetJournalBalanceSheetResponse>("/v1/journal/balance-sheets", {
+    params,
+  });
+}

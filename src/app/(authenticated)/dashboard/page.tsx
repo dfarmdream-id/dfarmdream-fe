@@ -163,12 +163,7 @@ export default function Page() {
                 <div>{profile?.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
-                <Chart
-                  options={chart.options}
-                  series={chart.series}
-                  type="donut"
-                />
-                <div className="flex gap-3 mt-10">
+                <div className="flex gap-3 my-1">
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
@@ -182,6 +177,12 @@ export default function Page() {
                     )) || []}
                   </Select>
                 </div>
+                
+                <Chart
+                  options={chart.options}
+                  series={chart.series}
+                  type="donut"
+                />
               </CardBody>
             </Card>
           </Can>
@@ -192,38 +193,12 @@ export default function Page() {
                 <div>{profile.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
-                <ul className="grid xl:grid-cols-2 gap-3">
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaEgg />}
-                      title="Berat Telur"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard icon={<FaChartPie />} title="FCR" count={1} />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaWeight />}
-                      title="Berat Keseluruhan"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<GiNestEggs />}
-                      title="Total Telur"
-                      count={dashboard.data?.data?.qtyTotal || 0}
-                    />
-                  </Card>
-                </ul>
-                <div className="flex gap-3 mt-10">
+                <div className="flex gap-3 my-1">
                   <DatePicker onChange={
                     (e) => {
                       setPerformanceChartDate(e?.toString() || "");
                     }
-                  } />
+                  }/>
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
@@ -237,6 +212,33 @@ export default function Page() {
                     )) || []}
                   </Select>
                 </div>
+                
+                <ul className="grid xl:grid-cols-2 gap-3">
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<FaEgg/>}
+                      title="Berat Telur"
+                      count={dashboard.data?.data?.weightTotal || 0}
+                    />
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard icon={<FaChartPie/>} title="FCR" count={1}/>
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<FaWeight/>}
+                      title="Berat Keseluruhan"
+                      count={dashboard.data?.data?.weightTotal || 0}
+                    />
+                  </Card>
+                  <Card as="li" shadow="none">
+                    <StatsCard
+                      icon={<GiNestEggs/>}
+                      title="Total Telur"
+                      count={dashboard.data?.data?.qtyTotal || 0}
+                    />
+                  </Card>
+                </ul>
               </CardBody>
             </Card>
           </Can>
@@ -254,10 +256,10 @@ export default function Page() {
           <IotDevices>Sensor Lampu</IotDevices>
         </Can>
         <Can action="show:cctv-dashboard">
-          <CctvDevice /> 
+          <CctvDevice/>
         </Can>
         <Can action="show:absences">
-          <TableAbsen />
+          <TableAbsen/>
         </Can>
       </div>
     </Can>

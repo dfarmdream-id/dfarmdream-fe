@@ -32,7 +32,7 @@ export default function Page() {
       .array(
         z.object({
           id: z.string().optional(),
-          coaCode: z.number({ message: "COA wajib diisi" }),
+          coaCode: z.string({ message: "COA wajib diisi" }),
           status: z.string({ message: "Status wajib diisi" }),
           typeLedger: z.enum(["DEBIT", "CREDIT"], {
             message: "Type Ledger harus DEBIT atau CREDIT",
@@ -61,7 +61,7 @@ export default function Page() {
   const onAddDetail = () => {
     form.setValue("details", [
       ...form.getValues("details"),
-      { coaCode: 0, status: "1", typeLedger: "DEBIT" },
+      { coaCode: "", status: "1", typeLedger: "DEBIT" },
     ]);
   };
 
@@ -74,7 +74,14 @@ export default function Page() {
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          details: data.details.map((detail) => ({
+            coaCode: Number(detail.coaCode),
+            status: detail.status,
+            typeLedger: detail.typeLedger,
+          })),
+        },
       },
       {
         onError: (error) => {
@@ -215,7 +222,7 @@ export default function Page() {
                         labelPlacement="outside"
                         selectedKeys={[detail.coaCode]}
                         onChange={(value) =>
-                          form.setValue(`details.${index}.coaCode`, Number(value.target.value))
+                          form.setValue(`details.${index}.coaCode`,value.target.value)
                         }
                       >
                         {coas.data?.data?.data?.map((coa) => (

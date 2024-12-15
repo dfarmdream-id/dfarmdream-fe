@@ -10,6 +10,7 @@ import { useGetSites } from "@/app/(authenticated)/_services/site";
 import { useMemo } from "react";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useCreatePersediaanBarang } from "@/app/(authenticated)/_services/persediaan-barang";
+import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 
 export default function Page() {
   const schema = z.object({
@@ -31,6 +32,9 @@ export default function Page() {
     cageId: z.string({
       message: "Mohon pilih kandang",
     }),
+    journalTypeId: z.string({
+      message: "Mohon pilih journal type",
+    })
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -73,6 +77,10 @@ export default function Page() {
     );
   });
 
+  const jurnalTypes = useGetListJournalType(
+    useMemo(() => ({ page: "1", limit: "10000" }), [])
+  );
+
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Persediaan Barang</div>
@@ -82,7 +90,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="namaBarang"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -101,7 +109,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="tipeBarang"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Tipe Barang"
@@ -117,6 +125,37 @@ export default function Page() {
                   <SelectItem key="obat" value="OBAT">
                     OBAT
                   </SelectItem>
+                  <SelectItem key="asset" value="ASSET">
+                    ASSET
+                  </SelectItem>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="journalTypeId"
+              render={({field, fieldState}) => (
+                <Select
+                  label="Journal Type"
+                  placeholder="Pilih Journal Type"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  isLoading={jurnalTypes.isLoading}
+                  {...field}
+                  selectedKeys={[field.value]}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {jurnalTypes.data?.data?.data?.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {
+                        `${type.code} - ${type.name}`
+                      }
+                    </SelectItem>
+                  )) ?? []}
                 </Select>
               )}
             />
@@ -126,12 +165,12 @@ export default function Page() {
             <Controller
               control={form.control}
               name="qty"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="qty"
+                  label="QTY"
                   placeholder="Jumlah Barang"
                   {...field}
                   errorMessage={fieldState.error?.message}
@@ -145,7 +184,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="harga"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
@@ -165,7 +204,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="siteId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={siteData.isLoading}
                   labelPlacement="outside"
@@ -190,7 +229,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={cagesData.isLoading}
                   labelPlacement="outside"
