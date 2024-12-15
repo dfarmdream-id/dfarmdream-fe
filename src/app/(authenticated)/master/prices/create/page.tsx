@@ -40,7 +40,9 @@ export default function Page() {
   const sites = useGetSites(useMemo(() => ({page: "1", limit: "100"}), []));
   const submission = useCreatePrice();
   const router = useRouter();
-  const {siteId} = useLocationStore();
+  const {
+    siteId
+  } = useLocationStore();
 
   useEffect(() => {
     if (siteId) {

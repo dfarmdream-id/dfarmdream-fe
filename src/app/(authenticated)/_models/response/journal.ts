@@ -60,3 +60,25 @@ export interface Coa {
   code: string;
   name: string;
 }
+
+export interface GetJournalBalanceSheetResponse {
+  message: string;
+  data: JournalBalanceSheetData;
+}
+
+export interface JournalBalanceSheetData {
+  trialBalance: TrialBalance[];
+  totalDebit: number;
+  totalCredit: number;
+  isBalanced: boolean;
+}
+
+export interface TrialBalance {
+  _sum: Sum;
+  coa: Coa;
+}
+
+export interface Sum {
+  debit: number;
+  credit: number;
+}

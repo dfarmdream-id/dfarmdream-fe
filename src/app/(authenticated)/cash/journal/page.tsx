@@ -10,12 +10,12 @@ import {
   Pagination,
   Button,
   Input,
-  Spinner,
+  Spinner, DateRangePicker,
 } from "@nextui-org/react";
-import { HiSearch } from "react-icons/hi";
+import {HiSearch, HiX} from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo, Fragment } from "react";
+import {useMemo, Fragment, useRef} from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { useGetListJournal } from "@/app/(authenticated)/_services/journal";
@@ -29,13 +29,21 @@ const groupByJournalId = (rows: SingleJournalData[]) => {
 };
 
 export default function Page() {
+  const pickerRef = useRef(null);
+  
   const [search, setSearch] = useQueryState("q", { throttleMs: 1000 });
   const [page, setPage] = useQueryState("page", { throttleMs: 1000 });
+  const [dateRange, setDateRange] = useQueryState("dateRange", { throttleMs: 1000 });
 
   const journalData = useGetListJournal(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: "10" }),
-      [search, page]
+      () => ({
+        q: search || "",
+        page: page || "1",
+        limit: "10",
+        ...(dateRange ? { dateRange } : {}),
+      }),
+      [search, page, dateRange]
     )
   );
 
@@ -52,7 +60,7 @@ export default function Page() {
       <div className="text-3xl font-bold mb-10">Data Jurnal</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
-          <div className="flex gap-3 items-center flex-wrap">
+          <div className="flex gap-3 items-center">
             <Input
               variant="bordered"
               placeholder="Cari"
@@ -60,6 +68,24 @@ export default function Page() {
               onValueChange={setSearch}
               endContent={<HiSearch />}
             />
+            <DateRangePicker 
+              ref={pickerRef}  
+              variant="bordered"
+              value={dateRange}
+              onChange={setDateRange}
+            />
+            {
+              dateRange && (
+                <Button 
+                  color="danger" 
+                  onClick={async () => {
+                    await setDateRange(null);
+                  }}
+                >
+                  <HiX />
+                </Button>
+              )
+            }
           </div>
           <Button
             as={Link}
