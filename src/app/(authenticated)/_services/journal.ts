@@ -2,7 +2,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import { useMemo } from "react";
 import { GetJournalResponse, GetListJournalResponse, GetJournalBalanceSheetResponse } from "../_models/response/journal";
 
-export const useGetListJournal = (params: Record<string, string>) => {
+export const useGetListJournal = (params: Record<string, any>) => {
   return useHttp<GetListJournalResponse>("/v1/journal", {
     params,
   });

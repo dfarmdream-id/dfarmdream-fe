@@ -15,11 +15,12 @@ import {
 import {HiSearch, HiX} from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import {useMemo, Fragment, useRef} from "react";
+import {useMemo, Fragment, useRef, useState} from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { useGetListJournal } from "@/app/(authenticated)/_services/journal";
 import { SingleJournalData } from "@/app/(authenticated)/_models/response/journal";
+import {parseDate} from "@internationalized/date";
 
 const groupByJournalId = (rows: SingleJournalData[]) => {
   return rows.reduce<Record<string, SingleJournalData>>((acc, row) => {
@@ -33,7 +34,14 @@ export default function Page() {
   
   const [search, setSearch] = useQueryState("q", { throttleMs: 1000 });
   const [page, setPage] = useQueryState("page", { throttleMs: 1000 });
-  const [dateRange, setDateRange] = useQueryState("dateRange", { throttleMs: 1000 });
+  const [dateRange, setDateRange] = useState({
+    start: parseDate(
+      DateTime.now().minus({ days: 1 }).toISODate()
+    ),
+    end: parseDate(
+      DateTime.now().plus({ days: 1 }).toISODate()
+    ),
+  });
 
   const journalData = useGetListJournal(
     useMemo(
@@ -78,8 +86,18 @@ export default function Page() {
               dateRange && (
                 <Button 
                   color="danger" 
-                  onClick={async () => {
-                    await setDateRange(null);
+                  onClick={() => {
+                    setDateRange(
+                      {
+                        start: parseDate(
+                          DateTime.now().minus({ days: 1 }).toISODate()
+                        ),
+                        end: parseDate(
+                          // +1 day
+                          DateTime.now().plus({ days: 1 }).toISODate()
+                        ),
+                      }
+                    );
                   }}
                 >
                   <HiX />

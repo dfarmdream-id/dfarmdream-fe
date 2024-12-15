@@ -23,7 +23,9 @@ export default function Page() {
     investorId: z.string({
       message: "Mohon pilih invesetor",
     }),
-    siteId: z.string().optional(),
+    siteId: z.string({
+      message: "Mohon pilih Lokasi",
+    }),
     cageId: z.string({
       message: "Mohon pilih Kandang",
     }),
@@ -87,6 +89,10 @@ export default function Page() {
     const today = getDateToday();
     form.setValue("tanggal", today);
   }, [form]);
+
+  useEffect(() => {
+    form.setValue("siteId", siteId ?? "");
+  }, [siteId]);
   
   return (
     <div className="p-5">
@@ -176,7 +182,6 @@ export default function Page() {
                   placeholder="Pilih Lokasi"
                   label="Lokasi"
                   variant="bordered"
-                  selectedKeys={[siteId as string]}
                   {...field}
                   aria-readonly={true}
                   errorMessage={fieldState.error?.message}
