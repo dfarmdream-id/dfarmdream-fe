@@ -136,6 +136,9 @@ export default function Page() {
                   <SelectItem key="obat" value="OBAT">
                     OBAT
                   </SelectItem>
+                  <SelectItem key="asset" value="ASSET">
+                    ASSET
+                  </SelectItem>
                 </Select>
               )}
             />

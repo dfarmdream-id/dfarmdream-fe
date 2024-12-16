@@ -10,16 +10,17 @@ import {
   Pagination,
   Button,
   Input,
-  Spinner,
+  Spinner, DateRangePicker,
 } from "@nextui-org/react";
-import { HiSearch } from "react-icons/hi";
+import {HiSearch, HiX} from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo, Fragment } from "react";
+import {useMemo, Fragment, useRef, useState} from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
 import { useGetListJournal } from "@/app/(authenticated)/_services/journal";
 import { SingleJournalData } from "@/app/(authenticated)/_models/response/journal";
+import {parseDate} from "@internationalized/date";
 
 const groupByJournalId = (rows: SingleJournalData[]) => {
   return rows.reduce<Record<string, SingleJournalData>>((acc, row) => {
@@ -29,13 +30,28 @@ const groupByJournalId = (rows: SingleJournalData[]) => {
 };
 
 export default function Page() {
+  const pickerRef = useRef(null);
+  
   const [search, setSearch] = useQueryState("q", { throttleMs: 1000 });
   const [page, setPage] = useQueryState("page", { throttleMs: 1000 });
+  const [dateRange, setDateRange] = useState({
+    start: parseDate(
+      DateTime.now().minus({ days: 1 }).toISODate()
+    ),
+    end: parseDate(
+      DateTime.now().plus({ days: 1 }).toISODate()
+    ),
+  });
 
   const journalData = useGetListJournal(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: "10" }),
-      [search, page]
+      () => ({
+        q: search || "",
+        page: page || "1",
+        limit: "10",
+        ...(dateRange ? { dateRange } : {}),
+      }),
+      [search, page, dateRange]
     )
   );
 
@@ -52,7 +68,7 @@ export default function Page() {
       <div className="text-3xl font-bold mb-10">Data Jurnal</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
-          <div className="flex gap-3 items-center flex-wrap">
+          <div className="flex gap-3 items-center">
             <Input
               variant="bordered"
               placeholder="Cari"
@@ -60,10 +76,39 @@ export default function Page() {
               onValueChange={setSearch}
               endContent={<HiSearch />}
             />
+            <DateRangePicker 
+              ref={pickerRef}  
+              variant="bordered"
+              value={dateRange}
+              onChange={setDateRange}
+            />
+            {
+              dateRange && (
+                <Button 
+                  color="danger" 
+                  onClick={() => {
+                    setDateRange(
+                      {
+                        start: parseDate(
+                          DateTime.now().minus({ days: 1 }).toISODate()
+                        ),
+                        end: parseDate(
+                          // +1 day
+                          DateTime.now().plus({ days: 1 }).toISODate()
+                        ),
+                      }
+                    );
+                  }}
+                >
+                  <HiX />
+                </Button>
+              )
+            }
           </div>
           <Button
             as={Link}
-            href="/cash/journal/create"
+            // journalData.data?.data?.meta?.totalData // JN-12-24-01
+            href={`/cash/journal/create/?journalCode=JN-${DateTime.now().toFormat("yy-MM")}-${(journalData.data?.data?.meta?.totalData ?? 1).toString().padStart(2, "0")}`}
             color="primary"
             startContent={<HiPlus />}
             className="w-full md:w-auto"

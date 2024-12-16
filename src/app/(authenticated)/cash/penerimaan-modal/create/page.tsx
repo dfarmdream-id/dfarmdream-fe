@@ -6,11 +6,14 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
-import { useMemo } from "react";
+import {useEffect, useMemo} from "react";
 import { useGetSites } from "@/app/(authenticated)/_services/site";
 import { InputNumber } from "@/components/ui/input";
 import { useGetInvestors } from "@/app/(authenticated)/_services/investor";
 import { useCreatePenerimaanModal } from "@/app/(authenticated)/_services/penerimaan-modal";
+import useLocationStore from "@/stores/useLocationStore";
+import {getDateToday} from "@/libs/helper";
+import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 
 export default function Page() {
   const schema = z.object({
@@ -21,7 +24,7 @@ export default function Page() {
       message: "Mohon pilih invesetor",
     }),
     siteId: z.string({
-      message: "Mohon pilih lokasi",
+      message: "Mohon pilih Lokasi",
     }),
     cageId: z.string({
       message: "Mohon pilih Kandang",
@@ -29,12 +32,16 @@ export default function Page() {
     nominal: z.number({
       message: "Mohon isi data nominal",
     }),
+    journalTypeId: z.string({
+      message: "Mohon pilih journal type",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
-
+  
+  const { siteId } = useLocationStore();
   
   const submission = useCreatePenerimaanModal();
   const router = useRouter();
@@ -48,6 +55,9 @@ export default function Page() {
       () => ({ page: "1", limit: "10000", siteId: watch.siteId }),
       [watch.siteId]
     )
+  );
+  const jurnalTypes = useGetListJournalType(
+    useMemo(() => ({ page: "1", limit: "10000" }), [])
   );
 
   const investorData = useGetInvestors(useMemo(()=>({page:"1", limit:"10000"}),[]))
@@ -73,7 +83,17 @@ export default function Page() {
       }
     );
   });
+  
+  // useEffect for tanggal default value now
+  useEffect(() => {
+    const today = getDateToday();
+    form.setValue("tanggal", today);
+  }, [form]);
 
+  useEffect(() => {
+    form.setValue("siteId", siteId ?? "");
+  }, [siteId]);
+  
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Data Modal</div>
@@ -83,7 +103,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="tanggal"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -101,8 +121,36 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
+              name="journalTypeId"
+              render={({field, fieldState}) => (
+                <Select
+                  label="Journal Type"
+                  placeholder="Pilih Journal Type"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  isLoading={jurnalTypes.isLoading}
+                  {...field}
+                  selectedKeys={[field.value]}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {jurnalTypes.data?.data?.data?.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {
+                        `${type.code} - ${type.name}`
+                      }
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
               name="investorId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={investorData.isLoading}
                   labelPlacement="outside"
@@ -127,7 +175,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="siteId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={siteData.isLoading}
                   labelPlacement="outside"
@@ -135,6 +183,7 @@ export default function Page() {
                   label="Lokasi"
                   variant="bordered"
                   {...field}
+                  aria-readonly={true}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
@@ -152,7 +201,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={cagesData.isLoading}
                   labelPlacement="outside"
@@ -173,26 +222,25 @@ export default function Page() {
             />
           </div>
 
-          
-            <div className="h-16 mt-2">
-              <Controller
-                control={form.control}
-                name="nominal"
-                render={({ field, fieldState }) => (
-                  <InputNumber
-                    labelPlacement="outside"
-                    variant="bordered"
-                    type="text"
-                    label="Nominal"
-                    placeholder="Ketikkan Nominal"
-                    startContent="Rp. "
-                    {...field}
-                    errorMessage={fieldState.error?.message}
-                    isInvalid={fieldState.invalid}
-                  />
-                )}
-              />
-            </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="nominal"
+              render={({field, fieldState}) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Nominal"
+                  placeholder="Ketikkan Nominal"
+                  startContent="Rp. "
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
 
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button

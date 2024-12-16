@@ -74,7 +74,14 @@ export default function Page() {
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          details: data.details.map((detail) => ({
+            coaCode: Number(detail.coaCode),
+            status: detail.status,
+            typeLedger: detail.typeLedger,
+          })),
+        },
       },
       {
         onError: (error) => {
@@ -215,7 +222,7 @@ export default function Page() {
                         labelPlacement="outside"
                         selectedKeys={[detail.coaCode]}
                         onChange={(value) =>
-                          form.setValue(`details.${index}.coaCode`, value.target.value)
+                          form.setValue(`details.${index}.coaCode`,value.target.value)
                         }
                       >
                         {coas.data?.data?.data?.map((coa) => (
