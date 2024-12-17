@@ -7,19 +7,15 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  Button,
   Input,
   Spinner,
   Select,
   SelectItem,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
-import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
-import Link from "next/link";
 import EmptyState from "@/components/state/empty";
-import { Can } from "@/components/acl/can";
 import { DateTime } from "luxon";
 import {useGetAbsenLog} from "@/app/(authenticated)/_services/absen";
 
