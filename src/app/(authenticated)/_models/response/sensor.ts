@@ -14,6 +14,7 @@ export interface ChartDataResponse {
     code:string
     type:number
     lastestValue:number
+    lastUpdatedAt: number
     IotSensor:IotSensor
   }
   

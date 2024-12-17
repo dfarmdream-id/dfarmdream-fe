@@ -30,6 +30,7 @@ import {
   HiOutlineUserPlus,
   HiOutlineUsers,
   HiOutlineWindow,
+  HiUserGroup,
 } from "react-icons/hi2";
 import { GiChicken } from "react-icons/gi";
 import { AnimatePresence, motion } from "framer-motion";
@@ -320,6 +321,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Ayam",
           href: "/operational/chickens",
           icon: <GiChicken className="text-xl" />,
+        },
+        {
+          can: "show:attendance",
+          label: "Absen",
+          href: "/operational/attendance-log",
+          icon: <HiUserGroup className="text-xl" />,
         },
       ],
     },

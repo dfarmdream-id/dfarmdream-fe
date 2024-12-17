@@ -12,13 +12,7 @@ import { useGetPrice, useUpdatePrice } from "../../../../_services/price";
 
 export default function Page() {
   const schema = z.object({
-    name: z
-      .string({
-        message: "Nama jabatan wajib diisi",
-      })
-      .max(100, {
-        message: "Maksimal 100 karakter",
-      }),
+   
     value: z.number({
       message: "Harga wajib diisi",
     }),
@@ -45,7 +39,6 @@ export default function Page() {
 
   useEffect(() => {
     if (data.data) {
-      form.setValue("name", data?.data?.data?.name);
       form.setValue("siteId", data?.data?.data?.siteId);
       form.setValue(
         "status",
@@ -62,6 +55,7 @@ export default function Page() {
         pathVars: { id: params.id as string },
         body: {
           ...data,
+          name:`Harga ${data.type}`,
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },
@@ -97,6 +91,7 @@ export default function Page() {
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
+                  selectedKeys={[field.value]}
                 >
                   {sites.data?.data?.data?.map((l) => (
                     <SelectItem key={l.id} value={l.id}>
@@ -107,24 +102,7 @@ export default function Page() {
               )}
             />
           </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nama Harga"
-                  placeholder="Nama Harga"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
+          
           <div className="h-16">
             <Controller
               control={form.control}
