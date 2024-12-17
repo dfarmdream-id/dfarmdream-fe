@@ -36,3 +36,32 @@ export interface Meta {
   totalData: number;
   totalPage: number;
 }
+
+export interface User{
+  id:string;
+  nip:string;
+  username:string;
+}
+export interface PriceLogObject{
+  id:string;
+  type: string;
+  price: number;
+  siteId: string;
+  site: Site;
+  userId:string;
+  user:User
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+export interface PriceLogData {
+  data: PriceLogObject[];
+  meta: Meta;
+}
+
+export interface GetPriceLogResponse {
+  message: string;
+  data: PriceLogData;
+  status: number;
+}

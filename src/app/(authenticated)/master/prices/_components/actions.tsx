@@ -1,49 +1,51 @@
 import {
   Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
+  // Modal,
+  // ModalBody,
+  // ModalContent,
+  // ModalFooter,
+  // ModalHeader,
   Tooltip,
-  useDisclosure,
+  // useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+// import { HiTrash } from "react-icons/hi2";
+// import { toast } from "sonner";
+// import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeletePrice } from "../../../_services/price";
+// import { useDeletePrice } from "../../../_services/price";
 import { Can } from "@/components/acl/can";
+import { FaRegEye } from "react-icons/fa";
 
 type Props = {
   id: string;
+  siteId:string;
 };
 
 export default function Actions(props: Props) {
-  const deleteDisclosure = useDisclosure();
+  // const deleteDisclosure = useDisclosure();
 
-  const deleteData = useDeletePrice();
+  // const deleteData = useDeletePrice();
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const handleDelete = (id: string) => {
-    deleteData.mutate(
-      { pathVars: { id } },
-      {
-        onSuccess: () => {
-          toast.success("Berhasil menghapus data");
-          queryClient.invalidateQueries({
-            queryKey: ["/v1/price"],
-          });
-          deleteDisclosure.onClose();
-        },
-        onError: () => {
-          toast.error("Gagal menghapus data");
-        },
-      }
-    );
-  };
+  // const handleDelete = (id: string) => {
+  //   deleteData.mutate(
+  //     { pathVars: { id } },
+  //     {
+  //       onSuccess: () => {
+  //         toast.success("Berhasil menghapus data");
+  //         queryClient.invalidateQueries({
+  //           queryKey: ["/v1/price"],
+  //         });
+  //         deleteDisclosure.onClose();
+  //       },
+  //       onError: () => {
+  //         toast.error("Gagal menghapus data");
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <div className="flex space-x-1">
@@ -60,7 +62,20 @@ export default function Actions(props: Props) {
           </Button>
         </Tooltip>
       </Can>
-      <Can action="delete:price">
+      <Can action="log:price">
+        <Tooltip content="View Log">
+          <Button
+            as={Link}
+            href={`/master/prices/${props.siteId}/log`}
+            isIconOnly
+            variant="light"
+            color="primary"
+          >
+            <FaRegEye />
+          </Button>
+        </Tooltip>
+      </Can>
+      {/* <Can action="delete:price">
         <Tooltip content="Hapus Data">
           <Button
             isIconOnly
@@ -102,7 +117,7 @@ export default function Actions(props: Props) {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }
