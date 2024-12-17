@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -76,34 +76,33 @@ export default function Page() {
           </div>
 
           <div className="h-16">
-            <Controller
+          <Controller
               control={form.control}
               name="rackId"
               render={({ field, fieldState }) => (
-                <Select
+                <Autocomplete
                   isLoading={racks.isLoading}
-                  multiple
                   labelPlacement="outside"
-                  placeholder="Pilih Rak"
                   label="Rak"
                   variant="bordered"
+                  placeholder="Pilih Rak"
+                  defaultItems={racks.data?.data?.data || []}
                   {...field}
+                  onSelectionChange={(value) => field.onChange(value)}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                  selectionMode="multiple"
                 >
                   {racks.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
+                    <AutocompleteItem key={position.id} value={position.id}>
                       {position.name}
-                    </SelectItem>
+                    </AutocompleteItem>
                   )) || []}
-                </Select>
+                </Autocomplete>
               )}
             />
           </div>
           
           <div>
-          {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
             <Controller
               control={form.control}
               name="createdAt"
