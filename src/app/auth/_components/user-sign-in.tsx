@@ -161,11 +161,11 @@ export default function UserSignIn() {
               fullWidth
               isLoading={signInMutation.isPending}
             >
-              {signInMutation.data?.data?.sites?.map((item) => {
-                return (
-                  <SelectItem key={item.siteId}>{item?.site?.name}</SelectItem>
-                );
-              }) || []}
+              {signInMutation.data?.data?.sites
+                ?.filter((item) => item.site?.deletedAt === null) // Filter site yang belum dihapus
+                .map((item) => (
+                  <SelectItem key={item.siteId}>{item.site?.name}</SelectItem>
+                )) || []}
             </Select>
           )}
         />
