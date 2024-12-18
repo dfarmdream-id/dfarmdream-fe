@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import {
-  useDeleteChickenDisease,
   useGetChickenDisease,
   useUpdateChickenDisease
 } from "@/app/(authenticated)/_services/chicken-disease";
