@@ -81,6 +81,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   //   throttleMs: 1000,
   // });
   const limit: string = "5";
+  const thresholdLiveSensor = 60 * 1000;
 
   const relayLogs = useGetRelayLogData(
     useMemo(
@@ -223,10 +224,10 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    {item.lastestValue ? (
-                      <Chip color="primary">Hidup</Chip>
-                    ) : (
+                    {(Date.now() - item.lastUpdatedAt) > thresholdLiveSensor ? (
                       <Chip color="danger">Mati</Chip>
+                    ) : (
+                      <Chip color="primary">Hidup</Chip>
                     )}
                   </div>
                 </li>

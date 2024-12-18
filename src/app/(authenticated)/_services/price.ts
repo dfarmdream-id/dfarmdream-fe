@@ -2,6 +2,7 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
 import {
   GetPriceListResponse,
+  GetPriceLogResponse,
   GetPriceResponse,
 } from "../_models/response/price";
 import { useMemo } from "react";
@@ -33,3 +34,7 @@ export const useUpdatePrice = () => {
 export const useGetPrice = (id: string) => {
   return useHttp<GetPriceResponse>(useMemo(() => `/v1/price/${id}`, [id]));
 };
+
+export const useGetPriceLog = (params: Record<string, string>)=>{
+  return useHttp<GetPriceLogResponse>(useMemo(()=>`/v1/price/log/${params.siteId}`,[params.siteId]))
+}

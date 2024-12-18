@@ -21,6 +21,7 @@ const Chart = dynamic(
 export default function GrafikHumidity({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
+  const thresholdLiveSensor = 60 * 1000;
 
   const items = useGetHumidityData(
     useMemo(
@@ -159,10 +160,10 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  {item.lastestValue ? (
-                    <Chip color="primary">Hidup</Chip>
-                  ) : (
+                  {(Date.now() - item.lastUpdatedAt) > thresholdLiveSensor ? (
                     <Chip color="danger">Mati</Chip>
+                  ) : (
+                    <Chip color="primary">Hidup</Chip>
                   )}
                 </div>
               </li>

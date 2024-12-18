@@ -1,5 +1,5 @@
 "use client";
-import {Button, Input, Select, SelectItem, Switch} from "@nextui-org/react";
+import {Button, Select, SelectItem, Switch} from "@nextui-org/react";
 import {Controller} from "react-hook-form";
 import {z} from "zod";
 import {useForm} from "@/hooks/form";
@@ -13,13 +13,6 @@ import useLocationStore from "@/stores/useLocationStore";
 
 export default function Page() {
   const schema = z.object({
-    name: z
-      .string({
-        message: "Nama jabatan wajib diisi",
-      })
-      .max(100, {
-        message: "Maksimal 100 karakter",
-      }),
     value: z.number({
       message: "Harga wajib diisi",
     }),
@@ -55,6 +48,7 @@ export default function Page() {
       {
         body: {
           ...data,
+          name:`Harga ${data.type}`,
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },
@@ -99,24 +93,6 @@ export default function Page() {
                     </SelectItem>
                   )) || []}
                 </Select>
-              )}
-            />
-          </div>
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="name"
-              render={({field, fieldState}) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nama Harga"
-                  placeholder="Nama Harga"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
               )}
             />
           </div>

@@ -39,10 +39,6 @@ import { usePathname } from "next/navigation";
 
 const columns = [
   {
-    key: "name",
-    label: "Nama",
-  },
-  {
     key: "site",
     label: "Lokasi",
   },
@@ -237,9 +233,7 @@ export default function Page() {
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
-                <TableCell>
-                  <div>{item.name}</div>
-                </TableCell>
+               
                 <TableCell>
                   <div>{item?.site?.name}</div>
                 </TableCell>
@@ -275,7 +269,7 @@ export default function Page() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Actions id={item.id} />
+                  <Actions id={item.id} siteId={item.siteId} />
                 </TableCell>
               </TableRow>
             )}
