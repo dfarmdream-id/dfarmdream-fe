@@ -1,5 +1,5 @@
 "use client";
-import {Button, Input, Select, SelectItem, Switch} from "@nextui-org/react";
+import {Button, Select, SelectItem, Switch} from "@nextui-org/react";
 import {Controller} from "react-hook-form";
 import {z} from "zod";
 import {useForm} from "@/hooks/form";
