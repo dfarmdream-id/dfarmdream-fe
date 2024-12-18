@@ -10,7 +10,6 @@ import {
   Spinner,
   Select,
   SelectItem,
-  DateValue,
 } from "@nextui-org/react";
 
 import { useQueryState } from "nuqs";
@@ -87,13 +86,6 @@ const params = useParams();
     return [];
   }, [items.data]);
 
-  const [showFilter, setShowFilter] = useState(false);
-  const [dateRangePicker, setDateRangePicker] = useState<{
-    start?: DateValue;
-    end?: DateValue;
-  }>({ start: undefined });
-
-  const path = usePathname();
   return (
     <div className="p-5">
       
