@@ -14,8 +14,6 @@ import GrafikSuhu from "./_components/grafik-suhu";
 import GrafikAmonia from "./_components/grafik-amonia";
 import GrafikHumidity from "./_components/grafik-humidity";
 import ForbiddenState from "@/components/state/forbidden";
-import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
-import { GiNestEggs } from "react-icons/gi";
 import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur";
