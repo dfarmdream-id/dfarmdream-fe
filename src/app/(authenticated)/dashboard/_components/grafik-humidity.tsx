@@ -144,9 +144,9 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
                        className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
                        style={{
                          right: `${
-                           item.lastestValue <= item.IotSensor.humidityThreshold
-                             ? (item.lastestValue / item.IotSensor.humidityThreshold) * 50 // Left of center (Good side)
-                             : 50 + ((item.lastestValue - item.IotSensor.humidityThreshold) / item.IotSensor.humidityThreshold) * 50 // Right of center (Bad side)
+                           item?.lastestValue <= item?.IotSensor?.humidityThreshold
+                             ? (item?.lastestValue / item?.IotSensor?.humidityThreshold) * 50 // Left of center (Good side)
+                             : 50 + ((item?.lastestValue - item?.IotSensor?.humidityThreshold) / item?.IotSensor?.humidityThreshold) * 50 // Right of center (Bad side)
                          }%`,
                          top: '0px'
                        }}

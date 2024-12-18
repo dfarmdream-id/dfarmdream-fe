@@ -18,6 +18,8 @@ import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
 import { GiNestEggs } from "react-icons/gi";
 import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
+import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur";
+import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -241,6 +243,16 @@ export default function Page() {
                 </ul>
               </CardBody>
             </Card>
+          </Can>
+        </div>
+        <div>
+          <Can action="show:chart-egg">
+            <GrafiTelur />
+          </Can>
+        </div>
+        <div>
+          <Can action="show:chart-chicken">
+            <GrafikAyam />
           </Can>
         </div>
         <Can action="show:temperature-sensors">

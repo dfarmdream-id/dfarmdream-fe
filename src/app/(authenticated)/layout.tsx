@@ -51,7 +51,7 @@ import { useAuthStore } from "../auth/_store/auth";
 import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
-import {FaBalanceScale, FaBox, FaMoneyBillAlt} from "react-icons/fa";
+import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
 import { TbCashRegister } from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
 import { PiDotDuotone } from "react-icons/pi";
@@ -320,6 +320,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Ayam",
           href: "/operational/chickens",
           icon: <GiChicken className="text-xl" />,
+        },
+        {
+          can: "show:chicken-diseases",
+          label: "Penyakit Ayam",
+          href: "/operational/chicken-diseases",
+          icon: <FaDisease className="text-xl" />,
         },
       ],
     },
