@@ -20,9 +20,6 @@ export default function Page() {
     tanggal: z.string({
       message: "Mohon pilih tanggal",
     }),
-    siteId: z.string({
-      message: "Mohon pilih lokasi",
-    }),
     cageId: z.string({
       message: "Mohon pilih Kandang",
     }),
@@ -73,6 +70,7 @@ export default function Page() {
         body: {
           ...data,
           status: 1,
+          siteId: siteId
         },
       },
       {

@@ -18,6 +18,19 @@ export interface DashboardChartResponse {
   status: number;
 }
 
+export interface DashboardEggChartResponse {
+  message: string;
+  data: EggChart[];
+  status: number;
+}
+
+export interface EggChart {
+  date: string;
+  total: number;
+  totalBiaya: number;
+  totalHarga: number;
+}
+
 export interface Chart {
   alive: number;
   dead: number;

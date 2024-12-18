@@ -1,7 +1,7 @@
 "use client";
 import { useHttp } from "@/hooks/http";
 import {
-  DashboardChartResponse,
+  DashboardChartResponse, DashboardEggChartResponse,
   DashboardSummaryResponse,
   LdrListDataResonse,
 } from "../_models/response/dashboard";
@@ -25,6 +25,14 @@ export const useDashboardChart = ({ cageId }: { cageId: string | null }) => {
   return useHttp<DashboardChartResponse>("/v1/dashboard/chart", {
     params: {
       cageId,
+    },
+  });
+};
+
+export const useDashboardChartEgg = ({ groupBy }: { groupBy: string }) => {
+  return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-egg", {
+    params: {
+      groupBy,
     },
   });
 };
