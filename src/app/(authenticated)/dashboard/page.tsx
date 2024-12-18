@@ -1,6 +1,6 @@
 "use client";
 
-import {Card, CardBody, CardHeader, DatePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
+import {Card, CardBody, CardHeader, DateRangePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
 import dynamic from "next/dynamic";
 import {ReactNode, useMemo, useState} from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
@@ -26,6 +26,7 @@ const Chart = dynamic(
 );
 
 export default function Page() {
+  const [chickenDate, setChickenDate] = useState<string | null>(null);
   const [chickenCageChartSelected, setChickenCageChartSelected] = useState<string | null>(null);
 
   const [performanceCageChartSelected, setPerformanceCageChartSelected] = useState<string | null>(null);
@@ -36,16 +37,16 @@ export default function Page() {
   // Memoize dashboard summary data
   const dashboard = useDashboardSummary(
     useMemo(() => ({
-      date: performanceChartDate,
       cageId: performanceCageChartSelected,
-    }), [performanceChartDate, performanceCageChartSelected])
+    }), [performanceCageChartSelected])
   );
 
   // Memoize chart data
   const chartData = useDashboardChart(
     useMemo(() => ({
+      date: chickenDate,
       cageId: chickenCageChartSelected,
-    }), [chickenCageChartSelected])
+    }), [chickenCageChartSelected, chickenDate])
   );
 
   // Fetch cages data
@@ -176,6 +177,15 @@ export default function Page() {
               </CardHeader>
               <CardBody>
                 <div className="flex gap-3 my-1">
+                  <DateRangePicker variant="bordered"
+                    onChange={
+                      (e) => {
+                        setChickenDate(
+                          `${e?.start?.toString() || ""},${e?.end?.toString() || ""}`
+                        );
+                      }
+                    }
+                  />
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
@@ -206,11 +216,13 @@ export default function Page() {
               </CardHeader>
               <CardBody>
                 <div className="flex gap-3 my-1">
-                  <DatePicker onChange={
-                    (e) => {
-                      setPerformanceChartDate(e?.toString() || "");
-                    }
-                  }/>
+                  <DateRangePicker variant="bordered"
+                                   onChange={
+                                     (e) => {
+                                        setPerformanceChartDate(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                                     }
+                                   }
+                  />
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
