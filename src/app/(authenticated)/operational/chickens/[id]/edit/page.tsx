@@ -171,7 +171,7 @@ export default function Page() {
             />
           </div>
           {
-            form.watch("status") === "ALIVE_IN_SICK" && (
+            (form.watch("status") === "ALIVE_IN_SICK" || form.watch("status") === "DEAD_DUE_TO_ILLNESS") && (
               <div className="h-16">
                 <Controller
                   control={form.control}
