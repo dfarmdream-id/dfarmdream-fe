@@ -20,6 +20,7 @@ import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur";
 import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam";
+import GrafikDisease from "@/app/(authenticated)/dashboard/_components/grafik-disease";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -89,6 +90,8 @@ export default function Page() {
     series: [
       chartData?.data?.data?.alive || 0,
       chartData?.data?.data?.dead || 0,
+      chartData?.data?.data?.alive_in_sick || 0,
+      chartData?.data?.data?.dead_due_to_illness || 0,
     ],
     options: {
       legend: {
@@ -108,8 +111,17 @@ export default function Page() {
       chart: {
         type: "donut",
       },
-      labels: ["Ayam Hidup", "Ayam Mati"],
-      colors: ["#0f6646", "#f3cb52"],
+      labels: ["Ayam Hidup dan Sehat",      // Status hidup sehat
+        "Ayam Mati Tanpa Penyakit",  // Status mati tanpa sakit
+        "Ayam Hidup dengan Penyakit",// Status hidup namun sakit
+        "Ayam Mati karena Penyakit", // Status mati karena sakit
+      ],
+      colors: [
+        "#0f6646", // Hijau tua untuk "Ayam Hidup dan Sehat"
+        "#f3cb52", // Kuning untuk "Ayam Mati Tanpa Penyakit"
+        "#f39652", // Oranye untuk "Ayam Hidup dengan Penyakit"
+        "#f35252", // Merah untuk "Ayam Mati karena Penyakit"
+      ],
     },
   }), [chartData]);
   
@@ -191,7 +203,7 @@ export default function Page() {
           <Can action="show:dashboard-performance-stats">
             <Card>
               <CardHeader className="flex flex-col items-start">
-                <div className="font-bold text-xl">Grafik Performa</div>
+                <div className="font-bold text-xl">Grafik Penyakit Ayam</div>
                 <div>{profile.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
@@ -215,32 +227,10 @@ export default function Page() {
                   </Select>
                 </div>
                 
-                <ul className="grid xl:grid-cols-2 gap-3">
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaEgg/>}
-                      title="Berat Telur"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard icon={<FaChartPie/>} title="FCR" count={1}/>
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaWeight/>}
-                      title="Berat Keseluruhan"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<GiNestEggs/>}
-                      title="Total Telur"
-                      count={dashboard.data?.data?.qtyTotal || 0}
-                    />
-                  </Card>
-                </ul>
+                <GrafikDisease
+                  date={performanceChartDate}
+                  cageId={performanceCageChartSelected}
+                />
               </CardBody>
             </Card>
           </Can>

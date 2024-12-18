@@ -19,34 +19,6 @@ export default function GrafiTelur (){
       groupBy: range,
     }), [range])
   );
-  
-  // const chartOptions: ApexCharts.ApexOptions = {
-  //   chart: {
-  //     type: "line",
-  //     height: 350,
-  //     toolbar: { show: false },
-  //   },
-  //   colors: ["#1B693E", "#F6C344"],
-  //   markers: {
-  //     size: 6,
-  //     hover: { sizeOffset: 3 },
-  //   },
-  //   dataLabels: { enabled: false },
-  //   stroke: { curve: "smooth", width: 2 },
-  //   xaxis: {
-  //     categories: [
-  //       "1 Oct", "3 Oct", "7 Oct", "10 Oct", "14 Oct", "20 Oct", "23 Oct", "27 Oct", "30 Oct",
-  //     ],
-  //   },
-  //   yaxis: {
-  //     title: { text: "Jumlah (Ribuan / Butiran)" },
-  //   },
-  //   tooltip: {
-  //     theme: "light",
-  //     shared: false,
-  //     intersect: true,
-  //   },
-  // };
 
   const parseByRangeAndDate = (range: string, date: any) => {
     const dt = DateTime.fromISO(date); // Konversi date ke Luxon DateTime
@@ -82,8 +54,8 @@ export default function GrafiTelur (){
   }>(() => ({
     series: [
       {
-        name: "Telur",
-        data: chartData.data?.data?.map((item) => item.total) || [],
+        name: "Harga Telur",
+        data: chartData.data?.data?.map((item) => item.totalHarga) || [],
       },
       {
         name: "Biaya Operasional",
@@ -109,7 +81,13 @@ export default function GrafiTelur (){
         }) || [],
       },
       yaxis: {
-        title: { text: "Jumlah (Ribuan / Butiran)" },
+        title: { text: "Jumlah (Ribuan)" },
+        // format
+        labels: {
+          formatter: (value) => {
+            return formatRupiah(value);
+          },
+        },
       },
       tooltip: {
         theme: "light",
