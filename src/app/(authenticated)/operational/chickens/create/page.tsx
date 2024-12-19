@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import { useCreateChicken } from "@/app/(authenticated)/_services/chicken";
 
@@ -22,9 +22,29 @@ export default function Page() {
     }),
   });
 
-  const racks = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100" }), [])
-  );
+  const [totalItems, setTotalItems] = useState(0);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const initialParams = useMemo(() => ({
+    page: "1",
+    limit: "1"
+  }), []);
+
+  const allDataParams = useMemo(() => ({
+    page: "1",
+    limit: totalItems.toString()
+  }), [totalItems]);
+
+  const initialRequest = useGetCageRacks(initialParams);
+  const racks = useGetCageRacks(allDataParams);
+
+  useEffect(() => {
+    if (initialRequest.data?.data?.meta?.totalData && isFirstLoad) {
+      setTotalItems(initialRequest.data.data.meta.totalData);
+      setIsFirstLoad(false);
+    }
+  }, [initialRequest.data, isFirstLoad]);
+
   const form = useForm<z.infer<typeof schema>>({
     schema,
     defaultValues: {},
