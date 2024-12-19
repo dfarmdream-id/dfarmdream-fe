@@ -4,7 +4,7 @@ import {
   ChickenResponse,
 } from "../_models/response/chicken";
 
-export const useGetChickens = (params: Record<string, string>) => {
+export const useGetChickens = (params: Record<string, string | null>) => {
   return useHttp<ChickenListResponse>("/v1/chicken", {
     params,
   });

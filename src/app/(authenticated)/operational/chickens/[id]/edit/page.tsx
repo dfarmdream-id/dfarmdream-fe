@@ -12,6 +12,7 @@ import {
 } from "@/app/(authenticated)/_services/chicken";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import {useGetChickenDiseases} from "@/app/(authenticated)/_services/chicken-disease";
+import {chickenStatus} from "@/app/(authenticated)/operational/chickens/_const/status.const";
 
 export default function Page() {
   const schema = z.object({
@@ -43,12 +44,6 @@ export default function Page() {
       []
     )
   );
-  const status = [
-    { key: "ALIVE", label: "Ayam Hidup dan Sehat" },
-    { key: "ALIVE_IN_SICK", label: "Ayam Hidup tetapi Mengalami Penyakit" },
-    { key: "DEAD", label: "Ayam Mati tanpa Tanda Penyakit" },
-    { key: "DEAD_DUE_TO_ILLNESS", label: "Ayam Mati karena Penyakit" },
-  ];
   
 
   useEffect(() => {
@@ -160,7 +155,7 @@ export default function Page() {
                   selectedKeys={[field.value as string]}
                 >
                   {
-                    status.map((item) => (
+                    chickenStatus.map((item) => (
                       <SelectItem key={item.key} value={item.key}>
                         {item.label}
                       </SelectItem>
