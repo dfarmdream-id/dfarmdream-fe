@@ -1,11 +1,11 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import { useCreateChicken } from "@/app/(authenticated)/_services/chicken";
 
@@ -22,9 +22,29 @@ export default function Page() {
     }),
   });
 
-  const racks = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100" }), [])
-  );
+  const [totalItems, setTotalItems] = useState(0);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const initialParams = useMemo(() => ({
+    page: "1",
+    limit: "1"
+  }), []);
+
+  const allDataParams = useMemo(() => ({
+    page: "1",
+    limit: totalItems.toString()
+  }), [totalItems]);
+
+  const initialRequest = useGetCageRacks(initialParams);
+  const racks = useGetCageRacks(allDataParams);
+
+  useEffect(() => {
+    if (initialRequest.data?.data?.meta?.totalData && isFirstLoad) {
+      setTotalItems(initialRequest.data.data.meta.totalData);
+      setIsFirstLoad(false);
+    }
+  }, [initialRequest.data, isFirstLoad]);
+
   const form = useForm<z.infer<typeof schema>>({
     schema,
     defaultValues: {},
@@ -76,34 +96,33 @@ export default function Page() {
           </div>
 
           <div className="h-16">
-            <Controller
+          <Controller
               control={form.control}
               name="rackId"
               render={({ field, fieldState }) => (
-                <Select
+                <Autocomplete
                   isLoading={racks.isLoading}
-                  multiple
                   labelPlacement="outside"
-                  placeholder="Pilih Rak"
                   label="Rak"
                   variant="bordered"
+                  placeholder="Pilih Rak"
+                  defaultItems={racks.data?.data?.data || []}
                   {...field}
+                  onSelectionChange={(value) => field.onChange(value)}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                  selectionMode="multiple"
                 >
                   {racks.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
+                    <AutocompleteItem key={position.id} value={position.id}>
                       {position.name}
-                    </SelectItem>
+                    </AutocompleteItem>
                   )) || []}
-                </Select>
+                </Autocomplete>
               )}
             />
           </div>
           
           <div>
-          {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
             <Controller
               control={form.control}
               name="createdAt"
