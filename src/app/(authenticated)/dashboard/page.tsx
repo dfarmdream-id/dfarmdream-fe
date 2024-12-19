@@ -1,6 +1,6 @@
 "use client";
 
-import {Card, CardBody, CardHeader, DatePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
+import {Card, CardBody, CardHeader, DateRangePicker, Select, SelectItem, Spinner} from "@nextui-org/react";
 import dynamic from "next/dynamic";
 import {ReactNode, useMemo, useState} from "react";
 import { HiArchiveBox, HiUserPlus, HiUsers } from "react-icons/hi2";
@@ -14,10 +14,11 @@ import GrafikSuhu from "./_components/grafik-suhu";
 import GrafikAmonia from "./_components/grafik-amonia";
 import GrafikHumidity from "./_components/grafik-humidity";
 import ForbiddenState from "@/components/state/forbidden";
-import { FaChartPie, FaEgg, FaWeight } from "react-icons/fa";
-import { GiNestEggs } from "react-icons/gi";
 import CctvDevice from "@/app/(authenticated)/dashboard/_components/cctvDevice";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
+import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur";
+import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam";
+import GrafikDisease from "@/app/(authenticated)/dashboard/_components/grafik-disease";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -25,6 +26,7 @@ const Chart = dynamic(
 );
 
 export default function Page() {
+  const [chickenDate, setChickenDate] = useState<string | null>(null);
   const [chickenCageChartSelected, setChickenCageChartSelected] = useState<string | null>(null);
 
   const [performanceCageChartSelected, setPerformanceCageChartSelected] = useState<string | null>(null);
@@ -35,16 +37,16 @@ export default function Page() {
   // Memoize dashboard summary data
   const dashboard = useDashboardSummary(
     useMemo(() => ({
-      date: performanceChartDate,
       cageId: performanceCageChartSelected,
-    }), [performanceChartDate, performanceCageChartSelected])
+    }), [performanceCageChartSelected])
   );
 
   // Memoize chart data
   const chartData = useDashboardChart(
     useMemo(() => ({
+      date: chickenDate,
       cageId: chickenCageChartSelected,
-    }), [chickenCageChartSelected])
+    }), [chickenCageChartSelected, chickenDate])
   );
 
   // Fetch cages data
@@ -87,6 +89,8 @@ export default function Page() {
     series: [
       chartData?.data?.data?.alive || 0,
       chartData?.data?.data?.dead || 0,
+      chartData?.data?.data?.alive_in_sick || 0,
+      chartData?.data?.data?.dead_due_to_illness || 0,
     ],
     options: {
       legend: {
@@ -106,8 +110,17 @@ export default function Page() {
       chart: {
         type: "donut",
       },
-      labels: ["Ayam Hidup", "Ayam Mati"],
-      colors: ["#0f6646", "#f3cb52"],
+      labels: ["Ayam Hidup dan Sehat",      // Status hidup sehat
+        "Ayam Mati Tanpa Penyakit",  // Status mati tanpa sakit
+        "Ayam Hidup dengan Penyakit",// Status hidup namun sakit
+        "Ayam Mati karena Penyakit", // Status mati karena sakit
+      ],
+      colors: [
+        "#0f6646", // Hijau tua untuk "Ayam Hidup dan Sehat"
+        "#f3cb52", // Kuning untuk "Ayam Mati Tanpa Penyakit"
+        "#f39652", // Oranye untuk "Ayam Hidup dengan Penyakit"
+        "#f35252", // Merah untuk "Ayam Mati karena Penyakit"
+      ],
     },
   }), [chartData]);
   
@@ -164,6 +177,15 @@ export default function Page() {
               </CardHeader>
               <CardBody>
                 <div className="flex gap-3 my-1">
+                  <DateRangePicker variant="bordered"
+                    onChange={
+                      (e) => {
+                        setChickenDate(
+                          `${e?.start?.toString() || ""},${e?.end?.toString() || ""}`
+                        );
+                      }
+                    }
+                  />
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
@@ -189,16 +211,18 @@ export default function Page() {
           <Can action="show:dashboard-performance-stats">
             <Card>
               <CardHeader className="flex flex-col items-start">
-                <div className="font-bold text-xl">Grafik Performa</div>
+                <div className="font-bold text-xl">Grafik Penyakit Ayam</div>
                 <div>{profile.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
                 <div className="flex gap-3 my-1">
-                  <DatePicker onChange={
-                    (e) => {
-                      setPerformanceChartDate(e?.toString() || "");
-                    }
-                  }/>
+                  <DateRangePicker variant="bordered"
+                                   onChange={
+                                     (e) => {
+                                        setPerformanceChartDate(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                                     }
+                                   }
+                  />
                   <Select
                     variant="bordered"
                     placeholder="Pilih kandang"
@@ -213,34 +237,22 @@ export default function Page() {
                   </Select>
                 </div>
                 
-                <ul className="grid xl:grid-cols-2 gap-3">
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaEgg/>}
-                      title="Berat Telur"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard icon={<FaChartPie/>} title="FCR" count={1}/>
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<FaWeight/>}
-                      title="Berat Keseluruhan"
-                      count={dashboard.data?.data?.weightTotal || 0}
-                    />
-                  </Card>
-                  <Card as="li" shadow="none">
-                    <StatsCard
-                      icon={<GiNestEggs/>}
-                      title="Total Telur"
-                      count={dashboard.data?.data?.qtyTotal || 0}
-                    />
-                  </Card>
-                </ul>
+                <GrafikDisease
+                  date={performanceChartDate}
+                  cageId={performanceCageChartSelected}
+                />
               </CardBody>
             </Card>
+          </Can>
+        </div>
+        <div>
+          <Can action="show:chart-egg">
+            <GrafiTelur />
+          </Can>
+        </div>
+        <div>
+          <Can action="show:chart-chicken">
+            <GrafikAyam />
           </Can>
         </div>
         <Can action="show:temperature-sensors">

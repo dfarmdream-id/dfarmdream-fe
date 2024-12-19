@@ -12,18 +12,20 @@ import {
   Chip,
   Spinner,
   Select,
-  SelectItem,
+  SelectItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
+  Autocomplete, AutocompleteItem,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+import {useMemo, useState} from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import {useGetChickens, useUpdateChicken} from "../../_services/chicken";
 import { Can } from "@/components/acl/can";
 import {DateTime} from "luxon";
+import {useGetChickenDiseases} from "@/app/(authenticated)/_services/chicken-disease";
 
 const columns = [
   {
@@ -41,6 +43,10 @@ const columns = [
   {
     key: "status",
     label: "Status",
+  },
+  {
+    key: "AlasanPenyakit",
+    label: "Alasan Penyakit",
   },
   {
     key: "createdAt",
@@ -67,10 +73,22 @@ export default function Page() {
     throttleMs: 1000,
   });
 
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const [statusSelected, setStatusSelected] = useState("");
+  const [diseaseSelected, setDiseaseSelected] = useState("");
+  const [idSelected, setIdSelected] = useState("");
+
   const user = useGetChickens(
     useMemo(
       () => ({q: search || "", page: page || "1", limit: limit || "10"}),
       [search, page, limit]
+    )
+  );
+  
+  const diseases = useGetChickenDiseases(
+    useMemo(
+      () => ({page: "1", limit:  "100000"}),
+      []
     )
   );
 
@@ -81,23 +99,37 @@ export default function Page() {
     status: string;
   }) => {
     if (data) {
-      submission.mutate(
-        {
-          body: {
-            status: data.status === "ALIVE" ? "DEAD" : "ALIVE",
-          },
-          pathVars: {
-            id: data.id,
-          },
-        },
-        {
-          onSuccess: async () => {
-            await user.refetch();
-          },
-        }
-      );
+      setIdSelected(data.id);
+      onOpen();
     }
   }
+  const handleSubmitData = () => {
+    submission.mutate(
+      {
+        pathVars: {id: idSelected},
+        body: {
+          status: statusSelected,
+          diseaseId: diseaseSelected,
+        }
+      },
+      {
+        onError: (error) => {
+          console.log(error);
+        },
+        onSuccess: async () => {
+          onClose();
+          await user.refetch()
+        },
+      }
+    );
+  }
+
+  const status = [
+    { key: "ALIVE", label: "Ayam Hidup dan Sehat" },
+    { key: "ALIVE_IN_SICK", label: "Ayam Hidup tetapi Mengalami Penyakit" },
+    { key: "DEAD", label: "Ayam Mati tanpa Tanda Penyakit" },
+    { key: "DEAD_DUE_TO_ILLNESS", label: "Ayam Mati karena Penyakit" },
+  ];
 
     const rows = useMemo(() => {
       if (user.data) {
@@ -186,12 +218,25 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      color={item.status === "ALIVE" ? "success" : "danger"}
+                      color={
+                        item.status === "ALIVE" ? "success" :
+                        item.status === "ALIVE_IN_SICK" ? "warning" :
+                        item.status === "DEAD" ? "danger" :
+                        item.status === "DEAD_DUE_TO_ILLNESS" ? "danger" : "primary"
+                      }
                       className="text-white"
                       onClick={() => handleStatus(item)}
                     >
-                      {item.status === "ALIVE" ? "Hidup" : "Mati"}
+                      {
+                        item.status === "ALIVE" ? "Hidup" :
+                        item.status === "ALIVE_IN_SICK" ? "Hidup Sakit" :
+                        item.status === "DEAD" ? "Mati" :
+                        item.status === "DEAD_DUE_TO_ILLNESS" ? "Mati Sakit" : ""
+                      }
                     </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item?.disease?.name ?? '-'}</div>
                   </TableCell>
                   <TableCell>
                     <div>
@@ -242,6 +287,51 @@ export default function Page() {
             />
           </div>
         </div>
+
+        <Modal isOpen={isOpen} size="xl" onClose={onClose}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Update Status Ayam
+                </ModalHeader>
+                <ModalBody>
+                  <Select
+                    className="w-100"
+                    items={status}
+                    variant="bordered"
+                    label="Status Ayam"
+                    placeholder="Pilih Status Ayam"
+                    onChange={(e) => setStatusSelected(e.target.value)}
+                  >
+                    {(animal) => <SelectItem key={animal.key} value={animal.key}>{animal.label}</SelectItem>}
+                  </Select>
+                  {
+                    (statusSelected === "ALIVE_IN_SICK" || statusSelected === "DEAD_DUE_TO_ILLNESS") && (
+                      <Autocomplete
+                        onSelectionChange={(value) => setDiseaseSelected(
+                          value as string
+                        )} // Perbarui state
+                        variant="bordered" className="w-100" label="Pilih Alasan Penyakit">
+                        {diseases?.data?.data?.data.map((animal) => (
+                          <AutocompleteItem key={animal.id}>{animal.name}</AutocompleteItem>
+                        )) ?? []}
+                      </Autocomplete>
+                    )
+                  }
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Keluar
+                  </Button>
+                  <Button color="primary" onPress={handleSubmitData}>
+                    Update
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     );
 }

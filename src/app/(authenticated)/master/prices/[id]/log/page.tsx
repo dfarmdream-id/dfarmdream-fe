@@ -10,15 +10,14 @@ import {
   Spinner,
   Select,
   SelectItem,
-  DateValue,
 } from "@nextui-org/react";
 
 import { useQueryState } from "nuqs";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { IDR } from "@/common/helpers/currency";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useGetPriceLog } from "@/app/(authenticated)/_services/price";
 
 const columns = [
@@ -87,13 +86,6 @@ const params = useParams();
     return [];
   }, [items.data]);
 
-  const [showFilter, setShowFilter] = useState(false);
-  const [dateRangePicker, setDateRangePicker] = useState<{
-    start?: DateValue;
-    end?: DateValue;
-  }>({ start: undefined });
-
-  const path = usePathname();
   return (
     <div className="p-5">
       
