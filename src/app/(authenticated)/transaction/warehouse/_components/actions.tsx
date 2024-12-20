@@ -10,11 +10,9 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
-import { HiPencilAlt } from "react-icons/hi";
 import { HiOutlinePrinter, HiQrCode, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { Can } from "@/components/acl/can";
 import QRCode from "react-qr-code";
 import {
