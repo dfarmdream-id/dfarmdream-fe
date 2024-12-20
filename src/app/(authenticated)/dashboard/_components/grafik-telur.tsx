@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { useDashboardChartEgg } from "@/app/(authenticated)/_services/dashboard";
 import {useMemo, useState} from "react";
 import {DateTime} from "luxon";
+import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCageRack";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -13,11 +14,24 @@ const Chart = dynamic(
 );
 export default function GrafiTelur (){
   const [range, setRange] = useState<string>("days");
+  const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
+  // const [selectedRackId, setSelectedRackId] = useState<string | null>(null);
+  const selectedRackId = null;
+
+  // const handleRackIdChange = (rackId: string) => {
+  //   setSelectedRackId(rackId); // Simpan rackId di state parent
+  // };
+
+  const handleCageIdChange = (cageId: string) => {
+    setSelectedCageId(cageId); // Simpan cageId di state parent
+  };
 
   const chartData = useDashboardChartEgg(
     useMemo(() => ({
       groupBy: range,
-    }), [range])
+      rackId: selectedRackId,
+      cageId: selectedCageId
+    }), [range, selectedRackId, selectedCageId])
   );
 
   const parseByRangeAndDate = (range: string, date: any) => {
@@ -113,12 +127,15 @@ export default function GrafiTelur (){
         <div>
           <Card>
             <CardBody>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div className="space-y-1">
                   <h2 className="text-2xl font-semibold">Grafik</h2>
                   <p className="text-lg text-muted-foreground">Telur</p>
                 </div>
-                <div className="flex">
+                <div className="flex justify-start items-center md:justify-end w-full md:w-auto gap-3">
+                  <FilterCageRack 
+                    // onRackIdChange={handleRackIdChange} 
+                    onCageIdChange={handleCageIdChange} />
                   <TimePeriodSelector
                     onChange={(value) => setRange(value)}
                     defaultValue={range}
@@ -126,11 +143,11 @@ export default function GrafiTelur (){
                 </div>
               </div>
               <div>
-                <Chart options={chart.options} series={chart.series} type="line" height={350} />
+                <Chart options={chart.options} series={chart.series} type="line" height={350}/>
               </div>
               <div className="p-3">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card>
+                <Card>
                     <CardHeader className="space-y-0 pb-0 d-flex flex-col">
                       <div className="text-sm font-medium">
                         Jumlah Penjualan Total

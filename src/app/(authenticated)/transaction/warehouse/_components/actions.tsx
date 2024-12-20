@@ -111,33 +111,33 @@ export default function Actions(props: Props) {
           </Tooltip>
         </Can>
       </Tooltip>
-      <Tooltip content="Edit Data">
-        <Can action="update:warehouse-transaction">
-          <Tooltip content="Edit Data">
-            <Button
-              as={Link}
-              href={`/transaction/warehouse/${props.id}/edit`}
-              isIconOnly
-              variant="light"
-              color="primary"
-            >
-              <HiPencilAlt />
-            </Button>
-          </Tooltip>
-        </Can>
-      </Tooltip>
-      <Can action="delete:warehouse-transaction">
-        <Tooltip content="Hapus Data">
-          <Button
-            isIconOnly
-            variant="light"
-            color="danger"
-            onPress={deleteDisclosure.onOpen}
-          >
-            <HiTrash />
-          </Button>
-        </Tooltip>
-      </Can>
+      {/*<Tooltip content="Edit Data">*/}
+      {/*  <Can action="update:warehouse-transaction">*/}
+      {/*    <Tooltip content="Edit Data">*/}
+      {/*      <Button*/}
+      {/*        as={Link}*/}
+      {/*        href={`/transaction/warehouse/${props.id}/edit`}*/}
+      {/*        isIconOnly*/}
+      {/*        variant="light"*/}
+      {/*        color="primary"*/}
+      {/*      >*/}
+      {/*        <HiPencilAlt />*/}
+      {/*      </Button>*/}
+      {/*    </Tooltip>*/}
+      {/*  </Can>*/}
+      {/*</Tooltip>*/}
+      {/*<Can action="delete:warehouse-transaction">*/}
+      {/*  <Tooltip content="Hapus Data">*/}
+      {/*    <Button*/}
+      {/*      isIconOnly*/}
+      {/*      variant="light"*/}
+      {/*      color="danger"*/}
+      {/*      onPress={deleteDisclosure.onOpen}*/}
+      {/*    >*/}
+      {/*      <HiTrash />*/}
+      {/*    </Button>*/}
+      {/*  </Tooltip>*/}
+      {/*</Can>*/}
 
       {!props.CashierDeliveryAt && (
         <Can action="update:warehouse-transaction">

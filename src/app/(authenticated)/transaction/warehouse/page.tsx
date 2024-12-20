@@ -26,10 +26,6 @@ import { Can } from "@/components/acl/can";
 
 const columns = [
   {
-    key: "name",
-    label: "Jenis",
-  },
-  {
     key: "category",
     label: "Kategori",
   },
@@ -140,9 +136,6 @@ export default function Page() {
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
-                <TableCell>
-                  <div>{item.type == "IN" ? "Masuk" : "Keluar"}</div>
-                </TableCell>
                 <TableCell>
                   <div>{item.category == "EGG" ? "Telur" : "Ayam"}</div>
                 </TableCell>
