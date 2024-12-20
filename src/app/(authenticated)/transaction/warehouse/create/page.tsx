@@ -23,9 +23,7 @@ export default function Page() {
     weight: z.number({
       message: "Berat wajib diisi",
     }),
-    type: z.string({
-      message: "Jenis wajib diisi",
-    }),
+    type: z.string().optional(),
     haversts: z.array(
       z.object({
         qty: z
@@ -56,7 +54,10 @@ export default function Page() {
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          type: "IN"
+        },
       },
       {
         onError: (error) => {
@@ -103,26 +104,26 @@ export default function Page() {
           onSubmit={onSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-5"
         >
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="type"
-              render={({ field, fieldState }) => (
-                <Select
-                  placeholder="Pilih Jenis"
-                  label="Jenis Transaksi"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  {...field}
-                  isInvalid={fieldState.invalid}
-                  errorMessage={fieldState.error?.message}
-                >
-                  <SelectItem key="IN">Masuk</SelectItem>
-                  <SelectItem key="OUT">Keluar</SelectItem>
-                </Select>
-              )}
-            />
-          </div>
+          {/*<div className="h-16">*/}
+          {/*  <Controller*/}
+          {/*    control={form.control}*/}
+          {/*    name="type"*/}
+          {/*    render={({ field, fieldState }) => (*/}
+          {/*      <Select*/}
+          {/*        placeholder="Pilih Jenis"*/}
+          {/*        label="Jenis Transaksi"*/}
+          {/*        variant="bordered"*/}
+          {/*        labelPlacement="outside"*/}
+          {/*        {...field}*/}
+          {/*        isInvalid={fieldState.invalid}*/}
+          {/*        errorMessage={fieldState.error?.message}*/}
+          {/*      >*/}
+          {/*        <SelectItem key="IN">Masuk</SelectItem>*/}
+          {/*        <SelectItem key="OUT">Keluar</SelectItem>*/}
+          {/*      </Select>*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className="h-16">
             <Controller
               control={form.control}
@@ -217,8 +218,8 @@ export default function Page() {
                               labelPlacement="outside"
                               variant="bordered"
                               type="text"
-                              label="Jumlah Telur"
-                              placeholder="Jumlah Telur"
+                              label={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`} 
+                              placeholder={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
                               {...field}
                               errorMessage={fieldState.error?.message}
                               isInvalid={fieldState.invalid}

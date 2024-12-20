@@ -19,6 +19,7 @@ import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur";
 import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam";
 import GrafikDisease from "@/app/(authenticated)/dashboard/_components/grafik-disease";
+import GrafiKeuangan from "@/app/(authenticated)/dashboard/_components/grafik-keuangan";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -85,45 +86,61 @@ export default function Page() {
   const chart = useMemo<{
     series: number[];
     options: ApexCharts.ApexOptions;
-  }>(() => ({
-    series: [
-      chartData?.data?.data?.alive || 0,
-      chartData?.data?.data?.dead || 0,
-      chartData?.data?.data?.alive_in_sick || 0,
-      chartData?.data?.data?.dead_due_to_illness || 0,
-    ],
-    options: {
-      legend: {
-        show: true,
-        position: "top",
-        markers: {
-          shape: "rect",
-        },
-      },
-      plotOptions: {
-        pie: {
-          donut: {
-            size: "50%",
+  }>(
+    () => ({
+      series: [
+        chartData?.data?.data?.alive || 0,               // Ayam Hidup dan Sehat
+        chartData?.data?.data?.dead || 0,                // Ayam Mati Tanpa Penyakit
+        chartData?.data?.data?.alive_in_sick || 0,       // Ayam Hidup dengan Penyakit
+        chartData?.data?.data?.dead_due_to_illness || 0, // Ayam Mati karena Penyakit
+        chartData?.data?.data?.productive || 0,          // Ayam Produktif
+        chartData?.data?.data?.feed_change || 0,         // Ayam dalam Proses Ganti Pakan
+        chartData?.data?.data?.spent || 0,               // Ayam Tidak Produktif
+        chartData?.data?.data?.rejuvenation || 0,        // Ayam dalam Proses Peremajaan
+      ],
+      options: {
+        legend: {
+          show: true,
+          position: "top",
+          markers: {
+            shape: "rect",
           },
         },
+        plotOptions: {
+          pie: {
+            donut: {
+              size: "50%",
+            },
+          },
+        },
+        chart: {
+          type: "donut",
+        },
+        labels: [
+          "Ayam Hidup dan Sehat",      // Status hidup sehat
+          "Ayam Mati Tanpa Penyakit",  // Status mati tanpa sakit
+          "Ayam Hidup dengan Penyakit",// Status hidup namun sakit
+          "Ayam Mati karena Penyakit", // Status mati karena sakit
+          "Ayam Produktif",            // Ayam dalam masa produktif
+          "Ayam dalam Proses Ganti Pakan", // Ayam dalam proses ganti pakan
+          "Ayam Tidak Produktif",      // Ayam tidak produktif
+          "Ayam dalam Proses Peremajaan", // Ayam dalam proses peremajaan
+        ],
+        colors: [
+          "#0f6646", // Hijau tua untuk "Ayam Hidup dan Sehat"
+          "#f3cb52", // Kuning untuk "Ayam Mati Tanpa Penyakit"
+          "#f39652", // Oranye untuk "Ayam Hidup dengan Penyakit"
+          "#f35252", // Merah untuk "Ayam Mati karena Penyakit"
+          "#1b998b", // Hijau terang untuk "Ayam Produktif"
+          "#f4a261", // Coklat untuk "Ayam dalam Proses Ganti Pakan"
+          "#9d4edd", // Ungu untuk "Ayam Tidak Produktif"
+          "#3a86ff", // Biru terang untuk "Ayam dalam Proses Peremajaan"
+        ],
       },
-      chart: {
-        type: "donut",
-      },
-      labels: ["Ayam Hidup dan Sehat",      // Status hidup sehat
-        "Ayam Mati Tanpa Penyakit",  // Status mati tanpa sakit
-        "Ayam Hidup dengan Penyakit",// Status hidup namun sakit
-        "Ayam Mati karena Penyakit", // Status mati karena sakit
-      ],
-      colors: [
-        "#0f6646", // Hijau tua untuk "Ayam Hidup dan Sehat"
-        "#f3cb52", // Kuning untuk "Ayam Mati Tanpa Penyakit"
-        "#f39652", // Oranye untuk "Ayam Hidup dengan Penyakit"
-        "#f35252", // Merah untuk "Ayam Mati karena Penyakit"
-      ],
-    },
-  }), [chartData]);
-  
+    }),
+    [chartData]
+  );
+
   return (
     <Can
       action="show:dashboard"
@@ -143,7 +160,7 @@ export default function Page() {
           <Can action="show:dashboard-stats-investors">
             <Link href="/master/investors">
               <StatsCard
-                icon={<HiUserPlus />}
+                icon={<HiUserPlus/>}
                 title="Investor"
                 count={dashboard.data?.data?.investor || 0}
               />
@@ -152,7 +169,7 @@ export default function Page() {
           <Can action="show:dashboard-stats-cages">
             <Link href="/operational/cages">
               <StatsCard
-                icon={<HiArchiveBox />}
+                icon={<HiArchiveBox/>}
                 title="Kandang"
                 count={dashboard.data?.data?.cage || 0}
               />
@@ -161,7 +178,7 @@ export default function Page() {
           <Can action="show:dashboard-stats-users">
             <Link href="/master/users">
               <StatsCard
-                icon={<HiUsers />}
+                icon={<HiUsers/>}
                 title="Karyawan"
                 count={dashboard?.data?.data?.user || 0}
               />
@@ -176,15 +193,14 @@ export default function Page() {
                 <div>{profile?.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
-                <div className="flex gap-3 my-1">
-                  <DateRangePicker variant="bordered"
-                    onChange={
-                      (e) => {
-                        setChickenDate(
-                          `${e?.start?.toString() || ""},${e?.end?.toString() || ""}`
-                        );
-                      }
-                    }
+                <div className="flex flex-wrap md:flex-nowrap gap-3 my-1">
+                  <DateRangePicker
+                    variant="bordered"
+                    onChange={(e) => {
+                      setChickenDate(
+                        `${e?.start?.toString() || ""},${e?.end?.toString() || ""}`
+                      );
+                    }}
                   />
                   <Select
                     variant="bordered"
@@ -199,7 +215,7 @@ export default function Page() {
                     )) || []}
                   </Select>
                 </div>
-                
+
                 <Chart
                   options={chart.options}
                   series={chart.series}
@@ -215,11 +231,11 @@ export default function Page() {
                 <div>{profile.data?.data?.site?.name}</div>
               </CardHeader>
               <CardBody>
-                <div className="flex gap-3 my-1">
+                <div className="flex flex-wrap md:flex-nowrap gap-3 my-1">
                   <DateRangePicker variant="bordered"
                                    onChange={
                                      (e) => {
-                                        setPerformanceChartDate(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                                       setPerformanceChartDate(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
                                      }
                                    }
                   />
@@ -236,7 +252,7 @@ export default function Page() {
                     )) || []}
                   </Select>
                 </div>
-                
+
                 <GrafikDisease
                   date={performanceChartDate}
                   cageId={performanceCageChartSelected}
@@ -246,13 +262,18 @@ export default function Page() {
           </Can>
         </div>
         <div>
+          <Can action="show:chart-keuangan">
+            <GrafiKeuangan/>
+          </Can>
+        </div>
+        <div>
           <Can action="show:chart-egg">
-            <GrafiTelur />
+            <GrafiTelur/>
           </Can>
         </div>
         <div>
           <Can action="show:chart-chicken">
-            <GrafikAyam />
+            <GrafikAyam/>
           </Can>
         </div>
         <Can action="show:temperature-sensors">
