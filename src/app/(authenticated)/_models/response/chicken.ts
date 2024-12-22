@@ -24,6 +24,18 @@ export interface Daum {
   createdAt: string;
   updatedAt: string;
   rack?: Rack;
+  disease?: Disease;
+}
+
+export interface Disease {
+  id: string;
+  name: string;
+  description: string;
+  symptoms: string;
+  treatment: string;
+  deletedAt: any;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Rack {

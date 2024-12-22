@@ -10,11 +10,9 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
-import { HiPencilAlt } from "react-icons/hi";
 import { HiOutlinePrinter, HiQrCode, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { Can } from "@/components/acl/can";
 import QRCode from "react-qr-code";
 import {
@@ -111,33 +109,33 @@ export default function Actions(props: Props) {
           </Tooltip>
         </Can>
       </Tooltip>
-      <Tooltip content="Edit Data">
-        <Can action="update:warehouse-transaction">
-          <Tooltip content="Edit Data">
-            <Button
-              as={Link}
-              href={`/transaction/warehouse/${props.id}/edit`}
-              isIconOnly
-              variant="light"
-              color="primary"
-            >
-              <HiPencilAlt />
-            </Button>
-          </Tooltip>
-        </Can>
-      </Tooltip>
-      <Can action="delete:warehouse-transaction">
-        <Tooltip content="Hapus Data">
-          <Button
-            isIconOnly
-            variant="light"
-            color="danger"
-            onPress={deleteDisclosure.onOpen}
-          >
-            <HiTrash />
-          </Button>
-        </Tooltip>
-      </Can>
+      {/*<Tooltip content="Edit Data">*/}
+      {/*  <Can action="update:warehouse-transaction">*/}
+      {/*    <Tooltip content="Edit Data">*/}
+      {/*      <Button*/}
+      {/*        as={Link}*/}
+      {/*        href={`/transaction/warehouse/${props.id}/edit`}*/}
+      {/*        isIconOnly*/}
+      {/*        variant="light"*/}
+      {/*        color="primary"*/}
+      {/*      >*/}
+      {/*        <HiPencilAlt />*/}
+      {/*      </Button>*/}
+      {/*    </Tooltip>*/}
+      {/*  </Can>*/}
+      {/*</Tooltip>*/}
+      {/*<Can action="delete:warehouse-transaction">*/}
+      {/*  <Tooltip content="Hapus Data">*/}
+      {/*    <Button*/}
+      {/*      isIconOnly*/}
+      {/*      variant="light"*/}
+      {/*      color="danger"*/}
+      {/*      onPress={deleteDisclosure.onOpen}*/}
+      {/*    >*/}
+      {/*      <HiTrash />*/}
+      {/*    </Button>*/}
+      {/*  </Tooltip>*/}
+      {/*</Can>*/}
 
       {!props.CashierDeliveryAt && (
         <Can action="update:warehouse-transaction">

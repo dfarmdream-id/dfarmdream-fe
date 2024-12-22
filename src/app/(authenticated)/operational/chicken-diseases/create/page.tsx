@@ -1,33 +1,28 @@
 "use client";
-import { Button, Input, Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { useGetCages } from "../../../_services/cage";
-import { useCreateCageRack } from "../../../_services/rack";
+import {useCreateChickenDisease} from "@/app/(authenticated)/_services/chicken-disease";
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
       message: "Nama wajib diisi",
     }),
-    cageId: z.string({
-      message: "Id kandang",
-    }),
-    createdAt: z.string({
-      message: "Tanggal Dibuat wajib diisi",
-    })
+    description: z.string().optional(),
+    symptoms: z.string().optional(),
+    treatment: z.string().optional(),
   });
-
-  const cage = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
+  
   const form = useForm<z.infer<typeof schema>>({
     schema,
+    defaultValues: {},
   });
 
-  const submission = useCreateCageRack();
+  const submission = useCreateChickenDisease();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
@@ -42,7 +37,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/operational/cage-racks");
+          router.push("/operational/chicken-diseases");
         },
       }
     );
@@ -50,7 +45,7 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Rak</div>
+      <div className="text-2xl font-bold mb-10">Tambah Data Penyakit Ayam</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="h-16">
@@ -62,8 +57,9 @@ export default function Page() {
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="ID Rak"
-                  placeholder="ID Rak"
+                  required={true}
+                  label="Nama Penyakit"
+                  placeholder="Nama Penyakit"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -75,43 +71,50 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="cageId"
-              render={({field, fieldState}) => (
-                <Autocomplete
-                  labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
-                  isLoading={cage.isLoading}
-                  variant="bordered"
-                  {...field}
-                  onSelectionChange={(value) => field.onChange(value)}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {cage.data?.data?.data?.map((item) => (
-                    <AutocompleteItem key={item.id} value={item.id}>
-                      {item.name}
-                    </AutocompleteItem>
-                  )) || []}
-                </Autocomplete>
-              )}
-            />
-          </div>
-          <div>
-            {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
-            <Controller
-              control={form.control}
-              name="createdAt"
-              defaultValue={
-                new Date().toISOString().split("T")[0]
-              }
+              name="description"
               render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
-                  type="date"
-                  label="Tanggal Dibuat"
-                  placeholder="Tanggal Dibuat"
+                  type="text"
+                  label="Deskipsi Penyakit"
+                  placeholder="Deskipsi Penyakit"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="symptoms"
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Gejala Penyakit"
+                  placeholder="Gejala Penyakit"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="treatment"
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Pengobatan Penyakit"
+                  placeholder="Nama Pengobatan"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}

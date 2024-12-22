@@ -11,6 +11,8 @@ import {
   useUpdateChicken,
 } from "@/app/(authenticated)/_services/chicken";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
+import {useGetChickenDiseases} from "@/app/(authenticated)/_services/chicken-disease";
+import {chickenStatus} from "@/app/(authenticated)/operational/chickens/_const/status.const";
 
 export default function Page() {
   const schema = z.object({
@@ -23,6 +25,7 @@ export default function Page() {
     status: z.string({
       message: "Status wajib diisi",
     }),
+    diseaseIds: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -35,6 +38,14 @@ export default function Page() {
 
   const user = useGetChicken(useMemo(() => params.id as string, [params.id]));
 
+  const diseases = useGetChickenDiseases(
+    useMemo(
+      () => ({page: "1", limit:  "100000"}),
+      []
+    )
+  );
+  
+
   useEffect(() => {
     if (user.data) {
       if (user?.data?.data?.name) {
@@ -45,6 +56,9 @@ export default function Page() {
       }
       if (user?.data?.data?.status) {
         form.setValue("status", user?.data?.data?.status);
+      }
+      if (user?.data?.data?.disease?.id) {
+        form.setValue("diseaseIds", user?.data?.data?.disease?.id);
       }
     }
   }, [user.data, form]);
@@ -140,12 +154,45 @@ export default function Page() {
                   {...field}
                   selectedKeys={[field.value as string]}
                 >
-                  <SelectItem key="ALIVE">Hidup</SelectItem>
-                  <SelectItem key="DEAD">Mati</SelectItem>
+                  {
+                    chickenStatus.map((item) => (
+                      <SelectItem key={item.key} value={item.key}>
+                        {item.label}
+                      </SelectItem>
+                    ))
+                  }
                 </Select>
               )}
             />
           </div>
+          {
+            (form.watch("status") === "ALIVE_IN_SICK" || form.watch("status") === "DEAD_DUE_TO_ILLNESS") && (
+              <div className="h-16">
+                <Controller
+                  control={form.control}
+                  name="diseaseIds"
+                  render={({ field }) => (
+                    <Select
+                      isLoading={diseases.isLoading}
+                      multiple
+                      labelPlacement="outside"
+                      placeholder="Pilih Penyakit"
+                      label="Penyakit"
+                      variant="bordered"
+                      {...field}
+                      selectedKeys={field.value?.split(",") || []}
+                    >
+                      {diseases.data?.data?.data?.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      )) || []}
+                    </Select>
+                  )}
+                />
+              </div>
+            )
+          }
 
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
             <Button

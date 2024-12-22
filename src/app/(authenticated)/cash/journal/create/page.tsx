@@ -39,6 +39,7 @@ export default function Page() {
           debit: z.number({ message: "Nilai debit wajib diisi" }),
           credit: z.number({ message: "Nilai kredit wajib diisi" }),
           note: z.string().optional(),
+          typeLedger: z.string().optional(),
         })
       )
       .nonempty("Harus menambahkan setidaknya satu detail"),
@@ -130,6 +131,7 @@ export default function Page() {
         debit: 0,
         credit: 0,
         note: "",
+        typeLedger: "ALL",
       },
     ]);
   };
@@ -153,6 +155,7 @@ export default function Page() {
             coaName: detail.coa.name,
             debit: detail.typeLedger === "DEBIT" ? 0 : 0,
             credit: detail.typeLedger === "CREDIT" ? 0 : 0,
+            typeLedger: detail.typeLedger,
             note: "",
           })
         );
@@ -166,6 +169,7 @@ export default function Page() {
           debit: 0,
           credit: 0,
           note: "",
+          typeLedger: "ALL",
         },
       ]); // Reset jika tidak ada JournalTemplate
     }
@@ -273,22 +277,30 @@ export default function Page() {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    <Input
-                      type="text"
-                      value={formatRupiah(detail.debit.toString())}
-                      onChange={(e) =>
-                        form.setValue(`details.${index}.debit`, parseRupiah(e.target.value))
-                      }
-                    />
+                    {
+                      (detail.typeLedger === "CREDIT" || detail.typeLedger === "ALL") ? (
+                        <Input
+                          type="text"
+                          value={formatRupiah(detail.debit.toString())}
+                          onChange={(e) =>
+                            form.setValue(`details.${index}.debit`, parseRupiah(e.target.value))
+                          }
+                        />
+                      ) : (<div></div>)
+                    }
                   </TableCell>
                   <TableCell>
-                    <Input
-                      type="text"
-                      value={formatRupiah(detail.credit.toString())}
-                      onChange={(e) =>
-                        form.setValue(`details.${index}.credit`, parseRupiah(e.target.value))
-                      }
-                    />
+                    {
+                      (detail.typeLedger === "DEBIT" || detail.typeLedger === "ALL") ? (
+                        <Input
+                          type="text"
+                          value={formatRupiah(detail.credit.toString())}
+                          onChange={(e) =>
+                            form.setValue(`details.${index}.credit`, parseRupiah(e.target.value))
+                          }
+                        />
+                      ) : (<div></div>)
+                    }
                   </TableCell>
                   <TableCell>
                     <Input
