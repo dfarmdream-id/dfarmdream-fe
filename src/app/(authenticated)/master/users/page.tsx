@@ -26,6 +26,10 @@ import { Can } from "@/components/acl/can";
 
 const columns = [
   {
+    key: "identityId",
+    label: "NIK",
+  },
+  {
     key: "fullName",
     label: "Nama",
   },
@@ -128,6 +132,9 @@ export default function Page() {
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
+               <TableCell>
+                  <div>{item.identityId?item.identityId:'-'}</div>
+                </TableCell>
                 <TableCell>
                   <div>{item.fullName}</div>
                 </TableCell>
