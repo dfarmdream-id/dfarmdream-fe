@@ -1,29 +1,30 @@
 "use client";
-import {Button, Input, Select, SelectItem} from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useCreateKategoriBiaya } from "@/app/(authenticated)/_services/kategori-biaya";
+import {useCreateGood} from "@/app/(authenticated)/_services/good";
 
 export default function Page() {
   const schema = z.object({
-    namaKategori: z.string({
-      message: "Nama Kategori Biaya wajib diisi",
+    sku: z.string({
+      message: "SKU Barang Wajib Diisi",
     }),
-    kodeAkun: z.string({
-      message: "Kode Akun Wajib disii",
+    name: z.string({
+      message: "Nama barang wajib diisi",
     }),
-    goodType: z.string().optional(),
-    status:z.number().optional().or(z.literal(1)),
+    type: z.string({
+      message: "Mohon pilih tipe barang",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
 
-  const submission = useCreateKategoriBiaya();
+  const submission = useCreateGood();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
@@ -31,7 +32,6 @@ export default function Page() {
       {
         body: {
           ...data,
-          status:1
         },
       },
       {
@@ -41,7 +41,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/cash/kategori-biaya");
+          router.push("/stock/good");
         },
       }
     );
@@ -49,20 +49,40 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Kategori Biaya</div>
+      <div className="text-2xl font-bold mb-10">Tambah Barang</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
+
           <div className="h-16">
             <Controller
               control={form.control}
-              name="namaKategori"
+              name="sku"
               render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="Nama Kategori"
-                  placeholder="Nama Kategori"
+                  label="SKU Barang"
+                  placeholder="SKU Barang"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="name"
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Nama Barang"
+                  placeholder="Nama Barang"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -74,26 +94,7 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="kodeAkun"
-              render={({field, fieldState}) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nomor Akun"
-                  placeholder="Ketikkan nomor akun"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="goodType"
+              name="type"
               render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"

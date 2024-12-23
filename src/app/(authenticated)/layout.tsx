@@ -53,9 +53,8 @@ import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } fr
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
-import { TbCashRegister } from "react-icons/tb";
+import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
-import { PiDotDuotone } from "react-icons/pi";
 import useLocationStore from "@/stores/useLocationStore";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
@@ -405,16 +404,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       key: "cash",
       children: [
         {
+          can: "show:barang",
+          label: "Barang",
+          href: "/stock/good",
+          icon: <TbAugmentedReality className="text-xl" />,
+        },
+        {
           can: "show:persediaan-barang",
           label: "Persediaan Barang",
           href: "/stock/persediaan-barang",
-          icon: <PiDotDuotone className="text-xl" />,
+          icon: <TbBasketDown className="text-xl" />,
         },
         {
           can: "show:kartu-stok",
           label: "Kartu Stok Pakan Obat",
           href: "/stock/transaksi",
-          icon: <PiDotDuotone className="text-xl" />,
+          icon: <TbBuildingWarehouse className="text-xl" />,
         },
       ],
     },

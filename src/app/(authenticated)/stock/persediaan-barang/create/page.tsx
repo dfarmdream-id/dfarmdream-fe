@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import {Autocomplete, AutocompleteItem, Button, Select, SelectItem} from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -11,20 +11,18 @@ import { useMemo } from "react";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useCreatePersediaanBarang } from "@/app/(authenticated)/_services/persediaan-barang";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
+import {useGetListGood} from "@/app/(authenticated)/_services/good";
 
 export default function Page() {
   const schema = z.object({
-    namaBarang: z.string({
-      message: "Nama Barang Wajib Diisi",
+    goodId: z.string({
+      message: "Barang Wajib Diisi",
     }),
     qty: z.number({
       message: "Jumlah barang wajib diisi",
     }),
     harga: z.number({
       message: "Harga barang wajib diisi",
-    }),
-    tipeBarang: z.string({
-      message: "Mohon pilih tipe barang",
     }),
     siteId: z.string({
       message: "Mohon pilih lokasi",
@@ -55,12 +53,18 @@ export default function Page() {
     )
   );
 
+  const goods = useGetListGood(
+    useMemo(
+      () => ({ q: "", page: "1", limit: "10000", }),
+      []
+    )
+  );
+
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
         body: {
           ...data,
-          tipeBarang: data.tipeBarang.toUpperCase()??'',
           status: 1,
         },
       },
@@ -86,21 +90,28 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Tambah Persediaan Barang</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
+
           <div className="h-16">
             <Controller
               control={form.control}
-              name="namaBarang"
+              name="siteId"
               render={({field, fieldState}) => (
-                <Input
+                <Select
+                  isLoading={siteData.isLoading}
                   labelPlacement="outside"
+                  placeholder="Pilih Lokasi"
+                  label="Lokasi"
                   variant="bordered"
-                  type="text"
-                  label="Nama Barang"
-                  placeholder="Nama Barang"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
-                />
+                >
+                  {siteData.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
               )}
             />
           </div>
@@ -108,27 +119,58 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="tipeBarang"
+              name="cageId"
               render={({field, fieldState}) => (
                 <Select
+                  isLoading={cagesData.isLoading}
                   labelPlacement="outside"
-                  placeholder="Pilih Tipe Barang"
-                  label="Tipe Barang"
+                  placeholder="Pilih Kandang"
+                  label="Kandang"
                   variant="bordered"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
-                  <SelectItem key="pakan" value="PAKAN">
-                    PAKAN
-                  </SelectItem>
-                  <SelectItem key="obat" value="OBAT">
-                    OBAT
-                  </SelectItem>
-                  <SelectItem key="asset" value="ASSET">
-                    ASSET
-                  </SelectItem>
+                  {cagesData.data?.data?.data?.map((position) => (
+                    <SelectItem key={position.id} value={position.id}>
+                      {position.name}
+                    </SelectItem>
+                  )) || []}
                 </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="goodId"
+              render={({field, fieldState}) => (
+                <Autocomplete
+                  isLoading={goods.isLoading}
+                  label="Barang"
+                  items={goods.data?.data?.data ?? []} // Use an empty array as fallbac
+                  placeholder="Pilih Barang"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  onSelectionChange={(item) => {
+                    form.setValue("goodId", item?.toString() ?? "");
+                  }}
+                  {...field}
+                  isInvalid={fieldState.invalid}
+                  errorMessage={fieldState.error?.message}
+                >
+                  {(user) => (
+                    <AutocompleteItem key={user.id} textValue={user.name}>
+                      <div className="flex gap-2 items-center">
+                        <div className="flex flex-col">
+                          <span className="text-small">{user.name}</span>
+                          <span className="text-tiny text-default-400">{user.sku}</span>
+                        </div>
+                      </div>
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
               )}
             />
           </div>
@@ -196,56 +238,6 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="siteId"
-              render={({field, fieldState}) => (
-                <Select
-                  isLoading={siteData.isLoading}
-                  labelPlacement="outside"
-                  placeholder="Pilih Lokasi"
-                  label="Lokasi"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {siteData.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="cageId"
-              render={({field, fieldState}) => (
-                <Select
-                  isLoading={cagesData.isLoading}
-                  labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {cagesData.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
               )}
             />
           </div>

@@ -213,13 +213,13 @@ export default function Page() {
                       <span></span>
                     </TableCell>
                     <TableCell className="font-bold">
-                      {journal.creditTotal.toLocaleString("id-ID", {
+                      {journal.debtTotal.toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       })}
                     </TableCell>
                     <TableCell className="font-bold">
-                      {journal.debtTotal.toLocaleString("id-ID", {
+                      {journal.creditTotal.toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       })}

@@ -11,6 +11,7 @@ import { useCreateWarehouseTransaction } from "@/app/(authenticated)/_services/w
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import { useGetProfile } from "@/app/(authenticated)/_services/profile";
+import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 
 export default function Page() {
   const schema = z.object({
@@ -24,6 +25,9 @@ export default function Page() {
       message: "Berat wajib diisi",
     }),
     type: z.string().optional(),
+    journalTypeId: z.string({
+      message: "Mohon pilih journal type",
+    }),
     haversts: z.array(
       z.object({
         qty: z
@@ -47,6 +51,10 @@ export default function Page() {
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
+
+  const jurnalTypes = useGetListJournalType(
+    useMemo(() => ({ page: "1", limit: "10000" }), [])
+  );
 
   const submission = useCreateWarehouseTransaction();
   const router = useRouter();
@@ -104,26 +112,33 @@ export default function Page() {
           onSubmit={onSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-5"
         >
-          {/*<div className="h-16">*/}
-          {/*  <Controller*/}
-          {/*    control={form.control}*/}
-          {/*    name="type"*/}
-          {/*    render={({ field, fieldState }) => (*/}
-          {/*      <Select*/}
-          {/*        placeholder="Pilih Jenis"*/}
-          {/*        label="Jenis Transaksi"*/}
-          {/*        variant="bordered"*/}
-          {/*        labelPlacement="outside"*/}
-          {/*        {...field}*/}
-          {/*        isInvalid={fieldState.invalid}*/}
-          {/*        errorMessage={fieldState.error?.message}*/}
-          {/*      >*/}
-          {/*        <SelectItem key="IN">Masuk</SelectItem>*/}
-          {/*        <SelectItem key="OUT">Keluar</SelectItem>*/}
-          {/*      </Select>*/}
-          {/*    )}*/}
-          {/*  />*/}
-          {/*</div>*/}
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="journalTypeId"
+              render={({field, fieldState}) => (
+                <Select
+                  label="Journal Type"
+                  placeholder="Pilih Journal Type"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  isLoading={jurnalTypes.isLoading}
+                  {...field}
+                  selectedKeys={[field.value]}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {jurnalTypes.data?.data?.data?.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {
+                        `${type.code} - ${type.name}`
+                      }
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              )}
+            />
+          </div>
           <div className="h-16">
             <Controller
               control={form.control}
