@@ -21,8 +21,11 @@ import { useGetCages } from "@/app/(authenticated)/_services/cage";
 
 export default function Page() {
   const schema = z.object({
+    identityId:z.string({
+      message:"NIK Wajib diisi",
+    }),
     username: z.string({
-      message: "ID wajib diisi",
+      message: "ID/Username wajib diisi",
     }),
     password: z.string({
       message: "Password wajib diisi",
@@ -97,6 +100,24 @@ export default function Page() {
       <div className="text-2xl font-bold mb-10">Tambah Data Pengguna</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="h-16">
+            <Controller
+              control={form.control}
+              name="identityId"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="NIK"
+                  placeholder="NIK"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
           <div className="h-16">
             <Controller
               control={form.control}

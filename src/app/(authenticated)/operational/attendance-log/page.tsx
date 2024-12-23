@@ -21,6 +21,10 @@ import {useGetAbsenLog} from "@/app/(authenticated)/_services/absen";
 
 const columns = [
   {
+    key: "identityId",
+    label: "NIK",
+  },
+  {
     key: "fullName",
     label: "Nama Pegawai",
   },
@@ -92,10 +96,13 @@ export default function Page() {
           >
             {(item) => (
               <TableRow
-                key={`${item.nip}-${item.checkinat}`}
+                key={`${item.identityId}-${item.checkinat}`}
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
+                <TableCell>
+                  <div>{item.identityId}</div>
+                </TableCell>
                 <TableCell>
                   <div>{item.fullName}</div>
                 </TableCell>

@@ -19,6 +19,7 @@ export interface Daum {
   email: string;
   username: string;
   fullName: string;
+  nip:string;
   password: string;
   identityId: any;
   phone?: string;

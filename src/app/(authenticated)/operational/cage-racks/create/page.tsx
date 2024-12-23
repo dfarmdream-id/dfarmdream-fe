@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -77,22 +77,23 @@ export default function Page() {
               control={form.control}
               name="cageId"
               render={({field, fieldState}) => (
-                <Select
+                <Autocomplete
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
                   label="Kandang"
                   isLoading={cage.isLoading}
                   variant="bordered"
                   {...field}
+                  onSelectionChange={(value) => field.onChange(value)}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 >
                   {cage.data?.data?.data?.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
+                    <AutocompleteItem key={item.id} value={item.id}>
                       {item.name}
-                    </SelectItem>
+                    </AutocompleteItem>
                   )) || []}
-                </Select>
+                </Autocomplete>
               )}
             />
           </div>
