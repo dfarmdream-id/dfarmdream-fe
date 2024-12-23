@@ -53,9 +53,8 @@ import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } fr
 import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
-import {TbAugmentedReality, TbBasketDown, TbBrandUnsplash, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
+import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import SwitchSite from "./_components/switch-site";
-import { PiDotDuotone } from "react-icons/pi";
 import useLocationStore from "@/stores/useLocationStore";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
