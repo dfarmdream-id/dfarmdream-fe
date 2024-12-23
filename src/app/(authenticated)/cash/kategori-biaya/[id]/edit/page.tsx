@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import {Button, Input, Select, SelectItem} from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -16,7 +16,8 @@ export default function Page() {
     }),
     kodeAkun: z.string({
         message: "Kode akun wajib diisi",
-      }),
+    }),
+    goodType: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -35,6 +36,7 @@ export default function Page() {
     if (position.data) {
       form.setValue("namaKategori", position?.data?.data?.namaKategori);
       form.setValue("kodeAkun", position?.data?.data?.kodeAkun);
+      form.setValue("goodType", position?.data?.data?.goodType);
     }
   }, [position.data, form]);
 
@@ -66,7 +68,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="namaKategori"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -85,7 +87,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="kodeAkun"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -96,6 +98,34 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="goodType"
+              render={({field, fieldState}) => (
+                <Select
+                  labelPlacement="outside"
+                  placeholder="Pilih Tipe Barang"
+                  label="Tipe Barang"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  <SelectItem key="PAKAN" value="PAKAN">
+                    PAKAN
+                  </SelectItem>
+                  <SelectItem key="OBAT" value="OBAT">
+                    OBAT
+                  </SelectItem>
+                  <SelectItem key="ASSET" value="ASSET">
+                    ASSET
+                  </SelectItem>
+                </Select>
               )}
             />
           </div>

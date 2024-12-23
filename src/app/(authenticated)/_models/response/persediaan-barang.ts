@@ -27,7 +27,15 @@ export interface GetListPersediaanBarangResponse {
     status:number;
     tipeBarang:string;
     site:Site;
-    cage:Cage
+    cage:Cage;
+    goods:Good;
+  }
+  
+  export interface Good {
+    id:string;
+    sku:string;
+    name:string;
+    type:string;
   }
   
   export interface Meta {

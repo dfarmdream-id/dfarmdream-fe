@@ -33,6 +33,10 @@ const columns = [
     label: "Kode AKun",
   },
   {
+    key: "goodType",
+    label: "Flag Jenis Barang",
+  },
+  {
     key: "status",
     label: "Status",
   },
@@ -122,6 +126,10 @@ export default function Page() {
 
                 <TableCell>
                   <div>{item.kodeAkun}</div>
+                </TableCell>
+                
+                <TableCell>
+                  <div>{item.goodType}</div>
                 </TableCell>
 
                 <TableCell>
