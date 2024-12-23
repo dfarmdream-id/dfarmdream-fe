@@ -80,7 +80,7 @@ export interface DataLog {
 export interface LogResponse {
   userId: string;
   fullName: string;
-  nip: string;
+  identityId: string;
   kandang: string;
   lokasi: string;
   checkinat: string;

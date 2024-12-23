@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input,  Select, SelectItem } from "@nextui-org/react";
+import {Autocomplete, AutocompleteItem, Button, Select, SelectItem} from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -11,11 +11,12 @@ import { InputNumber } from "@/components/ui/input";
 import { useGetPersediaanBarang, useUpdatePersediaanBarang } from "@/app/(authenticated)/_services/persediaan-barang";
 import { useGetSites } from "@/app/(authenticated)/_services/site";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
+import {useGetListGood} from "@/app/(authenticated)/_services/good";
 
 export default function Page() {
   const schema = z.object({
-    namaBarang: z.string({
-      message: "Nama Barang Wajib Diisi",
+    goodId: z.string({
+      message: "Barang Wajib Diisi",
     }),
     qty: z.number({
       message: "Jumlah barang wajib diisi",
@@ -48,10 +49,10 @@ export default function Page() {
 
   useEffect(() => {
     if (position.data) {
-      form.setValue("namaBarang", position?.data?.data?.namaBarang);
+      form.setValue("goodId", position?.data?.data?.goods?.id);
       form.setValue("qty", position?.data?.data?.qty);
       form.setValue("harga", position?.data?.data?.harga);
-      form.setValue("tipeBarang", position?.data?.data?.tipeBarang.toLowerCase()??'');
+      form.setValue("tipeBarang", position?.data?.data?.goods?.type);
       form.setValue("siteId", position?.data?.data?.siteId);
       form.setValue("cageId", position?.data?.data?.cageId);
     }
@@ -65,6 +66,13 @@ export default function Page() {
     useMemo(
       () => ({ page: "1", limit: "10000", siteId: watch.siteId }),
       [watch.siteId]
+    )
+  );
+
+  const goods = useGetListGood(
+    useMemo(
+      () => ({ q: "", page: "1", limit: "10000", }),
+      []
     )
   );
 
@@ -93,101 +101,14 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Ubah Kategori Biaya</div>
+      <div className="text-2xl font-bold mb-10">Ubah Persediaan Barang</div>
       <div>
-      <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="namaBarang"
-              render={({ field, fieldState }) => (
-                <Input
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Nama Barang"
-                  placeholder="Nama Barang"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="tipeBarang"
-              render={({ field, fieldState }) => (
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Tipe Barang"
-                  label="Tipe Barang"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                  selectedKeys={[field.value]}
-                >
-                  <SelectItem key="pakan" value="PAKAN">
-                    PAKAN
-                  </SelectItem>
-                  <SelectItem key="obat" value="OBAT">
-                    OBAT
-                  </SelectItem>
-                  <SelectItem key="asset" value="ASSET">
-                    ASSET
-                  </SelectItem>
-                </Select>
-              )}
-            />
-          </div>
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="qty"
-              render={({ field, fieldState }) => (
-                <InputNumber
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="qty"
-                  placeholder="Jumlah Barang"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-
-          <div className="h-16 mt-2">
-            <Controller
-              control={form.control}
-              name="harga"
-              render={({ field, fieldState }) => (
-                <InputNumber
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="text"
-                  label="Harga"
-                  placeholder="Ketikkan Harga Barang"
-                  startContent="Rp. "
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                />
-              )}
-            />
-          </div>
-
+        <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
           <div className="h-16">
             <Controller
               control={form.control}
               name="siteId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={siteData.isLoading}
                   labelPlacement="outside"
@@ -213,7 +134,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   multiple
                   isLoading={cagesData.isLoading}
@@ -232,6 +153,108 @@ export default function Page() {
                     </SelectItem>
                   )) || []}
                 </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="goodId"
+              render={({field, fieldState}) => (
+                <Autocomplete
+                  isLoading={goods.isLoading}
+                  label="Barang"
+                  items={goods.data?.data?.data ?? []} // Use an empty array as fallbac
+                  placeholder="Pilih Barang"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  onSelectionChange={(item) => {
+                    form.setValue("goodId", item?.toString() ?? "");
+                  }}
+                  {...field}
+                  isInvalid={fieldState.invalid}
+                  errorMessage={fieldState.error?.message}
+                >
+                  {(user) => (
+                    <AutocompleteItem key={user.id} textValue={user.name}>
+                      <div className="flex gap-2 items-center">
+                        <div className="flex flex-col">
+                          <span className="text-small">{user.name}</span>
+                          <span className="text-tiny text-default-400">{user.sku}</span>
+                        </div>
+                      </div>
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="tipeBarang"
+              render={({field, fieldState}) => (
+                <Select
+                  labelPlacement="outside"
+                  placeholder="Pilih Tipe Barang"
+                  label="Tipe Barang"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  selectedKeys={[field.value]}
+                >
+                  <SelectItem key="PAKAN" value="PAKAN">
+                    PAKAN
+                  </SelectItem>
+                  <SelectItem key="OBAT" value="OBAT">
+                    OBAT
+                  </SelectItem>
+                  <SelectItem key="ASSET" value="ASSET">
+                    ASSET
+                  </SelectItem>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="qty"
+              render={({field, fieldState}) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="qty"
+                  placeholder="Jumlah Barang"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="h-16 mt-2">
+            <Controller
+              control={form.control}
+              name="harga"
+              render={({field, fieldState}) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Harga"
+                  placeholder="Ketikkan Harga Barang"
+                  startContent="Rp. "
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
               )}
             />
           </div>

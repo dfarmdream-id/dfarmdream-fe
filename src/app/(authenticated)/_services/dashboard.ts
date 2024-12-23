@@ -36,18 +36,22 @@ export const useDashboardChart = (
   });
 };
 
-export const useDashboardChartEgg = ({ groupBy }: { groupBy: string }) => {
+export const useDashboardChartEgg = ({ groupBy, rackId, cageId }: { groupBy: string, rackId: string | null, cageId: string | null }) => {
   return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-egg", {
     params: {
       groupBy,
+      rackId,
+      cageId
     },
   });
 };
 
-export const useDashboardChartChicken = ({ groupBy }: { groupBy: string }) => {
+export const useDashboardChartChicken = ({ groupBy, rackId, cageId }: { groupBy: string, rackId: string | null, cageId: string | null }) => {
   return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-chicken", {
     params: {
       groupBy,
+      rackId,
+      cageId
     },
   });
 };

@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  Button,
   Input,
   Spinner,
   Select,
@@ -15,10 +14,8 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
-import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
-import Link from "next/link";
 import EmptyState from "@/components/state/empty";
 import { IDR } from "@/common/helpers/currency";
 import { NumberFormat } from "@/common/helpers/number-format";
@@ -117,16 +114,6 @@ export default function Page() {
             />
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
           </div>
-
-          <Button
-            as={Link}
-            href="/stock/transaksi/create"
-            color="primary"
-            startContent={<HiPlus />}
-            className="w-full md:w-auto"
-          >
-            Buat Transaksi
-          </Button>
         </div>
         <Table aria-label="Data">
           <TableHeader columns={columns}>
@@ -151,7 +138,12 @@ export default function Page() {
                 </TableCell>
 
                 <TableCell>
-                  <div>{item.barang?.namaBarang}</div>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">{item?.barang?.goods?.name}</span>
+                      <span className="text-tiny text-default-400">{item?.barang?.goods?.sku}</span>
+                    </div>
+                  </div>
                 </TableCell>
 
                 <TableCell>

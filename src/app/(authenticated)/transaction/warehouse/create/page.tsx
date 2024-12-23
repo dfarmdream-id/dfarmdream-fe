@@ -11,6 +11,7 @@ import { useCreateWarehouseTransaction } from "@/app/(authenticated)/_services/w
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import { useGetProfile } from "@/app/(authenticated)/_services/profile";
+import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 
 export default function Page() {
   const schema = z.object({
@@ -23,8 +24,9 @@ export default function Page() {
     weight: z.number({
       message: "Berat wajib diisi",
     }),
-    type: z.string({
-      message: "Jenis wajib diisi",
+    type: z.string().optional(),
+    journalTypeId: z.string({
+      message: "Mohon pilih journal type",
     }),
     haversts: z.array(
       z.object({
@@ -50,13 +52,20 @@ export default function Page() {
     schema,
   });
 
+  const jurnalTypes = useGetListJournalType(
+    useMemo(() => ({ page: "1", limit: "10000" }), [])
+  );
+
   const submission = useCreateWarehouseTransaction();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          type: "IN"
+        },
       },
       {
         onError: (error) => {
@@ -106,19 +115,26 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
-              name="type"
-              render={({ field, fieldState }) => (
+              name="journalTypeId"
+              render={({field, fieldState}) => (
                 <Select
-                  placeholder="Pilih Jenis"
-                  label="Jenis Transaksi"
+                  label="Journal Type"
+                  placeholder="Pilih Journal Type"
                   variant="bordered"
                   labelPlacement="outside"
+                  isLoading={jurnalTypes.isLoading}
                   {...field}
-                  isInvalid={fieldState.invalid}
+                  selectedKeys={[field.value]}
                   errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
                 >
-                  <SelectItem key="IN">Masuk</SelectItem>
-                  <SelectItem key="OUT">Keluar</SelectItem>
+                  {jurnalTypes.data?.data?.data?.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {
+                        `${type.code} - ${type.name}`
+                      }
+                    </SelectItem>
+                  )) ?? []}
                 </Select>
               )}
             />
@@ -217,8 +233,8 @@ export default function Page() {
                               labelPlacement="outside"
                               variant="bordered"
                               type="text"
-                              label="Jumlah Telur"
-                              placeholder="Jumlah Telur"
+                              label={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`} 
+                              placeholder={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
                               {...field}
                               errorMessage={fieldState.error?.message}
                               isInvalid={fieldState.invalid}

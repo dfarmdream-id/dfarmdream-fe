@@ -47,6 +47,10 @@ export interface Chart {
   dead: number;
   dead_due_to_illness: number;
   alive_in_sick: number;
+  productive: number;
+  feed_change: number
+  spent: number;
+  rejuvenation: number;
 }
 
 

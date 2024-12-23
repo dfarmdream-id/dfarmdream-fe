@@ -218,6 +218,7 @@ export default function Page() {
                   <TableRow key={index}>
                     <TableCell>
                       <Select
+                        className=""
                         variant="bordered"
                         labelPlacement="outside"
                         selectedKeys={[detail.coaCode]}
