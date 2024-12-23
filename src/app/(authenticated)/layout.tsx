@@ -32,7 +32,7 @@ import {
   HiOutlineWindow,
   HiUserGroup,
 } from "react-icons/hi2";
-import { GiChicken } from "react-icons/gi";
+import { GiChicken, GiMoneyStack } from "react-icons/gi";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
 import { signOut } from "./sign-out/_actions/sign-out";
@@ -394,6 +394,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           label: "Neraca",
           href: "/cash/balance-sheet",
           icon: <FaBalanceScale className="text-xl" />,
+        },
+        {
+          can: "show:profit-loss",
+          label: "Profit & Loss",
+          href: "/cash/profit-loss",
+          icon: <GiMoneyStack className="text-xl" />,
         },
       ],
     },
