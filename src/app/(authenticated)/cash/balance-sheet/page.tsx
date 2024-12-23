@@ -7,6 +7,7 @@ import { TbFileTypePdf } from "react-icons/tb";
 import { useGetJournalBalanceSheet } from "@/app/(authenticated)/_services/journal";
 import {useQueryState} from "nuqs";
 import {HiX} from "react-icons/hi";
+import {useGetJournalProfitLoss} from "@/app/(authenticated)/_services/profit-loss";
 
 export default function BalanceSheet() {
   // const aktivaLancar = [101, 102, 121, 124, 125, 141, 142];
@@ -32,6 +33,16 @@ export default function BalanceSheet() {
   const [year, setYear] = useQueryState("year", { throttleMs: 1000 });
 
   const balanceSheets = useGetJournalBalanceSheet(
+    useMemo(
+      () => ({
+        month: month || "0",
+        year: year || "0",
+      }),
+      [year]
+    )
+  );
+
+  const profitLoss = useGetJournalProfitLoss(
     useMemo(
       () => ({
         month: month || "0",
@@ -355,7 +366,9 @@ export default function BalanceSheet() {
               <div className="ml-4">
                 <div className="flex justify-between items-center py-1">
                   <span className="text-gray-700">Laba bersih dari laporan laba rugi:</span>
-                  <span>Rp -</span>
+                  <span>{
+                    formatCurrency(profitLoss.data?.data?.netProfit)
+                  }</span>
                 </div>
               </div>
             </div>
@@ -363,12 +376,14 @@ export default function BalanceSheet() {
               <span>Total Ekuitas:</span>
               <span>
                 {
-                  formatCurrency(balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
-                    if (modal.includes(Number(balanceSheet.coa.code))) {
-                      return total + (balanceSheet._sum.credit - balanceSheet._sum.debit);
-                    }
-                    return total;
-                  }, 0))
+                  formatCurrency(
+                    (balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
+                      if (modal.includes(Number(balanceSheet.coa.code))) {
+                        return total + (balanceSheet._sum.credit - balanceSheet._sum.debit);
+                      }
+                      return total;
+                    }, 0) || 0) + (profitLoss.data?.data?.netProfit || 0)
+                  )
                 }
               </span>
             </div>
@@ -379,13 +394,17 @@ export default function BalanceSheet() {
           <span>Total Kewajiban dan Ekuitas:</span>
           <span>
             {
-              formatCurrency(balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
-                if (utangDagang.includes(Number(balanceSheet.coa.code)) ||
-                  modal.includes(Number(balanceSheet.coa.code))) {
-                  return total + (balanceSheet._sum.credit - balanceSheet._sum.debit);
-                }
-                return total;
-              }, 0))
+              formatCurrency(
+                (balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
+                  if (
+                    utangDagang.includes(Number(balanceSheet.coa.code)) ||
+                    modal.includes(Number(balanceSheet.coa.code))
+                  ) {
+                    return total + (balanceSheet._sum.credit - balanceSheet._sum.debit);
+                  }
+                  return total;
+                }, 0) || 0) + (profitLoss.data?.data?.netProfit || 0)
+              )
             }
           </span>
         </div>

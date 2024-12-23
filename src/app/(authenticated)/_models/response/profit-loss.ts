@@ -5,6 +5,7 @@ export interface ProfitLossResponses {
 
 export interface Data {
   trialBalance: TrialBalance[]
+  netProfit: number
   totalDebit: number
   totalCredit: number
   isBalanced: boolean

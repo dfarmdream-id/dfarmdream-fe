@@ -3,11 +3,22 @@
 import {Card, CardBody, CardHeader, Select, SelectItem} from "@nextui-org/react";
 import {useMemo, useState} from "react";
 import {useGetJournalBalanceSheet} from "@/app/(authenticated)/_services/journal";
+import {useGetJournalProfitLoss} from "@/app/(authenticated)/_services/profit-loss";
 export default function GrafiKeuangan (){
   const [month, setMonth] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
 
   const balanceSheets = useGetJournalBalanceSheet(
+    useMemo(
+      () => ({
+        month: month || "0",
+        year: year || "0",
+      }),
+      [year]
+    )
+  );
+
+  const profitLoss = useGetJournalProfitLoss(
     useMemo(
       () => ({
         month: month || "0",
@@ -145,7 +156,9 @@ export default function GrafiKeuangan (){
                     </CardHeader>
                     <CardBody className="d-flex flex-col items-center">
                       <div className="text-2xl font-bold text-primary">
-                        Rp. 0
+                        {
+                          formatCurrency(profitLoss.data?.data?.netProfit)
+                        }
                       </div>
                       {/*<p className="text-xs text-red-500 mt-1">*/}
                       {/*  -23.44%*/}
