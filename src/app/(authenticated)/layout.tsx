@@ -12,7 +12,7 @@ import {
   DropdownTrigger,
   Image,
   ScrollShadow,
-  Skeleton, Tooltip,
+  Skeleton, Tooltip, useDisclosure,
 } from "@nextui-org/react";
 import {
   HiBookmark, HiBookOpen,
@@ -54,8 +54,9 @@ import Link from "next/link";
 import { VscVariableGroup } from "react-icons/vsc";
 import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
 import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
-import SwitchSite from "./_components/switch-site";
 import useLocationStore from "@/stores/useLocationStore";
+import { FaCubesStacked } from "react-icons/fa6";
+import Setting from "@/app/(authenticated)/_components/settings";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
@@ -285,6 +286,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       label: "Operasional",
       key: "operational",
       children: [
+        {
+          can: "show:batch",
+          label: "Batch",
+          href: "/operational/batch",
+          icon: <FaCubesStacked className="text-xl" />,
+        },
         {
           can: "show:cages",
           label: "Kandang",
@@ -598,7 +605,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}
                   </Button>
                 </div>
-                <SwitchSite />
+                {/*<SwitchSite />*/}
+                <Setting />
               </div>
               <div>
                 <Dropdown>
