@@ -87,25 +87,7 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (rack.data) {
-      // Ambil data
-      const rawData = rack.data?.data?.data || [];
-
-      // Sorting data berdasarkan hierarki
-      return rawData.sort((a, b) => {
-        // Urutkan berdasarkan cage.name (case-insensitive)
-        const cageNameA = a.cage.name.toLowerCase();
-        const cageNameB = b.cage.name.toLowerCase();
-        if (cageNameA < cageNameB) return -1;
-        if (cageNameA > cageNameB) return 1;
-
-        // Jika cage.name sama, urutkan berdasarkan name dengan natural sort
-        const rackNameA = a.name.toLowerCase();
-        const rackNameB = b.name.toLowerCase();
-        return rackNameA.localeCompare(rackNameB, undefined, {
-          numeric: true, // Perhatikan angka saat sorting
-          sensitivity: 'base', // Case-insensitive
-        });
-      });
+      return rack.data?.data?.data || [];
     }
     return [];
   }, [rack.data]);
