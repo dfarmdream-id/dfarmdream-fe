@@ -89,9 +89,7 @@ export default function Page() {
     }
     return [];
   }, [user.data]);
-
-
-  console.log("Tipe Barang : ", tipeBarang)
+  
   return (
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Persediaan Barang</div>

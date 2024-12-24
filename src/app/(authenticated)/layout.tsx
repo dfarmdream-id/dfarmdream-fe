@@ -12,56 +12,34 @@ import {
   DropdownTrigger,
   Image,
   ScrollShadow,
-  Skeleton, Tooltip, useDisclosure,
+  Skeleton, Tooltip
 } from "@nextui-org/react";
 import {
-  HiBookmark, HiBookOpen,
-  HiChevronRight,
-  HiEye,
-  HiOutlineArrowRightOnRectangle,
-  HiOutlineBars3,
-  HiOutlineClock,
-  HiOutlineCog6Tooth,
-  HiOutlineCurrencyDollar,
-  HiOutlineHome,
-  HiOutlineInbox,
-  HiOutlineListBullet,
-  HiOutlineRocketLaunch,
-  HiOutlineUserPlus,
-  HiOutlineUsers,
-  HiOutlineWindow,
-  HiUserGroup,
+  HiChevronRight
 } from "react-icons/hi2";
-import { GiChicken, GiMoneyStack } from "react-icons/gi";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetProfile } from "./_services/profile";
-import { signOut } from "./sign-out/_actions/sign-out";
 import { usePathname, useRouter } from "next/navigation";
 import {
   HiMenuAlt2,
   HiMenuAlt4,
-  HiOutlineDatabase,
-  HiOutlineInboxIn,
-  HiOutlineLocationMarker,
-  HiOutlineReceiptTax,
   HiX,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
-import { MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors } from "react-icons/md";
 import Link from "next/link";
-import { VscVariableGroup } from "react-icons/vsc";
-import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
-import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import useLocationStore from "@/stores/useLocationStore";
-import { FaCubesStacked } from "react-icons/fa6";
+import {menus} from "@/common/menu";
+import {signOut} from "@/app/(authenticated)/sign-out/_actions/sign-out";
+
 import Setting from "@/app/(authenticated)/_components/settings";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
   const { setPermissions } = useAuthStore((state) => state);
   const { setSiteId } = useLocationStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (data?.data && data?.data?.roles?.length > 0) {
@@ -83,6 +61,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [data, setSiteId]);
 
+  const handleNavigation = (href: string) => {
+    router.push(href);
+    setOpen(false); // Close sidebar after navigation
+  };
+
   const SidebarMenuItem = (menu: {
     can: string;
     href?: string;
@@ -103,8 +86,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }) => {
     const path = usePathname();
 
-    const router = useRouter();
-
     const [open, setOpen] = useState(
       menu?.id?.includes(path.split("/")[1]) || false
     );
@@ -114,14 +95,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Card
           isPressable
           onPress={() => {
-            if (!menu.childrens) {
-              menu?.onClick?.();
-            }
-            setOpen(!open);
-            menu.action?.();
             if (menu.href) {
-              router.push(menu.href);
+              handleNavigation(menu.href); // Use the handleNavigation function
+            } else if (menu.action) {
+              menu.action(); // Run action if no href
             }
+            setOpen(!open); // Toggle submenu
           }}
           as={menu.href ? Link : "a"}
           href={menu.href ? menu.href : undefined}
@@ -189,11 +168,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             <Card
                               shadow="none"
                               onPress={() => {
-                                /*if (menu.mobile) {
-                                  menu.onClick?.();
-                                }*/
-                                menu.action?.();
-                                router.push(child.href || "");
+                                if (child.href) {
+                                  handleNavigation(child.href); // Use handleNavigation
+                                } else if (menu.action) {
+                                  menu.action();
+                                }
                               }}
                               as={child.href ? Link : "a"}
                               href={child.href ? child.href : undefined}
@@ -217,14 +196,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                               <Card
                                 shadow="none"
                                 onPress={() => {
-                                  /*if (menu.mobile) {
-                                    menu.onClick?.();
-                                  }*/
-                                  menu.action?.();
-                                  router.push(child.href || "");
-
-                                  if (menu.mobile) {
-                                    menu.onClick?.();
+                                  if (child.href) {
+                                    handleNavigation(child.href); // Use handleNavigation
+                                  } else if (menu.action) {
+                                    menu.action();
                                   }
                                 }}
                                 as={child.href ? Link : "a"}
@@ -252,248 +227,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </li>
     );
   };
-
-  const menus = [
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: <HiOutlineHome className="text-xl" />,
-      can: "show:dashboard",
-    },
-    {
-      icon: <HiOutlineReceiptTax className="text-xl" />,
-      label: "Transaksi",
-      key: "transaction",
-      can: "show:transaction",
-      children: [
-        {
-          can: "show:warehouse-transaction",
-          label: "Transaksi Gudang",
-          href: "/transaction/warehouse",
-          icon: <HiOutlineWindow className="text-xl" />,
-        },
-        // {
-        //   can: "show:sales-transaction",
-        //   label: "Transaksi Penjualan",
-        //   href: "/transaction/sales",
-        //   icon: <HiOutlineCurrencyDollar className="text-xl" />,
-        // },
-      ],
-    },
-    {
-      can: "show:operational",
-      icon: <HiOutlineClock className="text-xl" />,
-      label: "Operasional",
-      key: "operational",
-      children: [
-        {
-          can: "show:batch",
-          label: "Batch",
-          href: "/operational/batch",
-          icon: <FaCubesStacked className="text-xl" />,
-        },
-        {
-          can: "show:cages",
-          label: "Kandang",
-          href: "/operational/cages",
-          icon: <HiOutlineInbox className="text-xl" />,
-        },
-        {
-          label: "CCTV",
-          href: "/operational/cctv",
-          icon: <HiEye className="text-xl" />,
-          can: "show:cctv",
-        },
-        {
-          label: "Perangkat IOT",
-          href: "/operational/iot",
-          icon: <MdSensors className="text-xl" />,
-          can: "show:sensor-iot",
-        },
-        {
-          label: "Sensor IOT",
-          href: "/operational/sensor-device",
-          icon: <MdOutlineDeviceThermostat className="text-xl" />,
-          can: "show:sensor-iot",
-        },
-        {
-          can: "show:cage-racks",
-          label: "Rak",
-          href: "/operational/cage-racks",
-          icon: <HiOutlineInboxIn className="text-xl" />,
-        },
-        {
-          can: "show:chickens",
-          label: "Ayam",
-          href: "/operational/chickens",
-          icon: <GiChicken className="text-xl" />,
-        },
-        {
-          can: "show:chicken-diseases",
-          label: "Penyakit Ayam",
-          href: "/operational/chicken-diseases",
-          icon: <FaDisease className="text-xl" />,
-        },
-        {
-          can: "show:attendance",
-          label: "Absen",
-          href: "/operational/attendance-log",
-          icon: <HiUserGroup className="text-xl" />,
-        },
-      ],
-    },
-    {
-      can: "show:cash-flow",
-      icon: <HiOutlineCurrencyDollar className="text-xl" />,
-      label: "Keuangan",
-      key: "cash",
-      children: [
-        {
-          can: "show:penerimaan-modal",
-          label: "Penerimaan Modal",
-          href: "/cash/penerimaan-modal",
-          icon: <TbCashRegister className="text-xl" />,
-        },
-        {
-          can: "show:kategori-biaya",
-          label: "Kategori Biaya",
-          href: "/cash/kategori-biaya",
-          icon: <VscVariableGroup className="text-xl" />,
-        },
-        {
-          can: "show:biaya",
-          label: "Biaya",
-          href: "/cash/biaya",
-          icon: <FaMoneyBillAlt className="text-xl" />,
-        },
-        {
-          can: "show:group-coa",
-          label: "Group COA",
-          href: "/cash/group-coa",
-          icon: <HiOutlineListBullet className="text-xl" />,
-        },
-        {
-          can: "show:coa",
-          label: "COA",
-          href: "/cash/coa",
-          icon: <HiOutlineListBullet className="text-xl" />,
-        },
-        {
-          can:"show:journal-type",
-          label:"Journal Type",
-          href:"/cash/journal-type",
-          icon:<MdOutlineCollectionsBookmark className="text-xl" />
-        },
-        {
-          can: "show:template-journal-and-detail",
-          label: "Template Jurnal dan Detail",
-          href: "/cash/template-journal",
-          icon: <HiBookmark className="text-xl" />,
-        },
-        {
-          can: "show:journal",
-          label: "Jurnal",
-          href: "/cash/journal",
-          icon: <HiBookOpen  className="text-xl" />,
-        },
-        {
-          can: "show:balance-sheet",
-          label: "Neraca",
-          href: "/cash/balance-sheet",
-          icon: <FaBalanceScale className="text-xl" />,
-        },
-        {
-          can: "show:profit-loss",
-          label: "Profit & Loss",
-          href: "/cash/profit-loss",
-          icon: <GiMoneyStack className="text-xl" />,
-        },
-      ],
-    },
-    {
-      can: "show:persediaan-barang",
-      icon: <FaBox className="text-xl" />,
-      label: "Barang",
-      key: "cash",
-      children: [
-        {
-          can: "show:barang",
-          label: "Barang",
-          href: "/stock/good",
-          icon: <TbAugmentedReality className="text-xl" />,
-        },
-        {
-          can: "show:persediaan-barang",
-          label: "Persediaan Barang",
-          href: "/stock/persediaan-barang",
-          icon: <TbBasketDown className="text-xl" />,
-        },
-        {
-          can: "show:kartu-stok",
-          label: "Kartu Stok Pakan Obat",
-          href: "/stock/transaksi",
-          icon: <TbBuildingWarehouse className="text-xl" />,
-        },
-      ],
-    },
-    {
-      key: "master",
-      can: "show:master",
-      icon: <HiOutlineDatabase className="text-xl" />,
-      label: "Data Master",
-      children: [
-        {
-          can: "show:positions",
-          label: "Jabatan",
-          href: "/master/positions",
-          icon: <HiOutlineUsers className="text-xl" />,
-        },
-        {
-          can: "show:users",
-          label: "Pengguna",
-          href: "/master/users",
-          icon: <HiOutlineUsers className="text-xl" />,
-        },
-        {
-          can: "show:sites",
-          label: "Lokasi",
-          href: "/master/site",
-          icon: <HiOutlineLocationMarker className="text-xl" />,
-        },
-        {
-          can: "show:investors",
-          label: "Investor",
-          href: "/master/investors",
-          icon: <HiOutlineUserPlus className="text-xl" />,
-        },
-        {
-          can: "show:prices",
-          label: "Harga",
-          href: "/master/prices",
-          icon: <HiOutlineBars3 className="text-xl" />,
-        },
-        {
-          can: "show:roles",
-          label: "Role",
-          href: "/master/roles",
-          icon: <HiOutlineRocketLaunch className="text-xl" />,
-        },
-        {
-          can: "show:permissions",
-          label: "Permission",
-          href: "/master/permissions",
-          icon: <HiOutlineCog6Tooth className="text-xl" />,
-        },
-      ],
-    },
-    {
-      can: "signout",
-      label: "Sign Out",
-      href: "/sign-out",
-      icon: <HiOutlineArrowRightOnRectangle />,
-      action: signOut,
-    },
-  ];
 
   const [open, setOpen] = useState(false);
 
@@ -535,7 +268,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <SidebarMenuItem
                       id={menu.key || ""}
                       label={menu.label as string}
-                      action={menu.action}
                       icon={menu.icon as React.ReactNode}
                       can={menu.can as string}
                       expanded={!open}
@@ -581,7 +313,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       mobile
                       href={menu.href as string}
                       label={menu.label as string}
-                      action={menu.action}
                       icon={menu.icon as React.ReactNode}
                       can={menu.can as string}
                       childrens={menu.children}
@@ -602,8 +333,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     isIconOnly
                     onClick={() => setOpen(!open)}
                   >
-                    {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}
-                  </Button>
+                    {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}  </Button>
                 </div>
                 {/*<SwitchSite />*/}
                 <Setting />
