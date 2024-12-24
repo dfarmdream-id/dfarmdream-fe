@@ -267,7 +267,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <SidebarMenuItem
                       id={menu.key || ""}
                       label={menu.label as string}
-                      action={menu.action}
                       icon={menu.icon as React.ReactNode}
                       can={menu.can as string}
                       expanded={!open}
@@ -313,7 +312,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       mobile
                       href={menu.href as string}
                       label={menu.label as string}
-                      action={menu.action}
                       icon={menu.icon as React.ReactNode}
                       can={menu.can as string}
                       childrens={menu.children}
