@@ -91,6 +91,12 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
           <div className="text-xl text-primary font-bold text-center">
             {children}
           </div>
+          <Input
+          type="date"
+          placeholder="Pilih Tanggal"
+          onChange={(e) => setTanggal(e.target.value)}
+          className="mb-3 mt-1"
+        />
           <Chart
             width="100%"
             type="area"
@@ -98,11 +104,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
             series={cageTempChart.options.series}
           />
         </div>
-        <Input
-          type="date"
-          placeholder="Pilih Tanggal"
-          onChange={(e) => setTanggal(e.target.value)}
-        />
+        
         {/* <Select placeholder="Pilih " variant="bordered" className="w-full">
           <SelectItem key="1">1 Jam terakhir</SelectItem>
           <SelectItem key="2">2 Jam terakhir</SelectItem>
@@ -111,7 +113,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
         </Select> */}
       </div>
       <div className="mt-5">  
-        <div className="grid gap-3">
+        <div className="grid gap-3 mt-3">
           <Select
             variant="bordered"
             placeholder="Pilih kandang"

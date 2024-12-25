@@ -14,10 +14,12 @@ import {
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import {useGetAbsenLog} from "@/app/(authenticated)/_services/absen";
+import { useGetCages } from "../../_services/cage";
+import useLocationStore from "@/stores/useLocationStore";
 
 const columns = [
   {
@@ -53,10 +55,22 @@ export default function Page() {
     throttleMs: 1000,
   });
 
+   const cages = useGetCages(
+        useMemo(() => {
+          return {
+            page: "1",
+            limit: "100",
+          };
+        }, [])
+      );
+  const [kandang, setKandang] = useState<string | null>(null);
+  const [tanggal, setTanggal] = useState<string | null>(null);
+  const {siteId} = useLocationStore()
+
   const iot = useGetAbsenLog(
     useMemo(
-      () => ({ search: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ search: search || "", page: page || "1", limit: limit || "10", tanggal: tanggal || "", kandang: kandang || "", lokasi:siteId || "" }),
+      [search, page, limit, tanggal, kandang, siteId]
     )
   );
 
@@ -75,11 +89,34 @@ export default function Page() {
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
               startContent={<HiSearch />}
-              placeholder="Cari Sensor"
+              placeholder="Cari Pegawai"
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
             />
+
+          
+            <Input
+              type="date"
+              placeholder="Pilih Tanggal"
+              onChange={(e) => setTanggal(e.target.value)}
+              className="w-full"
+            />
+
+         
+            <Select
+              variant="bordered"
+              placeholder="Pilih kandang"
+              onChange={(e) => setKandang(e.target.value)} 
+              isLoading={cages.isLoading}
+              className="w-full"
+            >
+              {cages.data?.data?.data?.map((site) => (
+                <SelectItem key={site.id} value={site.id}>
+                  {site.name}
+                </SelectItem>
+              )) || []}
+            </Select>
           </div>
         </div>
         <Table aria-label="Data">
