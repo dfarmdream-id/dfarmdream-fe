@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState, useEffect } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
 import dynamic from "next/dynamic";
@@ -24,6 +24,7 @@ import {
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
 import { DateTime } from 'luxon'
+import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -40,6 +41,7 @@ const Chart = dynamic(
 export default function GrafikSuhu({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const items = useGetTemperatureData(
     useMemo(
@@ -50,6 +52,16 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
       [kandang, tanggal]
     )
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/sensor/temperature"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const columns = [
     {
