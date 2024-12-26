@@ -16,6 +16,8 @@ import { useCreateBiaya } from "@/app/(authenticated)/_services/biaya";
 import useLocationStore from "@/stores/useLocationStore";
 import {useGetListPersediaanBarang} from "@/app/(authenticated)/_services/persediaan-barang";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import useBatchStore from "@/stores/useBatchStore";
 
 export default function Page() {
   const schema = z.object({
@@ -35,6 +37,9 @@ export default function Page() {
     }),
     biaya: z.number({
       message: "Mohon isi data biaya",
+    }),
+    batchId: z.string({
+      message: "Mohon pilih Batch",
     }),
     keterangan: z.string({
       message: "Mohon isi data biaya",
@@ -71,6 +76,8 @@ export default function Page() {
   const userData = useGetUsers(
     useMemo(() => ({ page: "1", limit: "10000" }), [])
   );
+  
+  const {batchId} = useBatchStore();
   
   const cageIdSelected = form.watch('cageId')
   const kategoriIdSelected = form.watch('kategoriId')
@@ -162,6 +169,15 @@ export default function Page() {
                   isInvalid={fieldState.invalid}
                 />
               )}
+            />
+          </div>
+
+          <div className="h-16">
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
+              batchId={batchId}
             />
           </div>
 

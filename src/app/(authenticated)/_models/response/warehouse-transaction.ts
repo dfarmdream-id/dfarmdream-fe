@@ -34,6 +34,13 @@ export interface Daum {
   createdBy: CreatedBy;
   items: Item[];
   price?: Price;
+  batch: Batch;
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  status: string;
 }
 
 export interface Cage {

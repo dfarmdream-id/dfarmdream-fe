@@ -20,11 +20,19 @@ export interface Daum {
   name: string;
   status: string;
   rackId?: string;
+  batchId?: string;
   deletedAt: any;
   createdAt: string;
   updatedAt: string;
   rack?: Rack;
   disease?: Disease;
+  batch?: Batch;
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  status: string;
 }
 
 export interface Disease {

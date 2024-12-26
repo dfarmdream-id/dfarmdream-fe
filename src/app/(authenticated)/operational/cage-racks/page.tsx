@@ -26,6 +26,10 @@ import {DateTime} from "luxon";
 
 const columns = [
   {
+    key: "batch",
+    label: "Batch",
+  },
+  {
     key: "name",
     label: "Nama",
   },
@@ -139,6 +143,9 @@ export default function Page() {
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
+                <TableCell>
+                  <div>{item?.batch?.name ?? "-"}</div>
+                </TableCell>
                 <TableCell>
                   <div>{item.name}</div>
                 </TableCell>

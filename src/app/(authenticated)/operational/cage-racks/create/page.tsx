@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { useGetCages } from "../../../_services/cage";
 import { useCreateCageRack } from "../../../_services/rack";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 export default function Page() {
   const schema = z.object({
@@ -16,6 +17,9 @@ export default function Page() {
     }),
     cageId: z.string({
       message: "Id kandang",
+    }),
+    batchId: z.string({
+      message: "batch Wajib diisi",
     }),
     createdAt: z.string({
       message: "Tanggal Dibuat wajib diisi",
@@ -69,6 +73,14 @@ export default function Page() {
                   isInvalid={fieldState.invalid}
                 />
               )}
+            />
+          </div>
+          
+          <div className="h-16">
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
             />
           </div>
 

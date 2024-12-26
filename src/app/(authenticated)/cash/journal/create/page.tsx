@@ -21,6 +21,10 @@ import {useEffect, useMemo} from "react";
 import { useCreateJournal } from "@/app/(authenticated)/_services/journal";
 import { useGetListCOA } from "@/app/(authenticated)/_services/coa";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import useBatchStore from "@/stores/useBatchStore";
+import {useGetCages} from "@/app/(authenticated)/_services/cage";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function Page() {
   
@@ -31,6 +35,8 @@ export default function Page() {
     creditTotal: z.number().optional(),
     status: z.string().optional(),
     journalTypeId: z.string().optional(),
+    cageId: z.string().optional(),
+    batchId: z.string().optional(),
     details: z
       .array(
         z.object({
@@ -65,6 +71,16 @@ export default function Page() {
 
   const coas = useGetListCOA(
     useMemo(() => ({ page: "1", limit: "10000" }), [])
+  );
+  
+  const { batchId } = useBatchStore();
+  const {siteId} = useLocationStore();
+
+  const cagesData = useGetCages(
+    useMemo(
+      () => ({ page: "1", limit: "100", siteId: siteId ?? "" }),
+      [siteId]
+    )
   );
 
   const calculateTotals = () => {
@@ -102,6 +118,7 @@ export default function Page() {
         body: {
           ...data,
           status: "1",
+          siteId,
           details: data.details.map((detail) => ({
             ...detail,
             coaCode: Number(detail.coaCode),
@@ -183,6 +200,12 @@ export default function Page() {
     form.setValue("date", new Date().toISOString().split("T")[0]);
   }, [journalCode]);
 
+  useEffect(() => {
+    if (batchId) {
+      form.setValue("batchId", batchId);
+    }
+  }, [batchId]);
+
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Input Jurnal</div>
@@ -218,6 +241,35 @@ export default function Page() {
               />
             )}
           />
+          
+
+          <Controller
+            control={form.control}
+            name="cageId"
+            render={({field, fieldState}) => (
+              <Select
+                multiple
+                isLoading={cagesData.isLoading}
+                labelPlacement="outside"
+                placeholder="Pilih Kandang"
+                label="Kandang "
+                variant="bordered"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+
+              >
+                {cagesData.data?.data?.data?.map((position) => (
+                  <SelectItem key={position.id} value={position.id}>
+                    {position.name}
+                  </SelectItem>
+                )) || []}
+              </Select>
+            )}
+          />
+          
+            <FilterBatch label="Batch " onBatchIdChange={(value) => form.setValue("batchId", value)} batchId={form.watch("batchId")} />
+
           <Controller
             control={form.control}
             name="journalTypeId"
@@ -278,7 +330,7 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     {
-                      (detail.typeLedger === "CREDIT" || detail.typeLedger === "ALL") ? (
+                      (detail.typeLedger === "DEBIT" || detail.typeLedger === "ALL") ? (
                         <Input
                           type="text"
                           value={formatRupiah(detail.debit.toString())}
@@ -291,7 +343,7 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     {
-                      (detail.typeLedger === "DEBIT" || detail.typeLedger === "ALL") ? (
+                      (detail.typeLedger === "CREDIT" || detail.typeLedger === "ALL") ? (
                         <Input
                           type="text"
                           value={formatRupiah(detail.credit.toString())}

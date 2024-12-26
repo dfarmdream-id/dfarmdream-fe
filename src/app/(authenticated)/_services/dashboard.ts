@@ -2,7 +2,7 @@
 import { useHttp } from "@/hooks/http";
 import {
   DashboardChartDiseaseResponse,
-  DashboardChartResponse, DashboardEggChartResponse,
+  DashboardChartResponse, DashboardEggChartResponse, DashboardKeuanganResponse,
   DashboardSummaryResponse,
   LdrListDataResonse,
 } from "../_models/response/dashboard";
@@ -42,6 +42,14 @@ export const useDashboardChartEgg = ({ groupBy, rackId, cageId }: { groupBy: str
       groupBy,
       rackId,
       cageId
+    },
+  });
+};
+
+export const useDashboardKeuangan = ({ year }: { year: string | null }) => {
+  return useHttp<DashboardKeuanganResponse>("/v1/journal/chart-keuangan", {
+    params: {
+      year
     },
   });
 };

@@ -47,6 +47,10 @@ const columns = [
     label: "QTY Akhir",
   },
   {
+    key: "batch",
+    label: "Batch",
+  },
+  {
     key: "siteId",
     label: "Lokasi",
   },
@@ -54,7 +58,6 @@ const columns = [
     key: "cageId",
     label: "Kandang",
   },
-
   {
     key: "harga",
     label: "Harga",
@@ -160,6 +163,12 @@ export default function Page() {
 
                 <TableCell>
                   <div>{NumberFormat(item.qtyAkhir)}</div>
+                </TableCell>
+
+                <TableCell>
+                  <div>
+                    {item.batch?.name ? (item.status === 1 ? "Masuk pada " : "Keluar di ") + (item.batch?.name ?? "-") : "-"}
+                  </div>
                 </TableCell>
 
                 <TableCell>

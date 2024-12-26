@@ -1,48 +1,83 @@
 "use client"
 
-import {Card, CardBody, CardHeader, Select, SelectItem} from "@nextui-org/react";
+import {Card, CardBody, CardHeader, Select, SelectItem, Spinner} from "@nextui-org/react";
 import {useMemo, useState} from "react";
-import {useGetJournalBalanceSheet} from "@/app/(authenticated)/_services/journal";
-import {useGetJournalProfitLoss} from "@/app/(authenticated)/_services/profit-loss";
+import { useDashboardKeuangan} from "@/app/(authenticated)/_services/dashboard";
+import dynamic from "next/dynamic";
+
+const Chart = dynamic(
+  () => import("react-apexcharts").then((mod) => mod.default),
+  { ssr: false, loading: () => <Spinner /> }
+);
+
 export default function GrafiKeuangan (){
-  const [month, setMonth] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
 
-  const balanceSheets = useGetJournalBalanceSheet(
-    useMemo(
-      () => ({
-        month: month || "0",
-        year: year || "0",
-      }),
-      [year]
-    )
+  const chartData = useDashboardKeuangan(
+    useMemo(() => ({
+      year,
+    }), [year])
   );
 
-  const profitLoss = useGetJournalProfitLoss(
-    useMemo(
-      () => ({
-        month: month || "0",
-        year: year || "0",
-      }),
-      [year]
-    )
-  );
-
-  const formatCurrency = (value: any) => {
-    return new Intl.NumberFormat("id-ID", {
+  const formatRupiah = (value: number) => {
+    return Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 0,
     }).format(value);
-  };
+  }
 
-
-  const kasDanSetaraKas = [101, 102];
-  const persediaan = [121, 124, 125];
-  const piutang = [141, 142];
-  const assetTetap = [131, 132];
-  const utangDagang = [201];
-  const modal = [301];
+  const chart = useMemo<{
+    series: [{ name: string; data: number[] }, { name: string; data: number[] }, { name: string; data: number[] }];
+    options: ApexCharts.ApexOptions;
+  }>(() => ({
+    series: [
+      {
+        name: "Asset",
+        data: chartData.data?.data?.chart?.map((item) => item.totalAsset) || [],
+      },
+      {
+        name: "Equitas",
+        data: chartData.data?.data?.chart?.map((item) => item.totalEquitas) || [],
+      },
+      {
+        name: "Net Profit",
+        data: chartData.data?.data?.chart?.map((item) => item.netProfit) || [],
+      },
+    ],
+    options: {
+      chart: {
+        type: "line",
+        height: 350,
+        toolbar: { show: false },
+      },
+      colors: ["#1B693E", "#F6C344", "#FF5733"],
+      markers: {
+        size: 6,
+        hover: { sizeOffset: 3 },
+      },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth", width: 2 },
+      xaxis: {
+        categories: chartData.data?.data?.chart?.map((item) => {
+          return new Date(item.month).toLocaleString("default", { month: "long" });
+        }) || [],
+      },
+      yaxis: {
+        title: { text: "Jumlah (Ribuan)" },
+        // format
+        labels: {
+          formatter: (value) => {
+            return formatRupiah(value);
+          },
+        },
+      },
+      tooltip: {
+        theme: "light",
+        shared: false,
+        intersect: true,
+      },
+    },
+  }), [chartData]);
 
   return (
         <div>
@@ -58,29 +93,12 @@ export default function GrafiKeuangan (){
                     alignItems: "center",
                     width: "30rem",
                   }}>
-                    <Select placeholder="Pilih Bulan"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            onChange={(e) => {
-                              setMonth(e.target.value);
-                            }}
-                    >
-                      <SelectItem key="1" value="1">January</SelectItem>
-                      <SelectItem key="2" value="2">February</SelectItem>
-                      <SelectItem key="3" value="3">March</SelectItem>
-                      <SelectItem key="4" value="4">April</SelectItem>
-                      <SelectItem key="5" value="5">May</SelectItem>
-                      <SelectItem key="6" value="6">June</SelectItem>
-                      <SelectItem key="7" value="7">July</SelectItem>
-                      <SelectItem key="8" value="8">August</SelectItem>
-                      <SelectItem key="9" value="9">September</SelectItem>
-                      <SelectItem key="10" value="10">October</SelectItem>
-                      <SelectItem key="11" value="11">November</SelectItem>
-                      <SelectItem key="12" value="12">December</SelectItem>
-                    </Select>
                     <Select placeholder="Pilih Tahun"
                             variant="bordered"
                             labelPlacement="outside"
+                            selectedKeys={[
+                              new Date().getFullYear().toString(),
+                            ]}
                             onChange={(e) => {
                               setYear(e.target.value);
                             }}
@@ -94,6 +112,9 @@ export default function GrafiKeuangan (){
                   </div>
                 </div>
               </div>
+              <div>
+                <Chart options={chart.options} series={chart.series} type="line" height={350}/>
+              </div>
               <div className="p-3">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <Card>
@@ -105,15 +126,7 @@ export default function GrafiKeuangan (){
                     <CardBody className="d-flex flex-col items-center">
                       <div className="text-2xl font-bold text-primary">
                         {
-                          formatCurrency(balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
-                            if (kasDanSetaraKas.includes(Number(balanceSheet.coa.code)) ||
-                              persediaan.includes(Number(balanceSheet.coa.code)) ||
-                              piutang.includes(Number(balanceSheet.coa.code)) ||
-                              assetTetap.includes(Number(balanceSheet.coa.code))) {
-                              return total + (balanceSheet._sum.debit - balanceSheet._sum.credit);
-                            }
-                            return total;
-                          }, 0))
+                          formatRupiah(chartData?.data?.data?.totalAsset ?? 0)
                         }
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">IDR</p>
@@ -132,13 +145,7 @@ export default function GrafiKeuangan (){
                     <CardBody className="d-flex flex-col items-center">
                       <div className="text-2xl font-bold text-primary">
                         {
-                          formatCurrency(balanceSheets.data?.data?.trialBalance?.reduce((total, balanceSheet) => {
-                            if (utangDagang.includes(Number(balanceSheet.coa.code)) ||
-                              modal.includes(Number(balanceSheet.coa.code))) {
-                              return total + (balanceSheet._sum.credit - balanceSheet._sum.debit);
-                            }
-                            return total;
-                          }, 0))
+                          formatRupiah(chartData?.data?.data?.totalEquitas ?? 0)
                         }
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">IDR</p>
@@ -157,7 +164,7 @@ export default function GrafiKeuangan (){
                     <CardBody className="d-flex flex-col items-center">
                       <div className="text-2xl font-bold text-primary">
                         {
-                          formatCurrency(profitLoss.data?.data?.netProfit)
+                          formatRupiah(chartData?.data?.data?.totalNetProfit ?? 0)
                         }
                       </div>
                       {/*<p className="text-xs text-red-500 mt-1">*/}
@@ -170,5 +177,5 @@ export default function GrafiKeuangan (){
             </CardBody>
           </Card>
         </div>
-    )
+  )
 }

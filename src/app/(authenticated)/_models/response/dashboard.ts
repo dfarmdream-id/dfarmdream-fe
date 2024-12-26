@@ -24,6 +24,24 @@ export interface DashboardEggChartResponse {
   status: number;
 }
 
+export interface DashboardKeuanganResponse {
+  data: DataKeuangan
+}
+
+interface DataKeuangan {
+  chart: ChartKeuangan[];
+  totalAsset: number;
+  totalEquitas: number;
+  totalNetProfit: number;
+}
+
+interface ChartKeuangan {
+  month: number;
+  totalAsset: number;
+  totalEquitas: number;
+  netProfit: number;
+}
+
 export interface DashboardChartDiseaseResponse {
   message: string;
   data: DiseaseChart[];

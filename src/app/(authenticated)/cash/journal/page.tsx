@@ -10,7 +10,7 @@ import {
   Pagination,
   Button,
   Input,
-  Spinner, DateRangePicker,
+  Spinner, DateRangePicker, SelectItem, Select,
 } from "@nextui-org/react";
 import {HiSearch, HiX} from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
@@ -21,6 +21,9 @@ import { DateTime } from "luxon";
 import { useGetListJournal } from "@/app/(authenticated)/_services/journal";
 import { SingleJournalData } from "@/app/(authenticated)/_models/response/journal";
 import {parseDate} from "@internationalized/date";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import {useGetCages} from "@/app/(authenticated)/_services/cage";
+import useLocationStore from "@/stores/useLocationStore";
 
 const groupByJournalId = (rows: SingleJournalData[]) => {
   return rows.reduce<Record<string, SingleJournalData>>((acc, row) => {
@@ -34,6 +37,8 @@ export default function Page() {
   
   const [search, setSearch] = useQueryState("q", { throttleMs: 1000 });
   const [page, setPage] = useQueryState("page", { throttleMs: 1000 });
+  const [cageId, setCageId] = useQueryState("cageId", { throttleMs: 1000 });
+  const [batchId, setBatchId] = useQueryState("batchId", { throttleMs: 1000 });
   const [dateRange, setDateRange] = useState({
     start: parseDate(
       DateTime.now().minus({ days: 1 }).toISODate()
@@ -49,9 +54,11 @@ export default function Page() {
         q: search || "",
         page: page || "1",
         limit: "10",
+        ...(cageId ? { cageId } : {}),
+        ...(batchId ? { batchId } : {}),
         ...(dateRange ? { dateRange } : {}),
       }),
-      [search, page, dateRange]
+      [search, page, cageId, batchId, dateRange]
     )
   );
 
@@ -62,59 +69,79 @@ export default function Page() {
   const groupedRows = useMemo(() => {
     return groupByJournalId(rows);
   }, [rows]);
+  
+  const {siteId} = useLocationStore();
+
+  const cagesData = useGetCages(
+    useMemo(
+      () => ({ page: "1", limit: "100", siteId: siteId ?? "" }),
+      [siteId]
+    )
+  );
 
   return (
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Jurnal</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
-        <div className="flex justify-between items-center gap-3 flex-wrap">
-          <div className="flex gap-3 items-center">
+        <div className="flex flex-wrap items-center gap-3 justify-between">
+          {/* Search and Filters */}
+          <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
+            {/* Search Input */}
             <Input
               variant="bordered"
               placeholder="Cari"
               value={search || ""}
               onValueChange={setSearch}
-              endContent={<HiSearch />}
+              endContent={<HiSearch/>}
+              className="w-full md:w-64"
             />
-            <DateRangePicker 
-              ref={pickerRef}  
+            {/* Date Range Picker */}
+            <div className="flex gap-3 w-full md:w-auto">
+              <DateRangePicker
+                ref={pickerRef}
+                variant="bordered"
+                value={dateRange}
+                onChange={setDateRange}
+                className="w-full md:w-auto"
+              />
+            </div>
+            
+            {/* Cage Selection */}
+            <Select
+              isLoading={cagesData.isLoading}
+              labelPlacement="outside"
+              placeholder="Pilih Kandang"
               variant="bordered"
-              value={dateRange}
-              onChange={setDateRange}
-            />
-            {
-              dateRange && (
-                <Button 
-                  color="danger" 
-                  onClick={() => {
-                    setDateRange(
-                      {
-                        start: parseDate(
-                          DateTime.now().minus({ days: 1 }).toISODate()
-                        ),
-                        end: parseDate(
-                          // +1 day
-                          DateTime.now().plus({ days: 1 }).toISODate()
-                        ),
-                      }
-                    );
-                  }}
-                >
-                  <HiX />
-                </Button>
-              )
-            }
+              className="w-full md:w-60 lg:w-80"
+              onChange={
+                (value) => setCageId(value.target.value as string)
+              }
+            >
+              {cagesData.data?.data?.data?.map((position) => (
+                <SelectItem key={position.id} value={position.id}>
+                  {position.name}
+                </SelectItem>
+              )) || []}
+            </Select>
+
+            {/* Filter Batch */}
+            <FilterBatch disableLabel={true} onBatchIdChange={(value) => setBatchId(value)} className="w-full md:w-60 lg:w-80"/>
           </div>
-          <Button
-            as={Link}
-            // journalData.data?.data?.meta?.totalData // JN-12-24-01
-            href={`/cash/journal/create/?journalCode=JN-${DateTime.now().toFormat("yy-MM")}-${(journalData.data?.data?.meta?.totalData ?? 1).toString().padStart(2, "0")}`}
-            color="primary"
-            startContent={<HiPlus />}
-            className="w-full md:w-auto"
-          >
-            Tambah Jurnal
-          </Button>
+
+          {/* Add Journal Button */}
+          <div className="w-full md:w-auto mt-3 md:mt-0 flex justify-end">
+            <Button
+              as={Link}
+              href={`/cash/journal/create/?journalCode=JN-${DateTime.now().toFormat("yy-MM")}-${(journalData.data?.data?.meta?.totalData ?? 1)
+                .toString()
+                .padStart(2, "0")}`}
+              color="primary"
+              startContent={<HiPlus/>}
+              className="w-full md:w-auto"
+            >
+              Tambah Jurnal
+            </Button>
+          </div>
         </div>
         <Table aria-label="Data">
           <TableHeader>
@@ -130,7 +157,7 @@ export default function Page() {
           </TableHeader>
           <TableBody
             isLoading={journalData.isLoading}
-            loadingContent={<Spinner />}
+            loadingContent={<Spinner/>}
           >
             {Object.entries(groupedRows).map(([journalId, journal]) => {
               return (
@@ -191,7 +218,7 @@ export default function Page() {
                       <TableCell>
                         {DateTime.fromISO(journal.createdAt).toLocaleString(
                           DateTime.DATETIME_MED_WITH_WEEKDAY,
-                          { locale: "id" }
+                          {locale: "id"}
                         )}
                       </TableCell>
                       <TableCell>{journal.user.fullName}</TableCell>

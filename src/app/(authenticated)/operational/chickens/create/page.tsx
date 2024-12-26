@@ -6,7 +6,8 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useCreateChicken } from "@/app/(authenticated)/_services/chicken";
-import FilterRack from "@/app/(authenticated)/operational/chickens/_components/filterRack";
+import FilterRack from "@/app/(authenticated)/_components/filterRack";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 export default function Page() {
   const schema = z.object({
@@ -15,6 +16,9 @@ export default function Page() {
     }),
     name: z.string({
       message: "Nama wajib diisi",
+    }),
+    batchId: z.string({
+        message: "Batch wajib diisi",
     }),
     createdAt: z.string({
       message: "Tanggal Dibuat wajib diisi",
@@ -71,6 +75,14 @@ export default function Page() {
             />
           </div>
 
+          <div className="h-16">
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
+            />
+          </div>
+          
           <div className="h-16">
             <FilterRack
               onRackIdChange={(rackId) => {

@@ -49,6 +49,12 @@ export const menus = [
     key: "operational",
     children: [
       {
+        can: "show:batch",
+        label: "Batch Produksi",
+        href: "/operational/batch",
+        icon: <HiOutlineInbox className="text-xl" />,
+      },
+      {
         can: "show:cages",
         label: "Kandang",
         href: "/operational/cages",

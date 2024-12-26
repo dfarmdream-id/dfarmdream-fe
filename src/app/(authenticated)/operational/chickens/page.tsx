@@ -45,8 +45,12 @@ import {BiX} from "react-icons/bi";
 
 const columns = [
   {
+    key: "batch",
+    label: "Batch",
+  },
+  {
     key: "fullName",
-    label: "Nama",
+    label: "ID Ayam",
   },
   {
     key: "role",
@@ -107,7 +111,7 @@ export default function Page() {
   
   const diseases = useGetChickenDiseases(
     useMemo(
-      () => ({page: "1", limit:  "100000"}),
+      () => ({page: "1", limit:  "100"}),
       []
     )
   );
@@ -253,6 +257,9 @@ export default function Page() {
                   className="odd:bg-[#cffdec]"
                   role="button"
                 >
+                  <TableCell>
+                    <div>{item?.batch?.name ?? "-"}</div>
+                  </TableCell>
                   <TableCell>
                     <div>{item.name}</div>
                   </TableCell>

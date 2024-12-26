@@ -10,9 +10,10 @@ import {
   useGetChicken,
   useUpdateChicken,
 } from "@/app/(authenticated)/_services/chicken";
-import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import {useGetChickenDiseases} from "@/app/(authenticated)/_services/chicken-disease";
 import {chickenStatus} from "@/app/(authenticated)/operational/chickens/_const/status.const";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import FilterRack from "@/app/(authenticated)/_components/filterRack";
 
 export default function Page() {
   const schema = z.object({
@@ -21,6 +22,9 @@ export default function Page() {
     }),
     name: z.string({
       message: "Nama wajib diisi",
+    }),
+    batchId: z.string({
+      message: "Batch wajib diisi",
     }),
     status: z.string({
       message: "Status wajib diisi",
@@ -40,7 +44,7 @@ export default function Page() {
 
   const diseases = useGetChickenDiseases(
     useMemo(
-      () => ({page: "1", limit:  "100000"}),
+      () => ({page: "1", limit:  "1000"}),
       []
     )
   );
@@ -56,6 +60,9 @@ export default function Page() {
       }
       if (user?.data?.data?.status) {
         form.setValue("status", user?.data?.data?.status);
+      }
+      if(user?.data?.data?.batchId) {
+        form.setValue("batchId", user?.data?.data?.batchId);
       }
       if (user?.data?.data?.disease?.id) {
         form.setValue("diseaseIds", user?.data?.data?.disease?.id);
@@ -77,16 +84,12 @@ export default function Page() {
         },
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
-          form.reset();
           router.push("/operational/chickens");
+          form.reset();
         },
       }
     );
   });
-
-  const racks = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100" }), [])
-  );
 
   return (
     <div className="p-5">
@@ -100,7 +103,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="name"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -116,36 +119,28 @@ export default function Page() {
           </div>
 
           <div className="h-16">
-            <Controller
-              control={form.control}
-              name="rackId"
-              render={({ field, fieldState }) => (
-                <Select
-                  isLoading={racks.isLoading}
-                  multiple
-                  labelPlacement="outside"
-                  placeholder="Pilih Rak"
-                  label="Rak"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                  selectedKeys={[field.value as string]}
-                >
-                  {racks.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
+              batchId={form.watch('batchId')}
             />
           </div>
+
+          <div className="h-16">
+            <FilterRack
+              onRackIdChange={(rackId) => {
+                form.setValue("rackId", rackId);
+              }}
+              rackId={form.watch('rackId')}
+            />
+          </div>
+          
           <div className="h-16">
             <Controller
               control={form.control}
               name="status"
-              render={({ field }) => (
+              render={({field}) => (
                 <Select
                   variant="bordered"
                   label="Status Ayam"
@@ -171,7 +166,7 @@ export default function Page() {
                 <Controller
                   control={form.control}
                   name="diseaseIds"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <Select
                       isLoading={diseases.isLoading}
                       multiple

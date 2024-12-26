@@ -26,6 +26,10 @@ import { Can } from "@/components/acl/can";
 
 const columns = [
   {
+    key: "batch",
+    label: "Batch",
+  },
+  {
     key: "category",
     label: "Kategori",
   },
@@ -136,6 +140,9 @@ export default function Page() {
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
+                <TableCell>
+                  <div>{item.batch?.name ?? '-'}</div>
+                </TableCell>
                 <TableCell>
                   <div>{item.category == "EGG" ? "Telur" : "Ayam"}</div>
                 </TableCell>

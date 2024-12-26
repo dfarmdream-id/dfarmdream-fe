@@ -35,7 +35,14 @@ export interface GetListTransaksiBarangResponse {
     harga:number;
     total:number;
     status:number;
-    createdAt:Date
+    createdAt:Date;
+    batch: Batch;
+  }
+  
+  export interface Batch {
+  id: string;
+  name: string;
+  status: string;
   }
 
   export interface Karyawan{
