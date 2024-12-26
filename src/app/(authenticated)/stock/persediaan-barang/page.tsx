@@ -89,9 +89,7 @@ export default function Page() {
     }
     return [];
   }, [user.data]);
-
-
-  console.log("Tipe Barang : ", tipeBarang)
+  
   return (
     <div className="p-5">
       <div className="text-3xl font-bold mb-10">Data Persediaan Barang</div>
@@ -117,6 +115,9 @@ export default function Page() {
                   </SelectItem>
                   <SelectItem key="obat" value="OBAT">
                     OBAT
+                  </SelectItem>
+             <SelectItem key="asset" value="ASSET">
+                    ASSET
                   </SelectItem>
                 </Select>
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
@@ -151,11 +152,16 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.namaBarang}</div>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">{item?.goods?.name}</span>
+                      <span className="text-tiny text-default-400">{item?.goods?.sku}</span>
+                    </div>
+                  </div>
                 </TableCell>
 
                 <TableCell>
-                  <div>{item.tipeBarang}</div>
+                  <div>{item?.goods?.type}</div>
                 </TableCell>
 
                 <TableCell>

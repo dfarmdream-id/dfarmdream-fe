@@ -1,5 +1,3 @@
-"use client";
-
 import {
     Button,
     Modal,
@@ -10,13 +8,13 @@ import {
     Tooltip,
     useDisclosure,
   } from "@nextui-org/react";
-  // import { HiPencilAlt } from "react-icons/hi";
+  import { HiPencilAlt } from "react-icons/hi";
   import { HiTrash } from "react-icons/hi2";
   import { toast } from "sonner";
   import { useQueryClient } from "@tanstack/react-query";
-  // import Link from "next/link";
+  import Link from "next/link";
   import { Can } from "@/components/acl/can";
-import { useDeleteKategoriBiaya } from "@/app/(authenticated)/_services/kategori-biaya";
+import {useDeleteGood} from "@/app/(authenticated)/_services/good";
   
   type Props = {
     id: string;
@@ -25,7 +23,7 @@ import { useDeleteKategoriBiaya } from "@/app/(authenticated)/_services/kategori
   export default function Actions(props: Props) {
     const deleteDisclosure = useDisclosure();
   
-    const deleteData = useDeleteKategoriBiaya();
+    const deleteData = useDeleteGood();
   
     const queryClient = useQueryClient();
   
@@ -34,9 +32,9 @@ import { useDeleteKategoriBiaya } from "@/app/(authenticated)/_services/kategori
         { pathVars: { id } },
         {
           onSuccess: () => {
-            toast.success("Berhasil menghapus data kategori biaya");
+            toast.success("Berhasil menghapus data persediaan barang");
             queryClient.invalidateQueries({
-              queryKey: ["/v1/kategori-biaya"],
+              queryKey: ["/v1/goods"],
             });
             deleteDisclosure.onClose();
           },
@@ -49,19 +47,19 @@ import { useDeleteKategoriBiaya } from "@/app/(authenticated)/_services/kategori
   
     return (
       <div className="flex space-x-1">
-        {/*<Can action="update:cash-flow-category">*/}
-        {/*  <Tooltip content="Edit Data">*/}
-        {/*    <Button*/}
-        {/*      as={Link}*/}
-        {/*      href={`/cash/kategori-biaya/${props.id}/edit`}*/}
-        {/*      isIconOnly*/}
-        {/*      variant="light"*/}
-        {/*      color="primary"*/}
-        {/*    >*/}
-        {/*      <HiPencilAlt />*/}
-        {/*    </Button>*/}
-        {/*  </Tooltip>*/}
-        {/*</Can>*/}
+        <Can action="update:cash-flow-category">
+          <Tooltip content="Edit Data">
+            <Button
+              as={Link}
+              href={`/stock/good/${props.id}/edit`}
+              isIconOnly
+              variant="light"
+              color="primary"
+            >
+              <HiPencilAlt />
+            </Button>
+          </Tooltip>
+        </Can>
         <Can action="delete:cash-flow-category">
           <Tooltip content="Hapus Data">
             <Button

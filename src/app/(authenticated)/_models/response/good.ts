@@ -1,10 +1,11 @@
-export interface GetListKategoriBiayaResponse {
+
+export interface GetListGoodResponse {
     message: string;
     data: Data;
     status: number;
   }
   
-  export interface GetKategoriBiayaResponse {
+  export interface GetGoodResponse {
     message: string;
     data: Daum;
     status: number;
@@ -16,13 +17,10 @@ export interface GetListKategoriBiayaResponse {
   }
   
   export interface Daum {
-    id: string;
-    namaKategori: string;
-    kodeAkun: string;
-    status: number;
-    goodType: string;
-    createdAt: string;
-    updatedAt?: string;
+    id:string;
+    sku:string;
+    name:string;
+    type:string;
   }
   
   export interface Meta {
@@ -31,4 +29,3 @@ export interface GetListKategoriBiayaResponse {
     totalData: number;
     totalPage: number;
   }
-  

@@ -1,11 +1,15 @@
 "use client"
 
 import {Card, CardBody, CardHeader, Select, SelectItem} from "@nextui-org/react";
-import {useMemo, useState} from "react";
+import {useMemo, useState, useEffect} from "react";
 import {useGetJournalBalanceSheet} from "@/app/(authenticated)/_services/journal";
+import {useGetJournalProfitLoss} from "@/app/(authenticated)/_services/profit-loss";
+import { useQueryClient } from "@tanstack/react-query";
+
 export default function GrafiKeuangan (){
   const [month, setMonth] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const balanceSheets = useGetJournalBalanceSheet(
     useMemo(
@@ -16,6 +20,26 @@ export default function GrafiKeuangan (){
       [year]
     )
   );
+
+  const profitLoss = useGetJournalProfitLoss(
+    useMemo(
+      () => ({
+        month: month || "0",
+        year: year || "0",
+      }),
+      [year]
+    )
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/journal/balance-sheets", "/v1/profit-loss/profit-loss"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const formatCurrency = (value: any) => {
     return new Intl.NumberFormat("id-ID", {
@@ -145,7 +169,9 @@ export default function GrafiKeuangan (){
                     </CardHeader>
                     <CardBody className="d-flex flex-col items-center">
                       <div className="text-2xl font-bold text-primary">
-                        Rp. 0
+                        {
+                          formatCurrency(profitLoss.data?.data?.netProfit)
+                        }
                       </div>
                       {/*<p className="text-xs text-red-500 mt-1">*/}
                       {/*  -23.44%*/}

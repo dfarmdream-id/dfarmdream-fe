@@ -29,8 +29,29 @@ export interface GetListBiayaResponse {
     user:User;
     keterangan:string;
     status:number;
+    qtyOut: number;
     createdAt: string;
     updatedAt?: string;
+    persediaanPakanObat: PersediaanPakanObat
+  }
+  
+  export interface PersediaanPakanObat {
+    id: string;
+    goodsId: string;
+    qty: number;
+    harga: number;
+    total: number;
+    siteId: string;
+    cageId: string;
+    status: number;
+    goods: Good;
+  }
+  
+  export interface Good {
+    id: string;
+    sku: string;
+    name: string;
+    type: string;
   }
   
   export interface Meta {

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Table,
   TableHeader,
@@ -20,51 +19,21 @@ import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/state/empty";
-import { DateTime } from "luxon";
 import Actions from "./_components/actions";
-import { useGetListBiaya } from "../../_services/biaya";
-import { IDR } from "@/common/helpers/currency";
+import {useGetListGood} from "@/app/(authenticated)/_services/good";
 
 const columns = [
   {
-    key: "tanggal",
-    label: "Tanggal",
+    key: "sku",
+    label: "SKU Barang",
   },
   {
-    key: "kategoriId",
-    label: "Kategori",
+    key: "name",
+    label: "Nama",
   },
   {
-    key: "barang",
-    label: "Barang",
-  },
-  {
-    key: "siteId",
-    label: "Lokasi",
-  },
-  {
-    key: "cageId",
-    label: "Kandang",
-  },
-  {
-    key: "userId",
-    label: "Karyawan",
-  },
-  {
-    key: "qtyOut",
-    label: "QTY Out",
-  },
-  {
-    key: "biaya",
-    label: "Biaya",
-  },
-  {
-    key: "keterangan",
-    label: "Keterangan",
-  },
-  {
-    key: "createdAt",
-    label: "Tanggal Dibuat",
+    key: "type",
+    label: "Jenis",
   },
   {
     key: "action",
@@ -76,18 +45,17 @@ export default function Page() {
   const [search, setSearch] = useQueryState("q", {
     throttleMs: 1000,
   });
-  
   const [page, setPage] = useQueryState("page", {
     throttleMs: 1000,
   });
-
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
 
-  const user = useGetListBiaya(
+
+  const user = useGetListGood(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
+      () => ({ q: search || "", page: page || "1", limit: limit || "10", }),
       [search, page, limit]
     )
   );
@@ -98,10 +66,10 @@ export default function Page() {
     }
     return [];
   }, [user.data]);
-
+  
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Biaya</div>
+      <div className="text-3xl font-bold mb-10">Data Barang</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
@@ -113,17 +81,16 @@ export default function Page() {
               onValueChange={(e) => setSearch(e)}
               endContent={<HiSearch />}
             />
-            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
           </div>
 
           <Button
             as={Link}
-            href="/cash/biaya/create"
+            href="/stock/good/create"
             color="primary"
             startContent={<HiPlus />}
             className="w-full md:w-auto"
           >
-            Tambah Biaya
+            Tambah Barang
           </Button>
         </div>
         <Table aria-label="Data">
@@ -145,54 +112,17 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.tanggal}</div>
+                  <div>{item.sku}</div>
                 </TableCell>
 
                 <TableCell>
-                  <div>{item.kategoriBiaya?.namaKategori}</div>
+                  <div>{item.name}</div>
                 </TableCell>
 
                 <TableCell>
-                  <div className="flex gap-2 items-center">
-                    <div className="flex flex-col">
-                      <span className="text-small">{item?.persediaanPakanObat?.goods?.name}</span>
-                      <span className="text-tiny text-default-400">{item?.persediaanPakanObat?.goods?.sku}</span>
-                    </div>
-                  </div>
+                  <div>{item.type}</div>
                 </TableCell>
-
-                <TableCell>
-                  <div>{item.site?.name}</div>
-                </TableCell>
-
-                <TableCell>
-                  <div>{item.cage?.name}</div>
-                </TableCell>
-
-                <TableCell>
-                  <div>{item.user?.fullName}</div>
-                </TableCell>
-
-                <TableCell>
-                  <div>{item.qtyOut}</div>
-                </TableCell>
-
-                <TableCell>
-                <div>{IDR(item.biaya)}</div>
-                </TableCell>
-
-                <TableCell>
-                  <div>{item.keterangan}</div>
-                </TableCell>
-
-                <TableCell>
-                  <div>
-                    {DateTime.fromISO(item.createdAt).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}
-                  </div>
-                </TableCell>
+                
                 <TableCell>
                   <Actions id={item.id} />
                 </TableCell>
