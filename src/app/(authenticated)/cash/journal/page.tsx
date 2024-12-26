@@ -12,7 +12,7 @@ import {
   Input,
   Spinner, DateRangePicker, SelectItem, Select,
 } from "@nextui-org/react";
-import {HiSearch, HiX} from "react-icons/hi";
+import {HiSearch} from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
 import {useMemo, Fragment, useRef, useState} from "react";

@@ -6,7 +6,6 @@ import {Button, Select, SelectItem} from "@nextui-org/react";
 import { TbFileTypePdf } from "react-icons/tb";
 import { useGetJournalBalanceSheet } from "@/app/(authenticated)/_services/journal";
 import {useQueryState} from "nuqs";
-import {HiX} from "react-icons/hi";
 import {useGetJournalProfitLoss} from "@/app/(authenticated)/_services/profit-loss";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
