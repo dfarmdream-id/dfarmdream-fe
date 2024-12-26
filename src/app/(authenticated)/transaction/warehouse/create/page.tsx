@@ -1,17 +1,28 @@
 "use client";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import {
+  Button, Checkbox, Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  useDisclosure
+} from "@nextui-org/react";
 import { Controller, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import {useEffect, useMemo} from "react";
 import { InputNumber } from "@/components/ui/input";
 import { useCreateWarehouseTransaction } from "@/app/(authenticated)/_services/warehouse-transaction";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
-import { useGetCageRacks } from "@/app/(authenticated)/_services/rack";
 import { useGetProfile } from "@/app/(authenticated)/_services/profile";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
+import FilterRack from "@/app/(authenticated)/_components/filterRack";
+import useBatchStore from "@/stores/useBatchStore";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 export default function Page() {
   const schema = z.object({
@@ -28,6 +39,10 @@ export default function Page() {
     journalTypeId: z.string({
       message: "Mohon pilih journal type",
     }),
+    batchId: z.string({
+      message: "Batch wajib diisi",
+    }),
+    isEndOfBatch: z.boolean().optional(),
     haversts: z.array(
       z.object({
         qty: z
@@ -79,6 +94,8 @@ export default function Page() {
       }
     );
   });
+  
+  const confirmDisclosure = useDisclosure();
 
   const cageId = form.watch("cageId");
 
@@ -99,17 +116,20 @@ export default function Page() {
     control: form.control,
     name: "haversts",
   });
+  
+  const {batchId} = useBatchStore();
 
-  const rack = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100", cageId: cageId }), [cageId])
-  );
+  useEffect(() => {
+    if(batchId){
+      form.setValue("batchId", batchId);
+    }
+  }, [batchId, form]);
 
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Transaksi Gudang</div>
       <div>
         <form
-          onSubmit={onSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-5"
         >
           <div className="h-16">
@@ -143,7 +163,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="category"
-              render={({ fieldState, field }) => {
+              render={({fieldState, field}) => {
                 return (
                   <Select
                     labelPlacement="outside"
@@ -161,11 +181,18 @@ export default function Page() {
               }}
             />
           </div>
-          <div className="h-16 md:col-span-2">
+          <div className="h-16">
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
+            />
+          </div>
+          <div className="h-16">
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={cage.isLoading}
                   labelPlacement="outside"
@@ -200,27 +227,11 @@ export default function Page() {
                     <div className="font-bold mb-3">Panen {i + 1}</div>
                     <div className="grid md:grid-cols-2 gap-3">
                       <div className="h-16">
-                        <Controller
-                          control={form.control}
-                          name={`haversts.${i}.rackId`}
-                          render={({ field, fieldState }) => (
-                            <Select
-                              isLoading={rack.isLoading}
-                              labelPlacement="outside"
-                              placeholder="Pilih Rak"
-                              label="Rak"
-                              variant="bordered"
-                              {...field}
-                              errorMessage={fieldState.error?.message}
-                              isInvalid={fieldState.invalid}
-                            >
-                              {rack.data?.data?.data?.map((item) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {item.name}
-                                </SelectItem>
-                              )) || []}
-                            </Select>
-                          )}
+                        <FilterRack
+                          onRackIdChange={(value) => {
+                            form.setValue(`haversts.${i}.rackId`, value);
+                          }}
+                          cageId={cageId}
                         />
                       </div>
 
@@ -228,12 +239,12 @@ export default function Page() {
                         <Controller
                           control={form.control}
                           name={`haversts.${i}.qty`}
-                          render={({ field, fieldState }) => (
+                          render={({field, fieldState}) => (
                             <InputNumber
                               labelPlacement="outside"
                               variant="bordered"
                               type="text"
-                              label={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`} 
+                              label={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
                               placeholder={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
                               {...field}
                               errorMessage={fieldState.error?.message}
@@ -253,7 +264,7 @@ export default function Page() {
                   className="w-full"
                   color="primary"
                   onPress={() => {
-                    haversts.append({ qty: 0, rackId: "" });
+                    haversts.append({qty: 0, rackId: ""});
                   }}
                 >
                   Tambah Panen
@@ -265,7 +276,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="weight"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <div>
                   <InputNumber
                     labelPlacement="outside"
@@ -293,11 +304,58 @@ export default function Page() {
             <Button
               isLoading={submission.isPending}
               color="primary"
-              type="submit"
+              onClick={confirmDisclosure.onOpen}
             >
               Simpan
             </Button>
           </div>
+
+          <Modal
+            onOpenChange={confirmDisclosure.onOpenChange}
+            isOpen={confirmDisclosure.isOpen}
+            onClose={confirmDisclosure.onClose}
+          >
+            <ModalContent>
+              <ModalHeader className="gap-2">
+                <div>Konfirmasi Simpan</div>
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Apakah anda yakin ingin menyimpan data ini? Data yang sudah
+                  disimpan tidak dapat diubah.
+                </p>
+                {
+                  form.watch('category') == 'EGG' ? null : (
+                    <div>
+                      <div className="flex gap-2 items-center">
+                        <Checkbox
+                          onChange={(e) => {
+                            form.setValue("isEndOfBatch", e.target.checked);
+                          }}
+                        >Apakah ini merupakan akhir dari batch?</Checkbox>
+                      </div>
+                    </div>
+                  )
+                }
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="bordered"
+                  color="default"
+                  onPress={confirmDisclosure.onClose}
+                >
+                  Batal
+                </Button>
+                <Button
+                  isLoading={submission.isPending}
+                  color="primary"
+                  onClick={onSubmit}
+                >
+                  Submit
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </form>
       </div>
     </div>

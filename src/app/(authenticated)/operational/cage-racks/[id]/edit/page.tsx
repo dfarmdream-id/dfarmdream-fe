@@ -9,6 +9,7 @@ import { useEffect, useMemo } from "react";
 import { useGetCageRack, useUpdateCageRack } from "../../../../_services/rack";
 import { useRouter } from "next/navigation";
 import { useGetCages } from "../../../../_services/cage";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 export default function Page() {
   const schema = z.object({
@@ -17,6 +18,9 @@ export default function Page() {
     }),
     cageId: z.string({
       message: "Id kandang",
+    }),
+    batchId: z.string({
+      message: "batch Wajib diisi",
     }),
   });
 
@@ -38,6 +42,9 @@ export default function Page() {
       }
       if (data?.data?.data?.cageId) {
         form.setValue("cageId", data?.data?.data?.cageId);
+      }
+      if (data?.data?.data?.batchId) {
+        form.setValue("batchId", data?.data?.data?.batchId);
       }
     }
   }, [data.data, form]);
@@ -72,7 +79,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="name"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
@@ -86,12 +93,22 @@ export default function Page() {
               )}
             />
           </div>
+          
+          <div className="h-16">
+            <FilterBatch
+              onBatchIdChange={(value) => {
+                form.setValue("batchId", value);
+              }}
+              batchId={form.watch("batchId")}
+            />
+          </div>
+
 
           <div className="h-16">
             <Controller
               control={form.control}
               name="cageId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   placeholder="Pilih Kandang"
@@ -114,7 +131,7 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
-                        <Button variant="bordered" color="primary" onClick={() => router.back()}>
+            <Button variant="bordered" color="primary" onClick={() => router.back()}>
               Kembali
             </Button>
             <Button

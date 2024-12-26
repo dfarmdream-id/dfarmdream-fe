@@ -1,43 +1,49 @@
 "use client";
-import { Button, Input, Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { useGetCages } from "../../../_services/cage";
-import { useCreateCageRack } from "../../../_services/rack";
-import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import { useCreateBatch } from "../../../_services/batch";
+import useLocationStore from "@/stores/useLocationStore";
+
+enum BatchStatus {
+  ONGOING = "ONGOING",
+  COMPLETED = "COMPLETED",
+  CLOSED = "CLOSED",
+}
 
 export default function Page() {
   const schema = z.object({
     name: z.string({
-      message: "Nama wajib diisi",
+      message: "Nama Batch wajib diisi",
     }),
-    cageId: z.string({
-      message: "Id kandang",
+    startDate: z.string({
+      message: "Tanggal Mulai wajib diisi",
     }),
-    batchId: z.string({
-      message: "batch Wajib diisi",
+    endDate: z.string().optional(),
+    status: z.enum([BatchStatus.ONGOING, BatchStatus.COMPLETED, BatchStatus.CLOSED], {
+      message: "Status wajib dipilih",
     }),
-    createdAt: z.string({
-      message: "Tanggal Dibuat wajib diisi",
-    })
   });
 
-  const cage = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
   const form = useForm<z.infer<typeof schema>>({
     schema,
   });
+  
+  const {siteId} = useLocationStore();
 
-  const submission = useCreateCageRack();
+  const submission = useCreateBatch();
   const router = useRouter();
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
       {
-        body: data,
+        body: {
+          ...data,
+          siteId,
+        },
       },
       {
         onError: (error) => {
@@ -46,7 +52,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil menambahkan data");
           form.reset();
-          router.push("/operational/cage-racks");
+          router.push("/operational/batch");
         },
       }
     );
@@ -54,20 +60,20 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-2xl font-bold mb-10">Tambah Data Rak</div>
+      <div className="text-2xl font-bold mb-10">Tambah Data Batch</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="h-16">
             <Controller
               control={form.control}
               name="name"
-              render={({field, fieldState}) => (
+              render={({ field, fieldState }) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="text"
-                  label="ID Rak"
-                  placeholder="ID Rak"
+                  label="Nama Batch"
+                  placeholder="Nama Batch"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -75,55 +81,16 @@ export default function Page() {
               )}
             />
           </div>
-          
-          <div className="h-16">
-            <FilterBatch
-              onBatchIdChange={(value) => {
-                form.setValue("batchId", value);
-              }}
-            />
-          </div>
-
           <div className="h-16">
             <Controller
               control={form.control}
-              name="cageId"
-              render={({field, fieldState}) => (
-                <Autocomplete
-                  labelPlacement="outside"
-                  placeholder="Pilih Kandang"
-                  label="Kandang"
-                  isLoading={cage.isLoading}
-                  variant="bordered"
-                  {...field}
-                  onSelectionChange={(value) => field.onChange(value)}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {cage.data?.data?.data?.map((item) => (
-                    <AutocompleteItem key={item.id} value={item.id}>
-                      {item.name}
-                    </AutocompleteItem>
-                  )) || []}
-                </Autocomplete>
-              )}
-            />
-          </div>
-          <div>
-            {/*  <DatePicker label="Birth date" className="max-w-[284px]" /> */}
-            <Controller
-              control={form.control}
-              name="createdAt"
-              defaultValue={
-                new Date().toISOString().split("T")[0]
-              }
-              render={({field, fieldState}) => (
+              name="startDate"
+              render={({ field, fieldState }) => (
                 <Input
                   labelPlacement="outside"
                   variant="bordered"
                   type="date"
-                  label="Tanggal Dibuat"
-                  placeholder="Tanggal Dibuat"
+                  label="Tanggal Mulai"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
@@ -131,13 +98,48 @@ export default function Page() {
               )}
             />
           </div>
-
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="endDate"
+              render={({ field, fieldState }) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="date"
+                  label="Tanggal Selesai (Opsional)"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="status"
+              render={({ field, fieldState }) => (
+                <Select
+                  labelPlacement="outside"
+                  placeholder="Pilih Status"
+                  label="Status Batch"
+                  variant="bordered"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {Object.values(BatchStatus).map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </div>
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
-            <Button
-              variant="bordered"
-              color="primary"
-              onClick={() => router.back()}
-            >
+            <Button variant="bordered" color="primary" onClick={() => router.back()}>
               Kembali
             </Button>
             <Button

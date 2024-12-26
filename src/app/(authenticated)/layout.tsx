@@ -12,7 +12,7 @@ import {
   DropdownTrigger,
   Image,
   ScrollShadow,
-  Skeleton, Tooltip,
+  Skeleton, Tooltip
 } from "@nextui-org/react";
 import {
   HiChevronRight
@@ -29,10 +29,11 @@ import { useEffect, useState } from "react";
 import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
 import Link from "next/link";
-import SwitchSite from "./_components/switch-site";
 import useLocationStore from "@/stores/useLocationStore";
 import {menus} from "@/common/menu";
+import {signOut} from "@/app/(authenticated)/sign-out/_actions/sign-out";
 
+import Setting from "@/app/(authenticated)/_components/settings";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data } = useGetProfile();
 
@@ -334,7 +335,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   >
                     {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}  </Button>
                 </div>
-                <SwitchSite />
+                {/*<SwitchSite />*/}
+                <Setting />
               </div>
               <div>
                 <Dropdown>
@@ -357,6 +359,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       key="delete"
                       className="text-danger"
                       color="danger"
+                      onPress={() => signOut()}
                     >
                       Keluar
                     </DropdownItem>

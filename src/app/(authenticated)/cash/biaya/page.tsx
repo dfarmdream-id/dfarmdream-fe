@@ -27,6 +27,10 @@ import { IDR } from "@/common/helpers/currency";
 
 const columns = [
   {
+    key: "batch",
+    label: "Batch",
+  },
+  {
     key: "tanggal",
     label: "Tanggal",
   },
@@ -145,6 +149,9 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
+                  <div>{item?.batch?.name ?? "-"}</div>
+                </TableCell>
+                <TableCell>
                   <div>{item.tanggal}</div>
                 </TableCell>
 
@@ -155,8 +162,8 @@ export default function Page() {
                 <TableCell>
                   <div className="flex gap-2 items-center">
                     <div className="flex flex-col">
-                      <span className="text-small">{item?.persediaanPakanObat?.goods?.name}</span>
-                      <span className="text-tiny text-default-400">{item?.persediaanPakanObat?.goods?.sku}</span>
+                      <span className="text-small">{item?.persediaanPakanObat?.goods?.name ?? "-"}</span>
+                      <span className="text-tiny text-default-400">{item?.persediaanPakanObat?.goods?.sku ?? "-"}</span>
                     </div>
                   </div>
                 </TableCell>

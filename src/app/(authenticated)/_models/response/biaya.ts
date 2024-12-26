@@ -32,8 +32,15 @@ export interface GetListBiayaResponse {
     qtyOut: number;
     createdAt: string;
     updatedAt?: string;
-    persediaanPakanObat: PersediaanPakanObat
+    persediaanPakanObat: PersediaanPakanObat;
+    batch: Batch;
   }
+  
+  export interface Batch {
+  id: string;
+  name: string;
+  status: string;
+}
   
   export interface PersediaanPakanObat {
     id: string;

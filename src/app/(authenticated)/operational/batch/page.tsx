@@ -11,35 +11,36 @@ import {
   Input,
   Spinner,
   Select,
-  SelectItem, SortDescriptor,
+  SelectItem,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useGetCageRacks } from "../../_services/rack";
+import { useGetBatchs } from "../../_services/batch";
 import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { Can } from "@/components/acl/can";
 import {DateTime} from "luxon";
+import useLocationStore from "@/stores/useLocationStore";
 
 const columns = [
-  {
-    key: "batch",
-    label: "Batch",
-  },
   {
     key: "name",
     label: "Nama",
   },
   {
-    key: "cage",
-    label: "Kandang",
+    key: "startDate",
+    label: "Tanggal Mulai",
   },
   {
-    key: "sites",
-    label: "Lokasi",
+    key: "endDate",
+    label: "Tanggal Berakhir",
+  },
+  {
+    key: "status",
+    label: "Status",
   },
   {
     key: "createdAt",
@@ -47,7 +48,7 @@ const columns = [
   },
   {
     key: "updatedAt",
-    label: "Tanggal Diubah",
+    label: "Tanggal Diupdate",
   },
   {
     key: "action",
@@ -65,75 +66,58 @@ export default function Page() {
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
-  const [sort, setSort] = useQueryState("sort", {
-    throttleMs: 1000,
-  });
+  
+  const {siteId} = useLocationStore();
 
-  const rack = useGetCageRacks(
+  const cage = useGetBatchs(
     useMemo(
-      () => ({
-        q: search || "",
-        page: page || "1",
-        limit: limit?.toString() || "10",
-        sort: sort || "name:asc",
-      }),
-      [search, page, limit, sort]
+      () => ({ q: search || "", page: page || "1", limit: limit || "10", siteId }),
+      [search, page, limit, siteId]
     )
   );
-  
-  const handleSortChange = async (key: SortDescriptor) => {
-    if (key) {
-      const sortKey = key.column as string;
-      const sortDirection = key.direction === "ascending" ? "asc" : "desc";
-      await setSort(`${sortKey}:${sortDirection}`);
-    }
-  }
 
   const rows = useMemo(() => {
-    if (rack.data) {
-      return rack.data?.data?.data || [];
+    if (cage.data) {
+      return cage.data?.data?.data || [];
     }
     return [];
-  }, [rack.data]);
+  }, [cage.data]);
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Data Rak</div>
+      <div className="text-3xl font-bold mb-10">Data Batch</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
               startContent={<HiSearch />}
-              placeholder="Cari Rak"
+              placeholder="Cari Batch"
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
             />
           </div>
-          <Can action="create:cage-rack">
+          <Can action="create:batch">
             <Button
               as={Link}
-              href="/operational/cage-racks/create"
+              href="/operational/batch/create"
               color="primary"
               startContent={<HiPlus />}
               className="w-full md:w-auto"
             >
-              Tambah Rak
+              Tambah Batch
             </Button>
           </Can>
         </div>
-        <Table aria-label="Data"
-               sortDescriptor={{ column: "name", direction: "ascending" }}
-               onSortChange={(key) => handleSortChange(key)}
-        >
+        <Table aria-label="Data">
           <TableHeader columns={columns}>
             {(column) => (
-              <TableColumn allowsSorting key={column.key}>{column.label}</TableColumn>
+              <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
           <TableBody
             items={rows}
-            isLoading={rack.isLoading}
+            isLoading={cage.isLoading}
             loadingContent={<Spinner />}
             emptyContent={<EmptyState />}
           >
@@ -144,20 +128,11 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item?.batch?.name ?? "-"}</div>
-                </TableCell>
-                <TableCell>
                   <div>{item.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item?.cage?.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{item?.cage?.site?.name}</div>
-                </TableCell>
-                <TableCell>
                   <div>
-                    {DateTime.fromISO(item.createdAt, {zone: 'local'}).toLocaleString(
+                    {DateTime.fromISO(item.startDate, {zone: 'local'}).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY,
                       {locale: 'id'}
                     )}
@@ -165,13 +140,29 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>
-                    {DateTime.fromISO(item.updatedAt, {zone: 'local'}).toLocaleString(
+                    {
+                      item?.endDate ? 
+                      DateTime.fromISO(item?.endDate, {zone: 'local'}).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY,
                       {locale: 'id'}
-                    )}
+                    ) : "-"}
                   </div>
                 </TableCell>
-
+                <TableCell>
+                  <div>{item.status}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{DateTime.fromISO(item.createdAt, {zone: 'local'}).toLocaleString(
+                    DateTime.DATETIME_MED_WITH_WEEKDAY,
+                    {locale: 'id'}
+                  )}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{DateTime.fromISO(item.updatedAt, {zone: 'local'}).toLocaleString(
+                    DateTime.DATETIME_MED_WITH_WEEKDAY,
+                    {locale: 'id'}
+                  )}</div>
+                </TableCell>
                 <TableCell>
                   <Actions id={item.id} />
                 </TableCell>
@@ -198,9 +189,9 @@ export default function Page() {
           </Select>
           <Pagination
             color="primary"
-            total={rack.data?.data?.meta?.totalPage || 1}
+            total={cage.data?.data?.meta?.totalPage || 1}
             initialPage={1}
-            page={rack.data?.data?.meta?.page || 1}
+            page={cage.data?.data?.meta?.page || 1}
             onChange={(page) => setPage(page.toString())}
           />
         </div>

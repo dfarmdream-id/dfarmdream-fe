@@ -18,10 +18,12 @@ export interface Daum {
   id: string
   name: string
   cageId: string
+  batchId: string;
   deletedAt: any
   createdAt: string
   updatedAt: string
   cage: Cage
+  batch: Batch
 }
 
 export interface Cage {
@@ -36,6 +38,12 @@ export interface Cage {
   capacity: number
   status: string
   site: Site
+}
+
+export interface Batch {
+  id: string;
+  name: string;
+  status: string;
 }
 
 export interface Site {
