@@ -24,11 +24,8 @@ import {
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
 import { DateTime } from 'luxon'
-<<<<<<< HEAD
 import useLocationStore from "@/stores/useLocationStore";
-=======
 import { useQueryClient } from "@tanstack/react-query";
->>>>>>> 3fca7fa814a6b5961fa701800edb17a2b6bdab85
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -45,11 +42,8 @@ const Chart = dynamic(
 export default function GrafikSuhu({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
-<<<<<<< HEAD
   const {siteId} = useLocationStore();
-=======
   const queryClient = useQueryClient();
->>>>>>> 3fca7fa814a6b5961fa701800edb17a2b6bdab85
 
   const items = useGetTemperatureData(
     useMemo(
