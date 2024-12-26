@@ -1,10 +1,11 @@
 "use client";
 import { Chip, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState, useEffect } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
 import dynamic from "next/dynamic";
 import { useGetHumidityData } from "../../_services/iot-device";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -22,6 +23,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
   const thresholdLiveSensor = 60 * 1000;
+  const queryClient = useQueryClient();
 
   const items = useGetHumidityData(
     useMemo(
@@ -32,6 +34,16 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
       [kandang, tanggal]
     )
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/sensor/humidity"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const cages = useGetCages(
     useMemo(() => {
