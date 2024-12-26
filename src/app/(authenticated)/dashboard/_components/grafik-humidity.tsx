@@ -1,10 +1,12 @@
 "use client";
 import { Chip, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState, useEffect } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
 import dynamic from "next/dynamic";
 import { useGetHumidityData } from "../../_services/iot-device";
+import useLocationStore from "@/stores/useLocationStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -22,16 +24,29 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
   const thresholdLiveSensor = 60 * 1000;
+  const {siteId} = useLocationStore();
+  const queryClient = useQueryClient();
 
   const items = useGetHumidityData(
     useMemo(
       () => ({
         tanggal: tanggal || "",
         cageId: kandang || "",
+        siteId: siteId || ""
       }),
-      [kandang, tanggal]
+      [kandang, tanggal, siteId]
     )
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/sensor/humidity"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const cages = useGetCages(
     useMemo(() => {
@@ -91,6 +106,12 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
           <div className="text-xl text-primary font-bold text-center">
             {children}
           </div>
+          <Input
+          type="date"
+          placeholder="Pilih Tanggal"
+          onChange={(e) => setTanggal(e.target.value)}
+          className="mb-3 mt-1"
+        />
           <Chart
             width="100%"
             type="area"
@@ -98,11 +119,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
             series={cageTempChart.options.series}
           />
         </div>
-        <Input
-          type="date"
-          placeholder="Pilih Tanggal"
-          onChange={(e) => setTanggal(e.target.value)}
-        />
+        
         {/* <Select placeholder="Pilih " variant="bordered" className="w-full">
           <SelectItem key="1">1 Jam terakhir</SelectItem>
           <SelectItem key="2">2 Jam terakhir</SelectItem>
@@ -111,7 +128,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
         </Select> */}
       </div>
       <div className="mt-5">  
-        <div className="grid gap-3">
+        <div className="grid gap-3 mt-3">
           <Select
             variant="bordered"
             placeholder="Pilih kandang"

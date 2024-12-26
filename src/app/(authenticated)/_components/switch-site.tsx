@@ -8,14 +8,52 @@ import Cookies from "js-cookie";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import useLocationStore from "@/stores/useLocationStore";
+import { useEffect } from "react";
 
 export default function SwitchSite() {
-  const { setSiteId } = useLocationStore();
+  const { setSiteId, siteId } = useLocationStore();
   
   const profile = useGetProfile();
   const sites = useGetSiteAvailable();
   const switchSite = useSwitchSite();
   const queryClient = useQueryClient();
+
+  const handleSwitchSite = (siteId: string) => {
+    switchSite.mutate(
+      {
+        body: {
+          siteId: siteId,
+        },
+      },
+      {
+        onSuccess: ({ data: { token } }) => {
+          setSiteId(siteId);
+          Cookies.set("accessToken", token);
+          queryClient.invalidateQueries();
+          toast.success("Berhasil mengganti lokasi");
+        },
+        onError: () => {
+          toast.error("Gagal mengganti lokasi");
+        },
+      }
+    );
+  }
+
+  useEffect(() => {
+    queryClient.refetchQueries({ 
+      queryKey: ["/v1/auth/sites"] 
+    });
+
+    if (sites.data?.data?.length) {
+      const checkSite = sites.data?.data?.some(site => site.siteId === siteId);
+      if (!checkSite) {
+        handleSwitchSite(sites.data?.data[0].siteId);
+      }
+    } 
+    // else {
+    //   toast.error("Lokasi kosong");
+    // }
+  }, [sites.data?.data]);
 
   return (
     <div className="flex items-center w-full">
@@ -31,24 +69,7 @@ export default function SwitchSite() {
         }}
         isLoading={sites.isLoading || switchSite.isPending || profile.isLoading}
         onChange={(id) => {
-          switchSite.mutate(
-            {
-              body: {
-                siteId: id.target.value.toString(),
-              },
-            },
-            {
-              onSuccess: ({ data: { token } }) => {
-                setSiteId(id.target.value.toString());
-                Cookies.set("accessToken", token);
-                queryClient.invalidateQueries();
-                toast.success("Berhasil mengganti lokasi");
-              },
-              onError: () => {
-                toast.error("Gagal mengganti lokasi");
-              },
-            }
-          );
+          handleSwitchSite(id.target.value.toString());
         }}
         selectedKeys={[profile.data?.data?.site?.id as string]}
         listboxProps={{

@@ -5,6 +5,7 @@ import {
   CardBody,
   CardHeader,
   Chip,
+  Input,
   Pagination,
   Select,
   SelectItem,
@@ -17,11 +18,13 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { useGetAbsen } from "../../_services/absen";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
 import {DateTime} from 'luxon'
 import SvgWhatsappIcon from "@/app/(authenticated)/dashboard/_components/whatsapp";
+import { useGetCages } from "../../_services/cage";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function TableAbsen() {
   const columns = [
@@ -65,10 +68,25 @@ export default function TableAbsen() {
     throttleMs: 1000,
   });
 
+  const {siteId} = useLocationStore()
+
+  const cages = useGetCages(
+      useMemo(() => {
+        return {
+          page: "1",
+          limit: "100",
+        };
+      }, [])
+    );
+
+    
+  const [kandang, setKandang] = useState<string | null>(null);
+  const [tanggal, setTanggal] = useState<string | null>(null);
+
   const attendance = useGetAbsen(
     useMemo(
-      () => ({ q: "", page: page || "1", limit: limit || "10" }),
-      [page, limit]
+      () => ({ q: "", page: page || "1", limit: limit || "10", tanggal: tanggal || "", kandang: kandang || "", lokasi:siteId || "" }),
+      [page, limit, tanggal, kandang, siteId]
     )
   );
 
@@ -102,6 +120,7 @@ export default function TableAbsen() {
   //   return formattedDate
   // }
 
+
   return (
     <>
       <Card>
@@ -109,12 +128,43 @@ export default function TableAbsen() {
           <div className="font-bold text-xl">Absensi Karyawan</div>
         </CardHeader>
         <CardBody>
-          <div className="flex justify-between items-center gap-3 flex-wrap mb-5">
+          {/* <div className="flex justify-between items-center gap-3 flex-wrap mb-5">
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
               <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
             </div>
+          </div> */}
+           <div className="grid gird-cols-1 xl:grid-cols-2 gap-4">
+          <div className="flex flex-col">
+          <label htmlFor="tanggal" className="text-sm font-medium text-gray-700 mb-1">
+            Tanggal
+          </label>
+            <Input
+              type="date"
+              placeholder="Pilih Tanggal"
+              onChange={(e) => setTanggal(e.target.value)}
+              className="w-full"
+            />
           </div>
-          <Table aria-label="Data">
+          <div className="flex flex-col">
+          <label htmlFor="kandang" className="text-sm font-medium text-gray-700 mb-1">
+            Kandang
+          </label>
+            <Select
+              variant="bordered"
+              placeholder="Pilih kandang"
+              onChange={(e) => setKandang(e.target.value)} 
+              isLoading={cages.isLoading}
+              className="w-full"
+            >
+              {cages.data?.data?.data?.map((site) => (
+                <SelectItem key={site.id} value={site.id}>
+                  {site.name}
+                </SelectItem>
+              )) || []}
+            </Select>
+          </div>
+        </div>
+          <Table aria-label="Data" className="mt-2">
             <TableHeader columns={columns}>
               {(column) => (
                 <TableColumn key={column.key}>{column.label}</TableColumn>

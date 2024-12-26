@@ -162,7 +162,7 @@ export default function Page() {
             <Button
               variant="bordered"
               color="primary"
-              onClick={() => router.push("/operational/iot")}
+              onClick={() => router.push("/operational/sensor-device")}
             >
               Kembali
             </Button>

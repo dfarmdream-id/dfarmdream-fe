@@ -4,9 +4,10 @@ import {Card, CardBody, CardHeader, Spinner} from "@nextui-org/react";
 import {TimePeriodSelector} from "@/app/(authenticated)/dashboard/_components/time-period-selector";
 import dynamic from "next/dynamic";
 import { useDashboardChartEgg } from "@/app/(authenticated)/_services/dashboard";
-import {useMemo, useState} from "react";
+import {useMemo, useState, useEffect} from "react";
 import {DateTime} from "luxon";
 import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCageRack";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -17,6 +18,7 @@ export default function GrafiTelur (){
   const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
   // const [selectedRackId, setSelectedRackId] = useState<string | null>(null);
   const selectedRackId = null;
+  const queryClient = useQueryClient();
 
   // const handleRackIdChange = (rackId: string) => {
   //   setSelectedRackId(rackId); // Simpan rackId di state parent
@@ -33,6 +35,16 @@ export default function GrafiTelur (){
       cageId: selectedCageId
     }), [range, selectedRackId, selectedCageId])
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/dashboard/chart-egg"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const parseByRangeAndDate = (range: string, date: any) => {
     const dt = DateTime.fromISO(date); // Konversi date ke Luxon DateTime

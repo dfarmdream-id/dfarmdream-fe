@@ -2,8 +2,9 @@
 
 import { Spinner } from "@nextui-org/react";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useDashboardChartDisease } from "@/app/(authenticated)/_services/dashboard";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Lazy load Chart untuk mendukung SSR
 const Chart = dynamic(
@@ -18,12 +19,24 @@ export default function GrafikDisease({
   date: string | null;
   cageId: string | null;
 }) {
+  const queryClient = useQueryClient();
+
   const chartData = useDashboardChartDisease(
     useMemo(() => ({
       date,
       cageId,
     }), [date, cageId])
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/dashboard/chart-disease"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const chart = useMemo<{
     series: [{ name: string; data: number[] }];

@@ -1,23 +1,36 @@
 "use client"
 
 import {Card, CardBody, CardHeader, Select, SelectItem, Spinner} from "@nextui-org/react";
-import {useMemo, useState} from "react";
 import { useDashboardKeuangan} from "@/app/(authenticated)/_services/dashboard";
 import dynamic from "next/dynamic";
+import {useMemo, useState, useEffect} from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
   { ssr: false, loading: () => <Spinner /> }
 );
 
+
 export default function GrafiKeuangan (){
   const [year, setYear] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const chartData = useDashboardKeuangan(
     useMemo(() => ({
       year,
     }), [year])
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.refetchQueries({ 
+        queryKey: ["/v1/journal/balance-sheets", "/v1/profit-loss/profit-loss"] 
+      });
+    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [queryClient]);
 
   const formatRupiah = (value: number) => {
     return Intl.NumberFormat("id-ID", {
