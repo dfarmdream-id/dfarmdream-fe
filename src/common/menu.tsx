@@ -9,11 +9,12 @@ import {
   HiUserGroup
 } from "react-icons/hi2";
 import {HiOutlineDatabase, HiOutlineInboxIn, HiOutlineLocationMarker, HiOutlineReceiptTax} from "react-icons/hi";
-import {MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors} from "react-icons/md";
+import {MdAccountTree, MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors} from "react-icons/md";
 import {GiChicken, GiMoneyStack} from "react-icons/gi";
 import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
 import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import {VscVariableGroup} from "react-icons/vsc";
+import {IoFileTrayStacked} from "react-icons/io5";
 
 export const menus = [
   {
@@ -21,6 +22,56 @@ export const menus = [
     href: "/dashboard",
     icon: <HiOutlineHome className="text-xl" />,
     can: "show:dashboard",
+  },
+  {
+    key: "master",
+    can: "show:master",
+    icon: <HiOutlineDatabase className="text-xl" />,
+    label: "Data Master",
+    children: [
+      {
+        can: "show:positions",
+        label: "Jabatan",
+        href: "/master/positions",
+        icon: <HiOutlineUsers className="text-xl" />,
+      },
+      {
+        can: "show:users",
+        label: "Pengguna",
+        href: "/master/users",
+        icon: <HiOutlineUsers className="text-xl" />,
+      },
+      {
+        can: "show:sites",
+        label: "Lokasi",
+        href: "/master/site",
+        icon: <HiOutlineLocationMarker className="text-xl" />,
+      },
+      {
+        can: "show:investors",
+        label: "Investor",
+        href: "/master/investors",
+        icon: <HiOutlineUserPlus className="text-xl" />,
+      },
+      {
+        can: "show:prices",
+        label: "Harga",
+        href: "/master/prices",
+        icon: <HiOutlineBars3 className="text-xl" />,
+      },
+      {
+        can: "show:roles",
+        label: "Role",
+        href: "/master/roles",
+        icon: <HiOutlineRocketLaunch className="text-xl" />,
+      },
+      {
+        can: "show:permissions",
+        label: "Permission",
+        href: "/master/permissions",
+        icon: <HiOutlineCog6Tooth className="text-xl" />,
+      },
+    ],
   },
   {
     icon: <HiOutlineReceiptTax className="text-xl" />,
@@ -52,7 +103,7 @@ export const menus = [
         can: "show:batch",
         label: "Batch Produksi",
         href: "/operational/batch",
-        icon: <HiOutlineInbox className="text-xl" />,
+        icon: <IoFileTrayStacked className="text-xl" />,
       },
       {
         can: "show:cages",
@@ -132,7 +183,7 @@ export const menus = [
         can: "show:group-coa",
         label: "Group COA",
         href: "/cash/group-coa",
-        icon: <HiOutlineListBullet className="text-xl" />,
+        icon: <MdAccountTree className="text-xl" />,
       },
       {
         can: "show:coa",
@@ -198,54 +249,4 @@ export const menus = [
       },
     ],
   },
-  {
-    key: "master",
-    can: "show:master",
-    icon: <HiOutlineDatabase className="text-xl" />,
-    label: "Data Master",
-    children: [
-      {
-        can: "show:positions",
-        label: "Jabatan",
-        href: "/master/positions",
-        icon: <HiOutlineUsers className="text-xl" />,
-      },
-      {
-        can: "show:users",
-        label: "Pengguna",
-        href: "/master/users",
-        icon: <HiOutlineUsers className="text-xl" />,
-      },
-      {
-        can: "show:sites",
-        label: "Lokasi",
-        href: "/master/site",
-        icon: <HiOutlineLocationMarker className="text-xl" />,
-      },
-      {
-        can: "show:investors",
-        label: "Investor",
-        href: "/master/investors",
-        icon: <HiOutlineUserPlus className="text-xl" />,
-      },
-      {
-        can: "show:prices",
-        label: "Harga",
-        href: "/master/prices",
-        icon: <HiOutlineBars3 className="text-xl" />,
-      },
-      {
-        can: "show:roles",
-        label: "Role",
-        href: "/master/roles",
-        icon: <HiOutlineRocketLaunch className="text-xl" />,
-      },
-      {
-        can: "show:permissions",
-        label: "Permission",
-        href: "/master/permissions",
-        icon: <HiOutlineCog6Tooth className="text-xl" />,
-      },
-    ],
-  }
 ];

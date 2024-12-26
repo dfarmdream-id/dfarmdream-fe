@@ -324,25 +324,19 @@ export default function Page() {
                   Apakah anda yakin ingin menyimpan data ini? Data yang sudah
                   disimpan tidak dapat diubah.
                 </p>
-                <div>
-                {/* add 1 checkbook to ask confirm is end of batch  */}
-                <div className="flex gap-2 items-center">
-                  {/*<input*/}
-                  {/*  type="checkbox"*/}
-                  {/*  onChange={(e) => {*/}
-                  {/*    form.setValue("isEndOfBatch", e.target.checked);*/}
-                  {/*  }}*/}
-                  {/*/>*/}
-                  {/*<span>*/}
-                  {/*  Apakah ini merupakan akhir dari batch?*/}
-                  {/*</span>*/}
-                  <Checkbox
-                    onChange={(e) => {
-                      form.setValue("isEndOfBatch", e.target.checked);
-                    }}
-                  >Apakah ini merupakan akhir dari batch?</Checkbox>
-                </div>
-                </div>
+                {
+                  form.watch('category') == 'EGG' ? null : (
+                    <div>
+                      <div className="flex gap-2 items-center">
+                        <Checkbox
+                          onChange={(e) => {
+                            form.setValue("isEndOfBatch", e.target.checked);
+                          }}
+                        >Apakah ini merupakan akhir dari batch?</Checkbox>
+                      </div>
+                    </div>
+                  )
+                }
               </ModalBody>
               <ModalFooter>
                 <Button

@@ -6,12 +6,13 @@ import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { InputNumber } from "@/components/ui/input";
-import { useGetSites } from "@/app/(authenticated)/_services/site";
-import { useMemo } from "react";
+import {useEffect, useMemo} from "react";
 import { useGetCages } from "@/app/(authenticated)/_services/cage";
 import { useCreatePersediaanBarang } from "@/app/(authenticated)/_services/persediaan-barang";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
 import {useGetListGood} from "@/app/(authenticated)/_services/good";
+import useLocationStore from "@/stores/useLocationStore";
+import useBatchStore from "@/stores/useBatchStore";
 
 export default function Page() {
   const schema = z.object({
@@ -43,9 +44,6 @@ export default function Page() {
   const router = useRouter();
 
   const watch = form.watch();
-  const siteData = useGetSites(
-    useMemo(() => ({ page: "1", limit: "10000" }), [])
-  );
   const cagesData = useGetCages(
     useMemo(
       () => ({ page: "1", limit: "10000", siteId: watch.siteId }),
@@ -59,6 +57,8 @@ export default function Page() {
       []
     )
   );
+  
+  const {batchId} = useBatchStore();
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
@@ -66,6 +66,7 @@ export default function Page() {
         body: {
           ...data,
           status: 1,
+          ...(batchId && {batchId}),
         },
       },
       {
@@ -84,37 +85,20 @@ export default function Page() {
   const jurnalTypes = useGetListJournalType(
     useMemo(() => ({ page: "1", limit: "10000" }), [])
   );
+  
+  const {siteId} = useLocationStore();
+
+  useEffect(() => {
+    if(siteId) {
+      form.setValue("siteId", siteId);
+    }
+  }, [siteId]);
 
   return (
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Tambah Persediaan Barang</div>
       <div>
         <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
-
-          <div className="h-16">
-            <Controller
-              control={form.control}
-              name="siteId"
-              render={({field, fieldState}) => (
-                <Select
-                  isLoading={siteData.isLoading}
-                  labelPlacement="outside"
-                  placeholder="Pilih Lokasi"
-                  label="Lokasi"
-                  variant="bordered"
-                  {...field}
-                  errorMessage={fieldState.error?.message}
-                  isInvalid={fieldState.invalid}
-                >
-                  {siteData.data?.data?.data?.map((position) => (
-                    <SelectItem key={position.id} value={position.id}>
-                      {position.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-              )}
-            />
-          </div>
 
           <div className="h-16">
             <Controller
