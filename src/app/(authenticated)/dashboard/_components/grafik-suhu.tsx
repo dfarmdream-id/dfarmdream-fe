@@ -24,6 +24,7 @@ import {
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
 import { DateTime } from 'luxon'
+import useLocationStore from "@/stores/useLocationStore";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
@@ -41,6 +42,7 @@ const Chart = dynamic(
 export default function GrafikSuhu({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
+  const {siteId} = useLocationStore();
   const queryClient = useQueryClient();
 
   const items = useGetTemperatureData(
@@ -48,8 +50,9 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
       () => ({
         tanggal: tanggal || "",
         cageId: kandang || "",
+        siteId: siteId || ""
       }),
-      [kandang, tanggal]
+      [kandang, tanggal, siteId]
     )
   );
 
@@ -165,6 +168,12 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
             <div className="text-xl text-primary font-bold text-center">
               {children}
             </div>
+            <Input
+              type="date"
+              placeholder="Pilih Tanggal"
+              onChange={(e) => setTanggal(e.target.value)}
+              className="mb-3 mt-1"
+            />
             <Chart
               width="100%"
               type="area"
@@ -172,11 +181,6 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
               series={cageTempChart.options.series}
             />
           </div>
-          <Input
-            type="date"
-            placeholder="Pilih Tanggal"
-            onChange={(e) => setTanggal(e.target.value)}
-          />
           {/* <Select placeholder="Pilih " variant="bordered" className="w-full">
           <SelectItem key="1">1 Jam terakhir</SelectItem>
           <SelectItem key="2">2 Jam terakhir</SelectItem>
@@ -187,6 +191,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
         <div className="w-full overflow-hidden space-y-3 mt-5">
           <div className="grid gap-3">
             <Select
+            className="mt-3"
               variant="bordered"
               placeholder="Pilih kandang"
               isLoading={cages.isLoading}

@@ -5,6 +5,7 @@ import { FaTemperatureEmpty } from "react-icons/fa6";
 import { useGetCages } from "../../_services/cage";
 import dynamic from "next/dynamic";
 import { useGetHumidityData } from "../../_services/iot-device";
+import useLocationStore from "@/stores/useLocationStore";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Chart = dynamic(
@@ -23,6 +24,7 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
   const thresholdLiveSensor = 60 * 1000;
+  const {siteId} = useLocationStore();
   const queryClient = useQueryClient();
 
   const items = useGetHumidityData(
@@ -30,8 +32,9 @@ export default function GrafikHumidity({ children }: { children: ReactNode }) {
       () => ({
         tanggal: tanggal || "",
         cageId: kandang || "",
+        siteId: siteId || ""
       }),
-      [kandang, tanggal]
+      [kandang, tanggal, siteId]
     )
   );
 
