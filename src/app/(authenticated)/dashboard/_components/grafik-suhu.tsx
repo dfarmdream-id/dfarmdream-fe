@@ -23,7 +23,7 @@ import {
 } from "../../_services/iot-device";
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
-import { DateTime } from 'luxon'
+import { DateTime } from "luxon";
 import useLocationStore from "@/stores/useLocationStore";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -39,10 +39,16 @@ const Chart = dynamic(
   }
 );
 
-export default function GrafikSuhu({ children }: { children: ReactNode }) {
+export default function GrafikSuhu({
+  children,
+  showTable = false,
+}: {
+  children: ReactNode;
+  showTable: boolean;
+}) {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
-  const {siteId} = useLocationStore();
+  const { siteId } = useLocationStore();
   const queryClient = useQueryClient();
 
   const items = useGetTemperatureData(
@@ -50,7 +56,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
       () => ({
         tanggal: tanggal || "",
         cageId: kandang || "",
-        siteId: siteId || ""
+        siteId: siteId || "",
       }),
       [kandang, tanggal, siteId]
     )
@@ -58,8 +64,8 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      queryClient.refetchQueries({ 
-        queryKey: ["/v1/sensor/temperature"] 
+      queryClient.refetchQueries({
+        queryKey: ["/v1/sensor/temperature"],
       });
     }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
 
@@ -101,8 +107,11 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
   const relayLogs = useGetRelayLogData(
     useMemo(
       () => ({
-        q: "", page: page || "1", limit: limit || "10", tanggal: tanggal || "",
-        cageId: kandang || ""
+        q: "",
+        page: page || "1",
+        limit: limit || "10",
+        tanggal: tanggal || "",
+        cageId: kandang || "",
       }),
       [page, limit, tanggal, kandang]
     )
@@ -115,9 +124,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
     return [];
   }, [relayLogs.data]);
 
-  const cages = useGetCages(
-    useMemo(() => ({ page: "1", limit: "100",  }), [])
-  );
+  const cages = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   const cageTempChart = useMemo<{
     options: ApexCharts.ApexOptions;
@@ -191,7 +198,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
         <div className="w-full overflow-hidden space-y-3 mt-5">
           <div className="grid gap-3">
             <Select
-            className="mt-3"
+              className="mt-3"
               variant="bordered"
               placeholder="Pilih kandang"
               isLoading={cages.isLoading}
@@ -222,17 +229,23 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                     </div>
                     <div>{item.lastestValue}°C</div>
                     <div className="relative w-full">
-                                           <div
-                         className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
-                         style={{
-                           right: `${
-                             item.lastestValue <= item?.IotSensor?.tempThreshold
-                               ? (item?.lastestValue / item?.IotSensor?.tempThreshold) * 50 // Left of center (Good side)
-                               : 50 + ((item?.lastestValue - item?.IotSensor?.tempThreshold) / item?.IotSensor?.tempThreshold) * 50 // Right of center (Bad side)
-                           }%`,
-                           top: '0px'
-                         }}
-                       ></div>
+                      <div
+                        className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
+                        style={{
+                          right: `${
+                            item.lastestValue <= item?.IotSensor?.tempThreshold
+                              ? (item?.lastestValue /
+                                  item?.IotSensor?.tempThreshold) *
+                                50 // Left of center (Good side)
+                              : 50 +
+                                ((item?.lastestValue -
+                                  item?.IotSensor?.tempThreshold) /
+                                  item?.IotSensor?.tempThreshold) *
+                                  50 // Right of center (Bad side)
+                          }%`,
+                          top: "0px",
+                        }}
+                      ></div>
                       <div className="w-full h-2 rounded-lg bg-gradient-to-r from-danger via-warning to-success"></div>
                       <div className="flex justify-between">
                         <div>Bad</div>
@@ -241,7 +254,7 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    {(Date.now() - item.lastUpdatedAt) > thresholdLiveSensor ? (
+                    {Date.now() - item.lastUpdatedAt > thresholdLiveSensor ? (
                       <Chip color="danger">Mati</Chip>
                     ) : (
                       <Chip color="primary">Hidup</Chip>
@@ -252,63 +265,66 @@ export default function GrafikSuhu({ children }: { children: ReactNode }) {
           </ul>
         </div>
       </div>
-      <div className="mt-5">
-        <Table aria-label="Data">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            items={rows}
-            isLoading={relayLogs.isLoading}
-            loadingContent={<Spinner />}
-            emptyContent={<EmptyState />}
-          >
-            {(item) => (
-              <TableRow
-                key={item.id}
-                className="odd:bg-[#75B89F]"
-                role="button"
-              >
-                <TableCell>
-                  <div>{item.sensor?.cage?.site?.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{item.sensor?.cage?.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div>{DateTime.fromISO(item.createdAt).toLocaleString(
-                    DateTime.DATETIME_MED_WITH_WEEKDAY,
-                    { locale: "id" }
-                  )}</div>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    color={item.status === 1 ? "success" : "danger"}
-                    className="text-white"
-                  >
-                    {item.status === 1 ? "Nyala" : "Mati"}
-                  </Chip>
-                </TableCell>
-                <TableCell>
-                  <div>{item.relayDesc}</div>
-                </TableCell>
-
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <div className="flex justify-center mt-3">
-          <Pagination
-            color="primary"
-            total={relayLogs.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={relayLogs.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+      {showTable && (
+        <div className="mt-5">
+          <Table aria-label="Data">
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={rows}
+              isLoading={relayLogs.isLoading}
+              loadingContent={<Spinner />}
+              emptyContent={<EmptyState />}
+            >
+              {(item) => (
+                <TableRow
+                  key={item.id}
+                  className="odd:bg-[#75B89F]"
+                  role="button"
+                >
+                  <TableCell>
+                    <div>{item.sensor?.cage?.site?.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.sensor?.cage?.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      color={item.status === 1 ? "success" : "danger"}
+                      className="text-white"
+                    >
+                      {item.status === 1 ? "Nyala" : "Mati"}
+                    </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.relayDesc}</div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex justify-center mt-3">
+            <Pagination
+              color="primary"
+              total={relayLogs.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={relayLogs.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
