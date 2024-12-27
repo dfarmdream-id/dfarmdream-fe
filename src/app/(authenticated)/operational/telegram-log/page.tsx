@@ -138,16 +138,16 @@ export default function Page() {
                 role="button"
               >
                 <TableCell>
-                  <div>{item.user.identityId}</div>
+                  <div>{item.user?.identityId}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.user.fullName}</div>
+                  <div>{item.user?.fullName}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.sensor.cage.name}</div>
+                  <div>{item.sensor?.cage?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.sensor.cage.site.name}</div>
+                  <div>{item.sensor?.cage?.site?.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>
