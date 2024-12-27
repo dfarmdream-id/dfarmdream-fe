@@ -65,6 +65,7 @@ export interface Cage {
 
 export interface Site {
   id: string;
+  name:string;
   userId: string;
   siteId: string;
   deletedAt: any;
