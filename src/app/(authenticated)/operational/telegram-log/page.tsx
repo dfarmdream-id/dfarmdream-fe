@@ -11,6 +11,7 @@ import {
   Spinner,
   Select,
   SelectItem,
+  DateRangePicker,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { useQueryState } from "nuqs";
@@ -93,17 +94,14 @@ export default function Page() {
               variant="bordered"
               value={search || ""}
               onValueChange={setSearch}
-            />
-
-          
-            <Input
-              type="date"
-              placeholder="Pilih Tanggal"
-              onChange={(e) => setTanggal(e.target.value)}
-              className="w-full"
-            />
-
-         
+            />          
+            <DateRangePicker variant="bordered"
+              onChange={
+                (e) => {
+                  setTanggal(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                }
+              }
+            />         
             <Select
               variant="bordered"
               placeholder="Pilih kandang"
