@@ -20,6 +20,7 @@ import GrafiTelur from "@/app/(authenticated)/dashboard/_components/grafik-telur
 import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam";
 import GrafikDisease from "@/app/(authenticated)/dashboard/_components/grafik-disease";
 import GrafiKeuangan from "@/app/(authenticated)/dashboard/_components/grafik-keuangan";
+import LogKipasLampu from "./_components/log-kipas-lampu";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -277,13 +278,16 @@ export default function Page() {
           </Can>
         </div>
         <Can action="show:temperature-sensors">
-          <GrafikSuhu>Suhu Kandang</GrafikSuhu>
+          <GrafikSuhu showTable={false}>Suhu Kandang</GrafikSuhu>
         </Can>
         <Can action="show:amonia-sensors">
           <GrafikAmonia>Kadar Amonia</GrafikAmonia>
         </Can>
         <Can action="show:humidity-sensors">
           <GrafikHumidity>Kadar Kelembapan</GrafikHumidity>
+        </Can>
+        <Can action="show:humidity-sensors">
+          <LogKipasLampu>Log Kipas dan Lampu</LogKipasLampu>
         </Can>
         <Can action="show:light-sensors">
           <IotDevices>Sensor Lampu</IotDevices>
