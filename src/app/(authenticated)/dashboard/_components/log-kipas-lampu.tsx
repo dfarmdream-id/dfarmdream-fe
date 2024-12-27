@@ -17,13 +17,11 @@ import { ReactNode, useMemo, useState } from "react";
 import { useGetCages } from "../../_services/cage";
 import {
   useGetRelayLogData,
-  useGetTemperatureData,
 } from "../../_services/iot-device";
 import EmptyState from "@/components/state/empty";
 import { useQueryState } from "nuqs";
 import { DateTime } from "luxon";
 import useLocationStore from "@/stores/useLocationStore";
-import { useQueryClient } from "@tanstack/react-query";
 
 
 
@@ -35,17 +33,6 @@ export default function LogKipasLampu({
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
   const { siteId } = useLocationStore();
-
-  const items = useGetTemperatureData(
-    useMemo(
-      () => ({
-        tanggal: tanggal || "",
-        cageId: kandang || "",
-        siteId: siteId || "",
-      }),
-      [kandang, tanggal, siteId]
-    )
-  );
 
   const columns = [
     {
