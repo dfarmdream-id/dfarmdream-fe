@@ -68,6 +68,7 @@ export interface Site {
   name:string;
   userId: string;
   siteId: string;
+  name: string;
   deletedAt: any;
   createdAt: string;
   updatedAt: string;
