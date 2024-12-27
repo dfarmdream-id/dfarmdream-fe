@@ -6,6 +6,7 @@ import {
   HiOutlineHome,
   HiOutlineInbox, HiOutlineListBullet, HiOutlineRocketLaunch, HiOutlineUserPlus, HiOutlineUsers,
   HiOutlineWindow,
+  HiPaperAirplane,
   HiUserGroup
 } from "react-icons/hi2";
 import {HiOutlineDatabase, HiOutlineInboxIn, HiOutlineLocationMarker, HiOutlineReceiptTax} from "react-icons/hi";
@@ -95,6 +96,12 @@ export const menus = [
         label: "Absen",
         href: "/operational/attendance-log",
         icon: <HiUserGroup className="text-xl" />,
+      },
+      {
+        can: "show:telegram-log",
+        label: "Telegram Log",
+        href: "/operational/telegram-log",
+        icon: <HiPaperAirplane className="text-xl" />,
       },
     ],
   },
