@@ -126,8 +126,17 @@ export default function GlobalSettings() {
                       onSelectionChange={(id) => handleBatchChange(id as string)}
                     >
                       {(item) => (
-                        <AutocompleteItem key={item.id}>
-                          {item.name || "Unknown"}
+                        <AutocompleteItem key={item.id}
+                                          value={item.id}
+                                          aria-label={`[${item.status}]: ${item.name}`}>
+                          <div className="flex gap-2 items-center">
+                            <div className="flex flex-col">
+                              <span className="text-small">{item.name}</span>
+                              <span className="text-tiny text-default-400">
+                                {item.status}
+                              </span>
+                            </div>
+                          </div>
                         </AutocompleteItem>
                       )}
                     </Autocomplete>
