@@ -40,7 +40,6 @@ const Chart = dynamic(
 );
 
 export default function GrafikSuhu({
-  children,
   showTable = false,
 }: {
   children: ReactNode;

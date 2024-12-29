@@ -6,7 +6,7 @@ import {
   Input,
   Spinner
 } from "@nextui-org/react";
-import { ReactNode, useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import dynamic from "next/dynamic";
 import {
