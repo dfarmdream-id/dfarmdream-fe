@@ -6,6 +6,7 @@ import {
   DashboardSummaryResponse,
   LdrListDataResonse,
 } from "../_models/response/dashboard";
+import {useMemo} from "react";
 
 export const useDashboardSummary = ({
   cageId,
@@ -36,31 +37,89 @@ export const useDashboardChart = (
   });
 };
 
-export const useDashboardChartEgg = ({ groupBy, rackId, cageId }: { groupBy: string, rackId: string | null, cageId: string | null }) => {
-  return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-egg", {
-    params: {
+export const useDashboardChartEgg = ({
+                                       groupBy,
+                                       rackId,
+                                       cageId,
+                                       batchId,
+                                       dateRange,
+                                     }: {
+  groupBy: string;
+  rackId: string | null;
+  cageId: string | null;
+  batchId: string | null;
+  dateRange: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
+}) => {
+  const params = useMemo(
+    () => ({
       groupBy,
       rackId,
-      cageId
-    },
+      cageId,
+      batchId,
+      startDate: dateRange.startDate ? dateRange.startDate.toISOString() : null,
+      endDate: dateRange.endDate ? dateRange.endDate.toISOString() : null,
+    }),
+    [groupBy, rackId, cageId, batchId, dateRange]
+  );
+
+  return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-egg", {
+    params,
   });
 };
 
-export const useDashboardKeuangan = ({ year }: { year: string | null }) => {
+export const useDashboardKeuangan = (
+  {
+    year,
+    cageId,
+    batchId
+  }: {
+    year: string | null;
+    cageId: string | null;
+    batchId: string | null;
+  }
+) => {
   return useHttp<DashboardKeuanganResponse>("/v1/journal/chart-keuangan", {
     params: {
-      year
+      year,
+      cageId,
+      batchId
     },
   });
 };
 
-export const useDashboardChartChicken = ({ groupBy, rackId, cageId }: { groupBy: string, rackId: string | null, cageId: string | null }) => {
-  return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-chicken", {
-    params: {
+export const useDashboardChartChicken = ({
+                                           groupBy,
+                                           rackId,
+                                           cageId,
+                                           batchId,
+                                           dateRange,
+                                         }: {
+  groupBy: string;
+  rackId: string | null;
+  cageId: string | null;
+  batchId: string | null;
+  dateRange: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
+}) => {
+  const params = useMemo(
+    () => ({
       groupBy,
       rackId,
-      cageId
-    },
+      cageId,
+      batchId,
+      startDate: dateRange.startDate ? dateRange.startDate.toISOString() : null,
+      endDate: dateRange.endDate ? dateRange.endDate.toISOString() : null,
+    }),
+    [groupBy, rackId, cageId, batchId, dateRange]
+  );
+
+  return useHttp<DashboardEggChartResponse>("/v1/dashboard/chart-chicken", {
+    params,
   });
 };
 

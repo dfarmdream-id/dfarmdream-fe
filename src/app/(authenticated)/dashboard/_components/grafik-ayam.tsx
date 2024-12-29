@@ -8,34 +8,46 @@ import {useMemo, useState, useEffect} from "react";
 import {DateTime} from "luxon";
 import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCageRack";
 import { useQueryClient } from "@tanstack/react-query";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import {DateRangeSelector} from "@/app/(authenticated)/dashboard/_components/DateRangeSelector";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
   { ssr: false, loading: () => <Spinner /> }
 );
 export default function GrafiTelur (){
-  const [range, setRange] = useState<string>("days");
   const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
-  // const [selectedRackId, setSelectedRackId] = useState<string | null>(null);
+  const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
   const selectedRackId = null;
   const queryClient = useQueryClient();
 
-  // const handleRackIdChange = (rackId: string) => {
-  //   setSelectedRackId(rackId); // Simpan rackId di state parent
-  // };
+  const [selectedRange, setSelectedRange] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({ startDate: null, endDate: null });
+
+  const handleRangeChange = (range: { startDate: Date | null; endDate: Date | null }) => {
+    setSelectedRange(range);
+  }
   
   const handleCageIdChange = (cageId: string) => {
     setSelectedCageId(cageId); // Simpan cageId di state parent
   };
 
+  const handleBatchIdChange = (batchId: string) => {
+    setSelectedBatchId(batchId); // Simpan batchId di state parent
+  }
+
   const chartData = useDashboardChartChicken(
     useMemo(() => ({
-      groupBy: range,
+      groupBy: 'days',
       rackId: selectedRackId,
-      cageId: selectedCageId
-    }), [range, selectedRackId, selectedCageId])
+      cageId: selectedCageId,
+      batchId: selectedBatchId,
+      dateRange: selectedRange,
+    }), [selectedRange, selectedRackId, selectedCageId, selectedBatchId])
   );
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       queryClient.refetchQueries({ 
@@ -45,27 +57,6 @@ export default function GrafiTelur (){
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [queryClient]);
-
-  const parseByRangeAndDate = (range: string, date: any) => {
-    const dt = DateTime.fromISO(date); // Konversi date ke Luxon DateTime
-
-    if (!dt.isValid) {
-      throw new Error("Invalid date provided");
-    }
-
-    switch (range) {
-      case "days":
-        return dt.toFormat("yyyy-MM-dd"); // Format: 2024-12-17
-      case "weeks":
-        return `Week ${dt.weekNumber}, ${dt.year}`; // Format: Week 51, 2024
-      case "months":
-        return dt.toFormat("MMMM yyyy"); // Format: December 2024
-      case "years":
-        return dt.toFormat("yyyy"); // Format: 2024
-      default:
-        throw new Error("Invalid range provided, use: days, weeks, months, years");
-    }
-  };
 
   const formatRupiah = (value: number) => {
     return Intl.NumberFormat("id-ID", {
@@ -103,7 +94,14 @@ export default function GrafiTelur (){
       stroke: { curve: "smooth", width: 2 },
       xaxis: {
         categories: chartData.data?.data?.map((item) => {
-          return parseByRangeAndDate(range, item.date);
+          const dt = DateTime.fromISO(item.date);
+          
+          if (!dt.isValid) {
+            throw new Error("Invalid date provided");
+          }
+
+          return dt.toFormat("dd-MM-yyyy");
+          
         }) || [],
       },
       yaxis: {
@@ -144,13 +142,12 @@ export default function GrafiTelur (){
               <h2 className="text-2xl font-semibold">Grafik</h2>
               <p className="text-lg text-muted-foreground">Ayam</p>
             </div>
-            <div className="flex justify-start items-center md:justify-end w-full md:w-auto gap-3">
+            <div className="flex flex-col md:flex-row items-end md:items-center gap-3 w-full md:w-auto">
+              <FilterBatch disableLabel={true} onBatchIdChange={handleBatchIdChange} className="w-full md:w-[20rem]"/>
               <FilterCageRack 
-                // onRackIdChange={handleRackIdChange} 
                 onCageIdChange={handleCageIdChange} />
-              <TimePeriodSelector
-                onChange={(value) => setRange(value)}
-                defaultValue={range}
+              <DateRangeSelector
+                onChange={handleRangeChange}
               />
             </div>
           </div>

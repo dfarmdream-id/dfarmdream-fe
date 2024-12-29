@@ -5,6 +5,8 @@ import { useDashboardKeuangan} from "@/app/(authenticated)/_services/dashboard";
 import dynamic from "next/dynamic";
 import {useMemo, useState, useEffect} from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCageRack";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -16,16 +18,29 @@ export default function GrafiKeuangan (){
   const [year, setYear] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
+  const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
+  const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
+
   const chartData = useDashboardKeuangan(
     useMemo(() => ({
       year,
-    }), [year])
+      cageId: selectedBatchId,
+      batchId: selectedBatchId,
+    }), [year, selectedCageId])
   );
+
+  const handleCageIdChange = (cageId: string) => {
+    setSelectedCageId(cageId); // Simpan cageId di state parent
+  };
+  
+  const handleBatchIdChange = (batchId: string) => {
+    setSelectedBatchId(batchId); // Simpan batchId di state parent
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
       queryClient.refetchQueries({ 
-        queryKey: ["/v1/journal/balance-sheets", "/v1/profit-loss/profit-loss"] 
+        queryKey: ["/v1/journal/chart-keuangan"] 
       });
     }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
 
@@ -72,7 +87,10 @@ export default function GrafiKeuangan (){
       stroke: { curve: "smooth", width: 2 },
       xaxis: {
         categories: chartData.data?.data?.chart?.map((item) => {
-          return new Date(item.month).toLocaleString("default", { month: "long" });
+          // Buat Date fiktif: year = 1970, month = item.month - 1
+          const date = new Date(1970, item.month - 1);
+          // Lalu kembalikan nama bulan saja
+          return date.toLocaleString("default", { month: "long" });
         }) || [],
       },
       yaxis: {
@@ -96,31 +114,43 @@ export default function GrafiKeuangan (){
         <div>
           <Card>
             <CardBody>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <div className="flex flex-col md:flex-row justify-between md:items-center items-start gap-3 w-full">
                 <div className="space-y-1">
                   <h2 className="text-2xl font-semibold">Analytics</h2>
                   <p className="text-lg text-muted-foreground">Keuangan</p>
                 </div>
-                <div>
-                  <div className="flex gap-3" style={{
-                    alignItems: "center",
-                    width: "30rem",
-                  }}>
-                    <Select placeholder="Pilih Tahun"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            selectedKeys={[
-                              new Date().getFullYear().toString(),
-                            ]}
-                            onChange={(e) => {
-                              setYear(e.target.value);
-                            }}
+
+                {/* Wrapper filter dan select agar bisa diatur jadi 1 baris di desktop */}
+                <div className="flex flex-col md:flex-row items-end md:items-center gap-3 w-full md:w-auto">
+                  <FilterCageRack onCageIdChange={handleCageIdChange}/>
+                  <FilterBatch disableLabel={true} onBatchIdChange={handleBatchIdChange} className="w-full md:w-[20rem]"/>
+                               
+                  <div className="w-full md:w-[20rem]">
+                    <Select
+                      placeholder="Pilih Tahun"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      className="w-full md:w-50 lg:w-60"
+                      selectedKeys={[new Date().getFullYear().toString()]}
+                      onChange={(e) => {
+                        setYear(e.target.value);
+                      }}
                     >
-                      <SelectItem key="2021" value="2021">2021</SelectItem>
-                      <SelectItem key="2022" value="2022">2022</SelectItem>
-                      <SelectItem key="2023" value="2023">2023</SelectItem>
-                      <SelectItem key="2024" value="2024">2024</SelectItem>
-                      <SelectItem key="2025" value="2025">2025</SelectItem>
+                      <SelectItem key="2021" value="2021">
+                        2021
+                      </SelectItem>
+                      <SelectItem key="2022" value="2022">
+                        2022
+                      </SelectItem>
+                      <SelectItem key="2023" value="2023">
+                        2023
+                      </SelectItem>
+                      <SelectItem key="2024" value="2024">
+                        2024
+                      </SelectItem>
+                      <SelectItem key="2025" value="2025">
+                        2025
+                      </SelectItem>
                     </Select>
                   </div>
                 </div>
