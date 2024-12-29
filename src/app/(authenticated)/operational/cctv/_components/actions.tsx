@@ -121,7 +121,8 @@ export default function Actions(props: Props) {
         onOpenChange={viewDisclosure.onOpenChange}
         isOpen={viewDisclosure.isOpen}
         onClose={viewDisclosure.onClose}
-        size="full"
+        size="5xl"
+        placement="center"
       >
         <ModalContent>
           <ModalHeader className="gap-2">
