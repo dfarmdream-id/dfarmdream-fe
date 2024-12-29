@@ -228,7 +228,7 @@ export default function Page() {
             />
           </div>
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
-            <Button variant="bordered" color="primary">
+            <Button variant="bordered" color="primary" onClick={() => router.push("/dashboard")}>
               Kembali
             </Button>
             <Button isLoading={loading} color="primary" type="submit">

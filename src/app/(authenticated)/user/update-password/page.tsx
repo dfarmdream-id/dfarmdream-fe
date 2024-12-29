@@ -90,7 +90,7 @@ export default function Page() {
                       onClick={togglePasswordVisibility}
                       aria-label="toggle password visibility"
                     >
-                      {passwordVisible ? (
+                      {!passwordVisible ? (
                         <HiEyeOff className="text-2xl text-default-400 pointer-events-none" />
                       ) : (
                         <HiEye className="text-2xl text-default-400 pointer-events-none" />
@@ -122,7 +122,7 @@ export default function Page() {
                       onClick={toggleNewPassword}
                       aria-label="toggle password visibility"
                     >
-                      {newPasswordVisible ? (
+                      {!newPasswordVisible ? (
                         <HiEyeOff className="text-2xl text-default-400 pointer-events-none" />
                       ) : (
                         <HiEye className="text-2xl text-default-400 pointer-events-none" />
@@ -154,7 +154,7 @@ export default function Page() {
                       onClick={toggleConfirmPassword}
                       aria-label="toggle password visibility"
                     >
-                      {confirmPasswordVisible ? (
+                      {!confirmPasswordVisible ? (
                         <HiEyeOff className="text-2xl text-default-400 pointer-events-none" />
                       ) : (
                         <HiEye className="text-2xl text-default-400 pointer-events-none" />
@@ -169,7 +169,7 @@ export default function Page() {
           </div>
 
           <div className="mt-5 flex gap-3 justify-end md:col-span-2">
-            <Button variant="bordered" color="primary">
+            <Button variant="bordered" color="primary" onClick={() => router.push("/dashboard")}>
               Kembali
             </Button>
             <Button
