@@ -9,18 +9,24 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
+import { HiEye, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useDeleteCCTV } from "@/app/(authenticated)/_services/cctv";
+import { Can } from "@/components/acl/can";
+import { createRef } from "react";
+import ReactHlsPlayer from "react-hls-player";
 
 type Props = {
   id: string;
+  ip: string;
+  name: string;
 };
 
 export default function Actions(props: Props) {
   const deleteDisclosure = useDisclosure();
+  const viewDisclosure = useDisclosure();
 
   const deleteData = useDeleteCCTV();
 
@@ -43,6 +49,7 @@ export default function Actions(props: Props) {
       }
     );
   };
+  const ref = createRef<HTMLVideoElement>();
 
   return (
     <div className="flex space-x-1">
@@ -67,6 +74,18 @@ export default function Actions(props: Props) {
           <HiTrash />
         </Button>
       </Tooltip>
+      <Can action="view:cage-cctv">
+        <Tooltip content="View Live CCTV">
+          <Button
+            isIconOnly
+            variant="light"
+            color="primary"
+            onPress={viewDisclosure.onOpen}
+          >
+            <HiEye />
+          </Button>
+        </Tooltip>
+      </Can>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}
@@ -96,6 +115,28 @@ export default function Actions(props: Props) {
               Hapus
             </Button>
           </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal
+        onOpenChange={viewDisclosure.onOpenChange}
+        isOpen={viewDisclosure.isOpen}
+        onClose={viewDisclosure.onClose}
+        size="full"
+      >
+        <ModalContent>
+          <ModalHeader className="gap-2">
+            <div>Live: {props.name}</div>
+          </ModalHeader>
+          <ModalBody>
+            <ReactHlsPlayer
+              playerRef={ref}
+              src={props.ip}
+              autoPlay={false}
+              controls={true}
+              width="100%"
+              height="auto"
+            />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>
