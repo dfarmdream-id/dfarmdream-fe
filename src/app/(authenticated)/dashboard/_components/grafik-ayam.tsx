@@ -1,7 +1,6 @@
 "use client"
 
 import {Card, CardBody, CardHeader, Spinner} from "@nextui-org/react";
-import {TimePeriodSelector} from "@/app/(authenticated)/dashboard/_components/time-period-selector";
 import dynamic from "next/dynamic";
 import {useDashboardChartChicken} from "@/app/(authenticated)/_services/dashboard";
 import {useMemo, useState, useEffect} from "react";
