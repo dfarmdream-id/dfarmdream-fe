@@ -284,7 +284,7 @@ export default function Page() {
           <GrafikAmonia>Kadar Amonia</GrafikAmonia>
         </Can>
         <Can action="show:humidity-sensors">
-          <GrafikHumidity>Kadar Kelembapan</GrafikHumidity>
+          <GrafikHumidity></GrafikHumidity>
         </Can>
         <Can action="show:humidity-sensors">
           <LogKipasLampu>Log Kipas dan Lampu</LogKipasLampu>

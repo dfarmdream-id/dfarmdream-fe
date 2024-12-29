@@ -28,12 +28,7 @@ const Chart = dynamic(
   }
 );
 
-export default function GrafikHumidity({
-  showTable = false,
-}: {
-  children: ReactNode;
-  showTable: boolean;
-}) {
+export default function GrafikHumidity() {
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
   const { siteId } = useLocationStore();
