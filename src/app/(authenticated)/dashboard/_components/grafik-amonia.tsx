@@ -241,6 +241,9 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
       </div>
       <div className="mt-5">
       <div className="flex justify-between items-center gap-3 flex-wrap mb-3">
+        <div className="flex w-full">
+          <div className="text-xl text-primary font-bold text-center">Telegram Log</div>
+        </div>
         <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <DateRangePicker variant="bordered"
               onChange={

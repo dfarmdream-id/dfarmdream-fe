@@ -1,10 +1,10 @@
 "use client";
 import {
-  Card,
-  CardBody,
   Chip,
   Input,
   Pagination,
+  Select,
+  SelectItem,
   Spinner,
   Table,
   TableBody,
@@ -15,6 +15,7 @@ import {
 } from "@nextui-org/react";
 import { ReactNode, useMemo, useState, useEffect } from "react";
 import { FaTemperatureEmpty } from "react-icons/fa6";
+import { useGetCages } from "../../_services/cage";
 import dynamic from "next/dynamic";
 import {
   useGetRelayLogData,
@@ -25,7 +26,6 @@ import { useQueryState } from "nuqs";
 import { DateTime } from "luxon";
 import useLocationStore from "@/stores/useLocationStore";
 import { useQueryClient } from "@tanstack/react-query";
-import FilterCageRack from "./filterCageRack";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -124,22 +124,12 @@ export default function GrafikSuhu({
     return [];
   }, [relayLogs.data]);
 
+  const cages = useGetCages(useMemo(() => ({ page: "1", limit: "100" }), []));
 
-  const handleCageIdChange = (cageId: string) => {
-    setKandang(cageId); // Simpan cageId di state parent
-  };
-
-  const chart = useMemo<{
-    series: [{ name: string; data: number[] }];
+  const cageTempChart = useMemo<{
     options: ApexCharts.ApexOptions;
-  }>(
-    () => ({
-      series: [
-        {
-          name: "Temperature",
-          data: items?.data?.data?.chart?.map((x) => x.y) ?? [],
-        },
-      ],
+  }>(() => {
+    return {
       options: {
         legend: {
           show: true,
@@ -154,7 +144,12 @@ export default function GrafikSuhu({
         dataLabels: {
           enabled: false,
         },
-        height: 350,
+        series: [
+          {
+            name: "Temperature",
+            data: items?.data?.data?.chart?.map((x) => x.y) ?? [],
+          },
+        ],
         fill: {
           type: "gradient",
           colors: ["#0A6846", "#0A6846"],
@@ -169,48 +164,57 @@ export default function GrafikSuhu({
           categories: items?.data?.data?.chart?.map((x) => x.x) ?? [],
         },
       },
-    }),
-    [items]
-  );
+    };
+  }, [items]);
 
   return (
-    <div>
-      <Card>
-        <CardBody>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-semibold">Grafik</h2>
-              <p className="text-lg text-muted-foreground">Sensor Suhu</p>
+    <div className="bg-white rounded-lg p-5 gap-3">
+      <div className="grid lg:grid-cols-2 bg-white rounded-lg p-5 gap-3">
+        <div className="flex flex-col gap-3 w-full overflow-hidden space-y-5">
+          <div className="w-full">
+            <div className="text-xl text-primary font-bold text-center">
+              {children}
             </div>
-            <div className="flex justify-start items-center md:justify-end w-full md:w-auto gap-3">
-              <div className="flex-1">
-                <FilterCageRack
-                  // onRackIdChange={handleRackIdChange}
-                  onCageIdChange={handleCageIdChange}
-                />
-              </div>
-              <div className="flex-1">
-                <Input
-                  type="date"
-                  placeholder="Pilih Tanggal"
-                  onChange={(e) => setTanggal(e.target.value)}
-                  className="mb-3 mt-1"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mt-2">
+            <Input
+              type="date"
+              placeholder="Pilih Tanggal"
+              onChange={(e) => setTanggal(e.target.value)}
+              className="mb-3 mt-1"
+            />
             <Chart
-              type="line"
-              options={chart.options}
-              series={chart.series}
-              height={350}
+              width="100%"
+              type="area"
+              options={cageTempChart.options}
+              series={cageTempChart.options.series}
             />
           </div>
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* <Select placeholder="Pilih " variant="bordered" className="w-full">
+          <SelectItem key="1">1 Jam terakhir</SelectItem>
+          <SelectItem key="2">2 Jam terakhir</SelectItem>
+          <SelectItem key="3">3 Jam terakhir</SelectItem>
+          <SelectItem key="4">4 Jam terakhir</SelectItem>
+        </Select> */}
+        </div>
+        <div className="w-full overflow-hidden space-y-3 mt-5">
+          <div className="grid gap-3">
+            <Select
+              className="mt-3"
+              variant="bordered"
+              placeholder="Pilih kandang"
+              isLoading={cages.isLoading}
+              onChange={(e) => setKandang(e.target.value)}
+            >
+              {cages.data?.data?.data?.map((site) => (
+                <SelectItem key={site.id} value={site.id}>
+                  {site.name}
+                </SelectItem>
+              )) || []}
+            </Select>
+          </div>
+          <ul className="space-y-5 py-5 mt-5">
             {items?.data?.data?.sensors &&
               items.data.data.sensors.map((item) => (
-                <div
+                <li
                   className="flex gap-3 items-center border-primary border-4 p-3 rounded-md"
                   key={item.code}
                 >
@@ -256,72 +260,71 @@ export default function GrafikSuhu({
                       <Chip color="primary">Hidup</Chip>
                     )}
                   </div>
-                </div>
+                </li>
               ))}
-          </div>
-
-          {showTable && (
-            <div className="mt-5">
-              <Table aria-label="Data">
-                <TableHeader columns={columns}>
-                  {(column) => (
-                    <TableColumn key={column.key}>{column.label}</TableColumn>
-                  )}
-                </TableHeader>
-                <TableBody
-                  items={rows}
-                  isLoading={relayLogs.isLoading}
-                  loadingContent={<Spinner />}
-                  emptyContent={<EmptyState />}
+          </ul>
+        </div>
+      </div>
+      {showTable && (
+        <div className="mt-5">
+          <Table aria-label="Data">
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={rows}
+              isLoading={relayLogs.isLoading}
+              loadingContent={<Spinner />}
+              emptyContent={<EmptyState />}
+            >
+              {(item) => (
+                <TableRow
+                  key={item.id}
+                  className="odd:bg-[#75B89F]"
+                  role="button"
                 >
-                  {(item) => (
-                    <TableRow
-                      key={item.id}
-                      className="odd:bg-[#75B89F]"
-                      role="button"
+                  <TableCell>
+                    <div>{item.sensor?.cage?.site?.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.sensor?.cage?.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      {DateTime.fromISO(item.createdAt).toLocaleString(
+                        DateTime.DATETIME_MED_WITH_WEEKDAY,
+                        { locale: "id" }
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      color={item.status === 1 ? "success" : "danger"}
+                      className="text-white"
                     >
-                      <TableCell>
-                        <div>{item.sensor?.cage?.site?.name}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div>{item.sensor?.cage?.name}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          {DateTime.fromISO(item.createdAt).toLocaleString(
-                            DateTime.DATETIME_MED_WITH_WEEKDAY,
-                            { locale: "id" }
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          color={item.status === 1 ? "success" : "danger"}
-                          className="text-white"
-                        >
-                          {item.status === 1 ? "Nyala" : "Mati"}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <div>{item.relayDesc}</div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-              <div className="flex justify-center mt-3">
-                <Pagination
-                  color="primary"
-                  total={relayLogs.data?.data?.meta?.totalPage || 1}
-                  initialPage={1}
-                  page={relayLogs.data?.data?.meta?.page || 1}
-                  onChange={(page) => setPage(page.toString())}
-                />
-              </div>
-            </div>
-          )}
-        </CardBody>
-      </Card>
+                      {item.status === 1 ? "Nyala" : "Mati"}
+                    </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.relayDesc}</div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex justify-center mt-3">
+            <Pagination
+              color="primary"
+              total={relayLogs.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={relayLogs.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
