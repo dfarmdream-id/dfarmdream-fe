@@ -10,7 +10,6 @@ import {
   Spinner,
   Select,
   SelectItem,
-  Input,
   DateRangePicker,
 } from "@nextui-org/react";
 
@@ -21,7 +20,6 @@ import { DateTime } from "luxon";
 import { IDR } from "@/common/helpers/currency";
 import { useParams } from "next/navigation";
 import { useGetPriceLog } from "@/app/(authenticated)/_services/price";
-import { HiSearch } from "react-icons/hi";
 
 const columns = [
   {
