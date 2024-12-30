@@ -36,5 +36,12 @@ export const useGetPrice = (id: string) => {
 };
 
 export const useGetPriceLog = (params: Record<string, string>)=>{
-  return useHttp<GetPriceLogResponse>(useMemo(()=>`/v1/price/log/${params.siteId}`,[params.siteId]))
+  console.log("params : ", params)
+  const {siteId,...rest} = params
+  // return useHttp<GetPriceLogResponse>(useMemo(()=>`/v1/price/log/${params.siteId}`,[params.siteId]))
+  return useHttp<GetPriceLogResponse>(`/v1/price/log/${siteId}`, {
+    params:{
+      ...rest
+    },
+  });
 }
