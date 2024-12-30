@@ -25,7 +25,6 @@ import { DateTime } from "luxon";
 import { useGetPrices } from "../../_services/price";
 import { IDR } from "@/common/helpers/currency";
 import { Can } from "@/components/acl/can";
-import { useGetSites } from "../../_services/site";
 
 const columns = [
   {
@@ -84,8 +83,6 @@ export default function Page() {
       [search, page, limit, siteId]
     )
   );
-
-  const sites = useGetSites(useMemo(() => ({ page: "1", limit: "100" }), []));
 
   const rows = useMemo(() => {
     if (user.data) {
