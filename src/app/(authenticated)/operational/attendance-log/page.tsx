@@ -66,12 +66,12 @@ const columns = [
 // }
 
 function formatDate(dateString:string) {
-  let formattedDate = dateString
+  const formattedDate = dateString
       .replace('T', ' ')        
       .substring(0, 19);        
   
-  let dateParts = formattedDate.split(" ")[0].split("-"); 
-  let timePart = formattedDate.split(" ")[1]; 
+  const dateParts = formattedDate.split(" ")[0].split("-"); 
+  const timePart = formattedDate.split(" ")[1]; 
   
   return `${dateParts[1]}-${dateParts[2]}-${dateParts[0]} ${timePart}`;
 }
