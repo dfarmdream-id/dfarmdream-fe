@@ -66,7 +66,7 @@ export default function Actions(props: Props) {
         <Tooltip content="View Log">
           <Button
             as={Link}
-            href={`/master/prices/${props.siteId}/log`}
+            href={`/master/prices/${props.id}/log`}
             isIconOnly
             variant="light"
             color="primary"

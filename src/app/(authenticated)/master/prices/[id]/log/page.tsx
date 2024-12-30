@@ -10,10 +10,11 @@ import {
   Spinner,
   Select,
   SelectItem,
+  DateRangePicker,
 } from "@nextui-org/react";
 
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { IDR } from "@/common/helpers/currency";
@@ -54,16 +55,11 @@ export default function Page() {
     throttleMs: 1000,
   });
  
-  const [startDate] = useQueryState("startDate", {
-    throttleMs: 1000,
-  });
-  const [endDate] = useQueryState("endDate", {
-    throttleMs: 1000,
-  });
-
-const params = useParams();
+  const [tanggal, setTanggal] = useState<string | null>(null);
   
 
+  const params = useParams();
+  
   const items = useGetPriceLog(
     useMemo(
       () => ({
@@ -71,14 +67,13 @@ const params = useParams();
         page: page || "1",
         limit: limit || "10",
         siteId: params.id as string,
-        startDate: startDate as string,
-        endDate: endDate as string,
+        tanggal: tanggal || "",
       }),
-      [ page, limit, params.id, startDate, endDate]
+      [ page, limit, params.id, tanggal]
     )
   );
 
-
+ 
   const rows = useMemo(() => {
     if (items.data) {
       return items.data?.data?.data || [];
@@ -90,6 +85,21 @@ const params = useParams();
     <div className="p-5">
       
       <div className="text-3xl font-bold mb-10">Data Log Harga </div>
+      <div className="space-y-5 bg-white p-5 rounded-lg">
+        <div className="flex justify-between items-center gap-3 flex-wrap">
+          <div className="w-full md:w-fit flex gap-3">
+            <DateRangePicker variant="bordered"
+              onChange={
+                (e) => {
+                  setTanggal(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                }
+              }
+            /> 
+            </div>
+          </div>
+        </div>
+      
+
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <Table aria-label="Data">
           <TableHeader columns={columns}>
