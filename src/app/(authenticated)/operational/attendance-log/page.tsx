@@ -43,26 +43,37 @@ const columns = [
   },
 ];
 
-function formatDate(inputDate:string) {
-  const date = new Date(inputDate);
+// function formatDate(inputDate:string) {
+//   const date = new Date(inputDate);
 
-  const options:any = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false, 
-  };
+//   const options:any = {
+//     year: 'numeric',
+//     month: 'short',
+//     day: 'numeric',
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     second: '2-digit',
+//     hour12: false, 
+//   };
 
-  const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+//   const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
 
-  const [day, month, year] = formattedDate.split(' ');
-  const time = date.toTimeString().split(' ')[0]; 
-  const result = `${day} ${month} ${year} ${time}`;
+//   const [day, month, year] = formattedDate.split(' ');
+//   const time = date.toTimeString().split(' ')[0]; 
+//   const result = `${day} ${month} ${year} ${time}`;
 
-  return result;
+//   return result;
+// }
+
+function formatDate(dateString:string) {
+  let formattedDate = dateString
+      .replace('T', ' ')        
+      .substring(0, 19);        
+  
+  let dateParts = formattedDate.split(" ")[0].split("-"); 
+  let timePart = formattedDate.split(" ")[1]; 
+  
+  return `${dateParts[1]}-${dateParts[2]}-${dateParts[0]} ${timePart}`;
 }
 
 
