@@ -71,12 +71,7 @@ export default function Page() {
   const [siteId] = useQueryState("siteId", {
     throttleMs: 1000,
   });
-  const [startDate] = useQueryState("startDate", {
-    throttleMs: 1000,
-  });
-  const [endDate] = useQueryState("endDate", {
-    throttleMs: 1000,
-  });
+  
 
   const user = useGetPrices(
     useMemo(
@@ -85,10 +80,8 @@ export default function Page() {
         page: page || "1",
         limit: limit || "10",
         siteId: siteId as string,
-        startDate: startDate as string,
-        endDate: endDate as string,
       }),
-      [search, page, limit, siteId, startDate, endDate]
+      [search, page, limit, siteId]
     )
   );
 
