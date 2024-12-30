@@ -48,7 +48,7 @@ export default function Page() {
       {
         body: {
           ...data,
-          name:`Harga ${data.type}`,
+          name:`Harga ${data.type=='EGG'?'Telur':'Ayam'}`,
           status: data.status ? "ACTIVE" : "INACTIVE",
         },
       },

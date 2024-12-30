@@ -12,20 +12,12 @@ import {
   Spinner,
   Chip,
   Select,
-  SelectItem,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  DateRangePicker,
-  DateValue,
-  RangeValue,
+  SelectItem
 } from "@nextui-org/react";
-import { HiOutlineFilter, HiSearch } from "react-icons/hi";
+import {  HiSearch } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { useQueryState } from "nuqs";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
@@ -34,8 +26,6 @@ import { useGetPrices } from "../../_services/price";
 import { IDR } from "@/common/helpers/currency";
 import { Can } from "@/components/acl/can";
 import { useGetSites } from "../../_services/site";
-import Form from "next/form";
-import { usePathname } from "next/navigation";
 
 const columns = [
   {
@@ -110,76 +100,8 @@ export default function Page() {
     }
     return [];
   }, [user.data]);
-
-  const [showFilter, setShowFilter] = useState(false);
-  const [dateRangePicker, setDateRangePicker] = useState<{
-    start?: DateValue;
-    end?: DateValue;
-  }>({ start: undefined });
-
-  const path = usePathname();
   return (
     <div className="p-5">
-      <Modal isOpen={showFilter} onClose={() => setShowFilter(false)}>
-        <ModalContent>
-          <Form
-            action={path}
-            onSubmit={() => {
-              setShowFilter(false);
-            }}
-          >
-            <ModalHeader>Filter Data</ModalHeader>
-            <ModalBody>
-              <div className="grid grid-cols-1 gap-5">
-                <Select
-                  labelPlacement="outside"
-                  placeholder="Pilih Lokasi"
-                  isLoading={sites.isLoading}
-                  variant="bordered"
-                  name="siteId"
-                  defaultSelectedKeys={[siteId as string]}
-                >
-                  {sites.data?.data?.data?.map((l) => (
-                    <SelectItem key={l.id} value={l.id}>
-                      {l.name}
-                    </SelectItem>
-                  )) || []}
-                </Select>
-                <DateRangePicker
-                  defaultValue={dateRangePicker as RangeValue<DateValue>}
-                  variant="bordered"
-                  onChange={(value) => {
-                    setDateRangePicker(value);
-                  }}
-                />
-                <input
-                  type="hidden"
-                  name="startDate"
-                  value={dateRangePicker?.start?.toString()}
-                />
-                <input
-                  type="hidden"
-                  name="endDate"
-                  value={dateRangePicker?.end?.toString()}
-                />
-              </div>
-            </ModalBody>
-            <ModalFooter className="grid grid-cols-2">
-              <Button
-                variant="bordered"
-                onPress={() => {
-                  setShowFilter(false);
-                }}
-              >
-                Batal
-              </Button>
-              <Button color="primary" type="submit">
-                Submit
-              </Button>
-            </ModalFooter>
-          </Form>
-        </ModalContent>
-      </Modal>
       <div className="text-3xl font-bold mb-10">Data Harga</div>
       <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
@@ -192,16 +114,6 @@ export default function Page() {
               name="q"
               onValueChange={setSearch}
             />
-            <div>
-              <Button
-                startContent={<HiOutlineFilter />}
-                onPress={() => {
-                  setShowFilter(!showFilter);
-                }}
-              >
-                Filter Data
-              </Button>
-            </div>
           </div>
           <Can action="create:price">
             <Button
