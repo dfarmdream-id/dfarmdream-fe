@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
+import { HiEye, HiTrash } from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -47,6 +47,16 @@ export default function Actions(props: Props) {
 
   return (
     <div className="flex space-x-1">
+       <Tooltip content="View Log">
+          <Button
+            as={Link}
+            href={`/operational/sensor-device/${props.id}/log`}
+            isIconOnly
+            variant="light"
+          >
+            <HiEye />
+          </Button>
+        </Tooltip>
       <Can action="update:iot">
         <Tooltip content="Edit Data">
           <Button

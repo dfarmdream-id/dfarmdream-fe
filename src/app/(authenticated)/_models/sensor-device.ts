@@ -10,6 +10,12 @@ export interface GetListSensorDeviceResponse {
     status: number;
   }
   
+  export interface GetSensorLogResponse {
+    message: string;
+    data: DataLog;
+    status: number
+  }
+
   export interface Data {
     data: Daum[];
     meta: Meta;
@@ -51,5 +57,23 @@ export interface GetListSensorDeviceResponse {
     totalData: number;
     totalPage: number;
   }
+
+  export interface DataLog{
+    data:ObjectLog[];
+    meta:Meta;
+  }
   
-  
+  export interface ObjectLog{
+    id:string;
+    type:string;
+    averageValue:string;
+    epoch:number;
+    interval:string;
+    sensor:Sensor;
+  }
+
+  export interface Sensor{
+    id:string;
+    code:string;
+    type:string;
+  }
