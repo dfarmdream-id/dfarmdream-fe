@@ -181,12 +181,20 @@ export default function Actions(props: Props) {
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jenis</td>
-                      <td className="px-3 py-1">Telur</td>
+                      <td className="px-3 py-1">
+                        {data?.data?.data?.category == "CHICKEN"
+                          ? "Ayam"
+                          : "Telur"}
+                      </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jumlah</td>
                       <td className="px-3 py-1">
-                        {data?.data?.data?.qty} Butir
+                        {data?.data?.data?.qty} {
+                          data?.data?.data?.category == "CHICKEN"
+                            ? "Ekor"
+                            : "Butir Utuh"
+                      } {data?.data?.data?.qtyCrack ? ` (${data?.data?.data?.qtyCrack} Retak)` : ""}
                       </td>
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">

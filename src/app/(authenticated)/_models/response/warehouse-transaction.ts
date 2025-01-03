@@ -20,6 +20,7 @@ export interface Daum {
   code: string;
   cageId: string;
   qty: number;
+  qtyCrack: number;
   weight: number;
   type: string;
   createdById: string;

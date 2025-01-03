@@ -147,6 +147,14 @@ export default function Page() {
       }
     );
   });
+  
+  // batchId
+  useEffect(() => {
+    if (batchId) {
+      form.setValue("batchId", batchId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batchId]);
 
   return (
     <div className="p-5">
@@ -177,7 +185,7 @@ export default function Page() {
               onBatchIdChange={(value) => {
                 form.setValue("batchId", value);
               }}
-              batchId={batchId}
+              batchId={form.watch('batchId')}
             />
           </div>
 

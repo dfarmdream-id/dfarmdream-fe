@@ -15,7 +15,9 @@ const Chart = dynamic(
 
 
 export default function GrafiKeuangan (){
-  const [year, setYear] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>(
+    new Date().getFullYear().toString()
+  );
   const queryClient = useQueryClient();
 
   const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
@@ -131,26 +133,25 @@ export default function GrafiKeuangan (){
                       variant="bordered"
                       labelPlacement="outside"
                       className="w-full md:w-50 lg:w-60"
-                      selectedKeys={[new Date().getFullYear().toString()]}
+                      renderValue={(value) => (
+                        <span className="text-black">{
+                          value[0].key === "placeholder" ? "Pilih Tahun" : value[0].key
+                        }</span>
+                      )}
                       onChange={(e) => {
                         setYear(e.target.value);
                       }}
                     >
-                      <SelectItem key="2021" value="2021">
-                        2021
-                      </SelectItem>
-                      <SelectItem key="2022" value="2022">
-                        2022
-                      </SelectItem>
-                      <SelectItem key="2023" value="2023">
-                        2023
-                      </SelectItem>
-                      <SelectItem key="2024" value="2024">
-                        2024
-                      </SelectItem>
-                      <SelectItem key="2025" value="2025">
-                        2025
-                      </SelectItem>
+                      {
+                        new Array(10).fill(0).map((_, index) => {
+                          const year = new Date().getFullYear() - index;
+                          return (
+                            <SelectItem key={year} value={year}>
+                              {year}
+                            </SelectItem>
+                          )
+                        })
+                      }
                     </Select>
                   </div>
                 </div>

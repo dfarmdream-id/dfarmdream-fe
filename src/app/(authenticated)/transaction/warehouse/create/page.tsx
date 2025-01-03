@@ -52,6 +52,11 @@ export default function Page() {
           .min(1, {
             message: "Total Wajib DIisi",
           }),
+        qtyCrack: z
+          .number()
+          .min(1, {
+            message: "Total Wajib DIisi",
+          }).optional(),
         rackId: z
           .string({
             message: "Rak Wajib Diisi",
@@ -186,6 +191,7 @@ export default function Page() {
               onBatchIdChange={(value) => {
                 form.setValue("batchId", value);
               }}
+              batchId={form.watch("batchId")}
             />
           </div>
           <div className="h-16">
@@ -236,22 +242,62 @@ export default function Page() {
                       </div>
 
                       <div className="h-16">
-                        <Controller
-                          control={form.control}
-                          name={`haversts.${i}.qty`}
-                          render={({field, fieldState}) => (
-                            <InputNumber
-                              labelPlacement="outside"
-                              variant="bordered"
-                              type="text"
-                              label={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
-                              placeholder={`Jumlah ${form.watch('category') == 'EGG' ? 'Telur' : 'Ayam'}`}
-                              {...field}
-                              errorMessage={fieldState.error?.message}
-                              isInvalid={fieldState.invalid}
+                        {form.watch('category') === 'EGG' ? (
+                          <div className="flex gap-4">
+                            <Controller
+                              control={form.control}
+                              name={`haversts.${i}.qty`}
+                              render={({field, fieldState}) => (
+                                <InputNumber
+                                  labelPlacement="outside"
+                                  variant="bordered"
+                                  type="text"
+                                  label="Jumlah Telur Utuh"
+                                  placeholder="Jumlah Telur Utuh"
+                                  {...field}
+                                  errorMessage={fieldState.error?.message}
+                                  isInvalid={fieldState.invalid}
+                                  className="w-full"
+                                />
+                              )}
                             />
-                          )}
-                        />
+                            <Controller
+                              control={form.control}
+                              name={`haversts.${i}.qtyCrack`}
+                              render={({field, fieldState}) => (
+                                <InputNumber
+                                  labelPlacement="outside"
+                                  variant="bordered"
+                                  type="text"
+                                  label="Jumlah Telur Pecah"
+                                  placeholder="Jumlah Telur Pecah"
+                                  {...field}
+                                  errorMessage={fieldState.error?.message}
+                                  isInvalid={fieldState.invalid}
+                                  className="w-full"
+                                />
+                              )}
+                            />
+                          </div>
+                        ) : (
+                          <Controller
+                            control={form.control}
+                            name={`haversts.${i}.qty`}
+                            render={({field, fieldState}) => (
+                              <InputNumber
+                                labelPlacement="outside"
+                                variant="bordered"
+                                type="text"
+                                label="Jumlah Ayam"
+                                placeholder="Jumlah"
+                                {...field}
+                                errorMessage={fieldState.error?.message}
+                                isInvalid={fieldState.invalid}
+                                className="w-full"
+                              />
+                            )}
+                          />
+                        )}
                       </div>
                     </div>
                   </li>

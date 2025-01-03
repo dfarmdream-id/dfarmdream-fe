@@ -9,7 +9,6 @@ import { useEffect, useMemo } from "react";
 import { useGetCageRack, useUpdateCageRack } from "../../../../_services/rack";
 import { useRouter } from "next/navigation";
 import { useGetCages } from "../../../../_services/cage";
-import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 
 export default function Page() {
   const schema = z.object({
@@ -18,10 +17,7 @@ export default function Page() {
     }),
     cageId: z.string({
       message: "Id kandang",
-    }),
-    batchId: z.string({
-      message: "batch Wajib diisi",
-    }),
+    })
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -43,9 +39,6 @@ export default function Page() {
       if (data?.data?.data?.cageId) {
         form.setValue("cageId", data?.data?.data?.cageId);
       }
-      if (data?.data?.data?.batchId) {
-        form.setValue("batchId", data?.data?.data?.batchId);
-      }
     }
   }, [data.data, form]);
 
@@ -64,7 +57,7 @@ export default function Page() {
         onSuccess: () => {
           toast.success("Berhasil mengubah data");
           form.reset();
-          router.push("/operational/cages");
+          router.push("/operational/cage-racks");
         },
       }
     );
@@ -93,16 +86,6 @@ export default function Page() {
               )}
             />
           </div>
-          
-          <div className="h-16">
-            <FilterBatch
-              onBatchIdChange={(value) => {
-                form.setValue("batchId", value);
-              }}
-              batchId={form.watch("batchId")}
-            />
-          </div>
-
 
           <div className="h-16">
             <Controller

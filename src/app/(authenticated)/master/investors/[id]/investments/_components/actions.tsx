@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
+import {HiDocument, HiTrash} from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import { usePathname } from "next/navigation";
 
 type Props = {
   id: string;
+  urlDocument: string;
 };
 
 export default function Actions(props: Props) {
@@ -45,6 +46,10 @@ export default function Actions(props: Props) {
       }
     );
   };
+  
+  const handleShowDocument = (url: string) => {
+    window.open(url, "_blank");
+  };
 
   const path = usePathname();
 
@@ -60,6 +65,18 @@ export default function Actions(props: Props) {
             color="primary"
           >
             <HiPencilAlt />
+          </Button>
+        </Tooltip>
+      </Can>
+      <Can action="show:document">
+        <Tooltip content="Show Dokumen">
+          <Button
+            isIconOnly
+            variant="light"
+            color="default"
+            onPress={handleShowDocument.bind(null, props.urlDocument)}
+          >
+            <HiDocument />
           </Button>
         </Tooltip>
       </Can>

@@ -16,7 +16,7 @@ export default function FilterBatch({
                                       onBatchIdChange,
                                       batchId,
                                       label,
-                                      className,
+                                      className = "",
                                       disableLabel,
                                     }: FilterBatchProps) {
   // Validasi form
@@ -74,12 +74,12 @@ export default function FilterBatch({
   }, [batchId]);
 
   return (
-    <div className="w-full md:w-[20rem]">
+    <div className={`w-full ${className}`}>
       <Autocomplete
         labelPlacement="outside"
         variant="bordered"
-        label={disableLabel ? "" : label || "Batch"} // Mengatur label sesuai prop
-        className={className}
+        label={disableLabel ? "" : label || "Batch"}
+        className="w-full"
         placeholder="Masukkan nama batch"
         isLoading={batchsData.isLoading}
         onInputChange={onBatchInputChange}
@@ -95,10 +95,8 @@ export default function FilterBatch({
           >
             <div className="flex gap-2 items-center">
               <div className="flex flex-col">
-                <span className="text-small">{batch.name}</span>
-                <span className="text-tiny text-default-400">
-                  {batch.status}
-                </span>
+                <span className="text-sm">{batch.name}</span>
+                <span className="text-xs text-gray-400">{batch.status}</span>
               </div>
             </div>
           </AutocompleteItem>
@@ -107,3 +105,4 @@ export default function FilterBatch({
     </div>
   );
 }
+

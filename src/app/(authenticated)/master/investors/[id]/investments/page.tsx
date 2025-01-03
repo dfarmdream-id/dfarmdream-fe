@@ -170,7 +170,7 @@ export default function Page() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Actions id={item.id} />
+                    <Actions id={item.id} urlDocument={item.file.url} />
                   </TableCell>
                 </TableRow>
               )}
