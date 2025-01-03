@@ -156,7 +156,10 @@ export default function Page() {
                   <div>{item.weight}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.qty}</div>
+                  <div>
+                    {item.qty} {item.category == "EGG" ? "Butir Utuh" : "Ekor"}
+                    {item.qtyCrack ? ` (${item.qtyCrack} Retak)` : ""}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <div>{item.createdBy.fullName}</div>

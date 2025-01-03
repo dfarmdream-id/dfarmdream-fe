@@ -138,11 +138,16 @@ export default function BalanceSheet() {
               }}
               className="w-full min-w-[120px]"
             >
-              <SelectItem key="2021" value="2021">2021</SelectItem>
-              <SelectItem key="2022" value="2022">2022</SelectItem>
-              <SelectItem key="2023" value="2023">2023</SelectItem>
-              <SelectItem key="2024" value="2024">2024</SelectItem>
-              <SelectItem key="2025" value="2025">2025</SelectItem>
+              {
+                new Array(10).fill(0).map((_, index) => {
+                  const year = new Date().getFullYear() - index;
+                  return (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  )
+                })
+              }
             </Select>
           </div>
 

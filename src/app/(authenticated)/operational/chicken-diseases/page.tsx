@@ -89,7 +89,7 @@ export default function Page() {
 
               <Input
                 startContent={<HiSearch/>}
-                placeholder="Cari Ayam"
+                placeholder="Cari Penyakit Ayam"
                 variant="bordered"
                 value={search || ""}
                 onValueChange={setSearch}
