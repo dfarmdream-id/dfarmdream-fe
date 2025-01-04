@@ -22,6 +22,7 @@ export interface Daum {
   tempThreshold: number;
   humidityThreshold: number;
   amoniaThreshold: number;
+  ldrThreshold: number;
   cageId?: string;
   cage?: Cage;
 }

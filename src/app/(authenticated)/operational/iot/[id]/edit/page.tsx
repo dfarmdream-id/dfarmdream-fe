@@ -30,6 +30,9 @@ export default function Page() {
     amoniaThreshold: z.number({
       message: "Isi Amonia Threshold",
     }),
+    ldrThreshold: z.number({
+      message: "Isi LDR Threshold",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -64,6 +67,10 @@ export default function Page() {
       }
       if (item?.data?.data?.cageId) {
         form.setValue("cageId", item?.data?.data?.cageId);
+      }
+
+      if(item?.data?.data?.ldrThreshold){
+        form.setValue("ldrThreshold", item?.data?.data?.ldrThreshold);
       }
     }
   }, [item.data, form]);
@@ -208,6 +215,24 @@ export default function Page() {
                   type="text"
                   label="Amonia Threshold"
                   placeholder="Ketikkan Threshold Amonia"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="ldrThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="LDR Threshold"
+                  placeholder="Ketikkan threshold LDR"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
