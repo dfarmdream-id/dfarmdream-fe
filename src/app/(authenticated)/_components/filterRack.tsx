@@ -8,9 +8,10 @@ interface FilterRackProps {
   onRackIdChange: (rackId: string) => void; // Callback untuk mengirim rackId ke parent
   cageId?: string | null;
   rackId?: string | null;
+  disableLabel?: boolean; // Menyembunyikan label jika diaktifkan
 }
 
-export default function FilterRack({ onRackIdChange, cageId, rackId }: FilterRackProps) {
+export default function FilterRack({ onRackIdChange, cageId, rackId, disableLabel }: FilterRackProps) {
   const schema = z.object({
     rackId: z.string({
       message: "Mohon pilih Rak",
@@ -71,7 +72,7 @@ export default function FilterRack({ onRackIdChange, cageId, rackId }: FilterRac
         <Autocomplete
           labelPlacement="outside"
           variant="bordered"
-          label="Rak"
+          label={!disableLabel ? "Rak" : undefined}
           placeholder="Masukkan nama rak"
           isLoading={racksData.isLoading}
           onInputChange={(value) => onRackInputChange(value)} // Menggunakan debounce pada input

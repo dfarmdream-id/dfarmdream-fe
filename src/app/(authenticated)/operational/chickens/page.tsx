@@ -3,7 +3,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
-  Chip,
+  Chip, DateRangePicker,
   Input,
   Modal,
   ModalBody,
@@ -22,7 +22,7 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import {HiSearch} from "react-icons/hi";
+import {HiOutlineFilter, HiSearch} from "react-icons/hi";
 import {HiPlus} from "react-icons/hi2";
 import {useQueryState} from "nuqs";
 import {useMemo, useState} from "react";
@@ -39,9 +39,10 @@ import {
   getStatusProps
 } from "@/app/(authenticated)/operational/chickens/_const/status.const";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
-import {useGetCageRacks} from "@/app/(authenticated)/_services/rack";
 import useLocationStore from "@/stores/useLocationStore";
-import {BiX} from "react-icons/bi";
+import Form from "next/form";
+import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import FilterRack from "@/app/(authenticated)/_components/filterRack";
 
 const columns = [
   {
@@ -98,17 +99,35 @@ export default function Page() {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [statusSelected, setStatusSelected] = useState<string | null>(null);
   const [diseaseSelected, setDiseaseSelected] = useState<string | null>(null);
-  const [cageSelected, setCageSelected] = useState("");
-  const [rackSelected, setRackSelected] = useState("");
+  const [batchId, setBatchId] = useState<string | null>(null);
+  const [cageId, setCageId] = useState<string | null>(null);
+  const [rackId, setRackId] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<string | null>(null)
   const [idSelected, setIdSelected] = useState("");
 
+  const [showFilter, setShowFilter] = useState(false);
+
   const user = useGetChickens(
-    useMemo(
-      () => ({q: search || "", page: page || "1", limit: limit || "10", rackId: rackSelected ?? null}),
-      [search, page, limit, rackSelected]
-    )
+    useMemo(() => {
+      const params: Record<string, string> = {
+        q: search || "",
+        page: page || "1",
+        limit: limit || "10",
+      };
+
+      // Tambahkan hanya jika memiliki value
+      if (batchId) params.batchId = batchId;
+      if (cageId) params.cageId = cageId;
+      if (rackId) params.rackId = rackId;
+      if (dateRange) params.dateRangeFilter = dateRange;
+      if(statusSelected) params.status = statusSelected;
+      if(diseaseSelected) params.diseaseId = diseaseSelected;
+
+      return params;
+    }, [search, page, limit, batchId, cageId, rackId, dateRange, statusSelected, diseaseSelected])
   );
-  
+
+
   const diseases = useGetChickenDiseases(
     useMemo(
       () => ({page: "1", limit:  "100"}),
@@ -164,12 +183,106 @@ export default function Page() {
     )
   );
 
-  const rackData = useGetCageRacks(
-    useMemo(() => ({ page: "1", limit: "100", cageId: cageSelected }), [cageSelected])
-  );
-
     return (
       <div className="p-5">
+        <Modal isOpen={showFilter} onClose={() => setShowFilter(false)}>
+          <ModalContent>
+            <Form
+              action={''}
+              onSubmit={() => {
+                setShowFilter(false);
+              }}
+            >
+              <ModalHeader>Filter Data</ModalHeader>
+              <ModalBody>
+                <div className="grid grid-cols-1 gap-3">
+                  <FilterBatch
+                    batchId={batchId}
+                    disableLabel={true} onBatchIdChange={ (batchId) => {setBatchId(batchId);
+                  }} />
+                  <Select
+                    isLoading={cagesData.isLoading}
+                    labelPlacement="outside"
+                    placeholder="Pilih Kandang"
+                    variant="bordered"
+                    selectedKeys={[
+                      cageId as string,
+                    ]}
+                    onChange={ (e) => {
+                       setCageId(e.target.value);
+                    }}
+                  >
+                    {cagesData.data?.data?.data?.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.name}
+                      </SelectItem>
+                    )) || []}
+                  </Select>
+                  <FilterRack 
+                    onRackIdChange={ (rackId) => {
+                      setRackId(rackId);
+                    }}
+                    cageId={cageId}
+                    disableLabel={true}
+                  />
+                  <DateRangePicker
+                    onChange={ (e) => {
+                       setDateRange(
+                        e.start.toString() + "," + e.end.toString()
+                      );
+                    }}
+                    labelPlacement="outside" variant="bordered" />
+
+                  <Select
+                    className="w-100"
+                    items={chickenStatus}
+                    variant="bordered"
+                    label="Status Ayam"
+                    placeholder="Pilih Status Ayam"
+                    selectedKeys={[statusSelected || ""]}
+                    onChange={(e) => setStatusSelected(e.target.value)}
+                  >
+                    {(status) => <SelectItem key={status.key} value={status.key}>{status.label}</SelectItem>}
+                  </Select>
+                  {
+                    (statusSelected === "ALIVE_IN_SICK" || statusSelected === "DEAD_DUE_TO_ILLNESS") && (
+                      <Autocomplete
+                        onSelectionChange={(value) => setDiseaseSelected(
+                          value as string
+                        )} // Perbarui state
+                        selectedKey={diseaseSelected}
+                        variant="bordered" className="w-100" label="Pilih Alasan Penyakit">
+                        {diseases?.data?.data?.data.map((status) => (
+                          <AutocompleteItem key={status.id}>{status.name}</AutocompleteItem>
+                        )) ?? []}
+                      </Autocomplete>
+                    )
+                  }
+                </div>
+              </ModalBody>
+              <ModalFooter className="grid grid-cols-2">
+                <Button
+                  variant="bordered"
+                  onPress={ () => {
+                    // reset
+                     setBatchId(null);
+                     setCageId(null);
+                     setDateRange(null);
+                     setRackId(null);
+                      setStatusSelected(null);
+                      setDiseaseSelected(null);
+                      setShowFilter(false);
+                  }}
+                >
+                  Batal
+                </Button>
+                <Button color="primary" type="submit">
+                  Submit
+                </Button>
+              </ModalFooter>
+            </Form>
+          </ModalContent>
+        </Modal>
         <div className="text-3xl font-bold mb-10">Data Ayam</div>
         <div className="space-y-5 bg-white p-5 rounded-lg">
           <div className="flex justify-between items-center gap-3 flex-wrap">
@@ -181,51 +294,16 @@ export default function Page() {
                 value={search || ""}
                 onValueChange={setSearch}
               />
-              <Select
-                isLoading={cagesData.isLoading}
-                labelPlacement="outside"
-                placeholder="Pilih Kandang"
-                variant="bordered"
-                defaultSelectedKeys={[cageSelected]} // Pastikan ini mengikuti state
-                onChange={(e) => setCageSelected(e.target.value)} // Perbarui state saat dipilih
-              >
-                {cagesData.data?.data?.data?.map((position) => (
-                  <SelectItem key={position.id} value={position.id}>
-                    {position.name}
-                  </SelectItem>
-                )) || []}
-              </Select>
-
-              <Select
-                isLoading={rackData.isLoading}
-                labelPlacement="outside"
-                placeholder="Pilih Rak"
-                variant="bordered"
-                defaultSelectedKeys={[rackSelected]} // Pastikan ini mengikuti state
-                onChange={(e) => setRackSelected(e.target.value)} // Perbarui state saat dipilih
-              >
-                {rackData.data?.data?.data?.map((position) => (
-                  <SelectItem key={position.id} value={position.id}>
-                    {position.name}
-                  </SelectItem>
-                )) || []}
-              </Select>
-
-              {rackSelected && (
+              <div>
                 <Button
-                  color="danger"
-                  size="sm"
-                  onClick={() => {
-                    setRackSelected(""); // Reset state rackSelected
-                    setCageSelected(""); // Reset state cageSelected
+                  startContent={<HiOutlineFilter/>}
+                  onPress={() => {
+                    setShowFilter(!showFilter);
                   }}
                 >
-                  <BiX
-                    className="text-white"
-                    style={{width: 25, height: 25}}
-                  />
+                  Filter Data
                 </Button>
-              )}
+              </div>
             </div>
             <Can action="create:chicken">
               <Button
