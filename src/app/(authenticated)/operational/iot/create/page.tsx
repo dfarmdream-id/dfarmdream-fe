@@ -30,6 +30,9 @@ export default function Page() {
     amoniaThreshold: z.number({
       message: "Isi Amonia Threshold",
     }),
+    ldrThreshold: z.number({
+      message: "Isi LDR Threshold",
+    })
   });
 
   const sites = useGetCages(useMemo(() => ({ page: "1", limit: "1000000" }), []));
@@ -173,6 +176,24 @@ export default function Page() {
                   type="text"
                   label="Amonia Threshold"
                   placeholder="Ketikkan Threshold Amonia"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="ldrThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="LDR Threshold"
+                  placeholder="Ketikkan threshold LDR"
                   {...field}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
