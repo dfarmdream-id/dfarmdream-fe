@@ -7,7 +7,6 @@ import {
   ModalHeader,
   Autocomplete,
   AutocompleteItem,
-  useDisclosure,
 } from "@nextui-org/react";
 import {
   useGetProfile,
@@ -21,10 +20,17 @@ import { toast } from "sonner";
 import useLocationStore from "@/stores/useLocationStore";
 import { useMemo, useCallback } from "react";
 import useBatchStore from "@/stores/useBatchStore";
-import { MdOutlineSettingsSuggest } from "react-icons/md";
 
-export default function GlobalSettings() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export default function GlobalSettings(
+  {
+    isOpen,
+    onOpenChange,
+  }: {
+    isOpen: boolean;
+    onOpenChange: (isOpen: boolean) => void;
+  }
+) {
+  
   const { setSiteId } = useLocationStore();
   const { batchId, setBatchId } = useBatchStore();
 
@@ -79,10 +85,6 @@ export default function GlobalSettings() {
 
   return (
     <div>
-      <Button size="md" onPress={onOpen}>
-        <MdOutlineSettingsSuggest size="20" />
-        <span>Settings</span>
-      </Button>
       <Modal
         isOpen={isOpen}
         size="lg"

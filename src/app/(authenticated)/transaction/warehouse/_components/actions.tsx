@@ -177,7 +177,7 @@ export default function Actions(props: Props) {
                       <td className="px-3 py-1 w-1/4">Lokasi</td>
                       <td className="px-3 py-1">
                         {data?.data?.data?.site?.name}
-                      </td>
+                      </td>n
                     </tr>
                     <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
                       <td className="px-3 py-1 w-1/4">Jenis</td>

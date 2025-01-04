@@ -230,7 +230,17 @@ export default function Page() {
               {haversts.fields.map((item, i) => {
                 return (
                   <li key={i} className="py-4">
-                    <div className="font-bold mb-3">Panen {i + 1}</div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="font-bold">Panen {i + 1}</div>
+                      <Button
+                        color="danger"
+                        variant="solid"
+                        size="sm"
+                        onClick={() => haversts.remove(i)}
+                      >
+                        Hapus
+                      </Button>
+                    </div>
                     <div className="grid md:grid-cols-2 gap-3">
                       <div className="h-16">
                         <FilterRack
