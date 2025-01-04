@@ -92,4 +92,8 @@ export interface IotSensor{
   name:string;
   code:string;
   cageId:string;
+  ldrThreshold:number;
+  humidityThreshold:number;
+  temperatureThreshold:number;
+  amoniaThreshold:number;
 }

@@ -63,7 +63,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
               </div>
               <div className="w-full">
                 <div className="font-bold">Lampu {index + 1}</div>
-                {x.lastestValue > 500 ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
+                {x.lastestValue < x.IotSensor.ldrThreshold ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
               </div>
             </li>
           ))}
