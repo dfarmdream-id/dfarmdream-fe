@@ -12,14 +12,16 @@ import {
   Select,
   SelectItem,
   Chip,
+  DateRangePicker,
 } from "@nextui-org/react";
 import { HiSearch } from "react-icons/hi";
 import { useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import EmptyState from "@/components/state/empty";
 import { IDR } from "@/common/helpers/currency";
 import { NumberFormat } from "@/common/helpers/number-format";
 import { useGetListTransaksiBarang } from "../../_services/transaksi-barang";
+import FilterBarang from "../../_components/filterBarang";
 
 const columns = [
   {
@@ -83,12 +85,13 @@ export default function Page() {
   const [limit, setLimit] = useQueryState("limit", {
     throttleMs: 1000,
   });
-
+  const [tanggal, setTanggal] = useState<string | null>(null);
+  const [goodId, setGoodId] = useState<string | null>(null);
 
   const user = useGetListTransaksiBarang(
     useMemo(
-      () => ({ q: search || "", page: page || "1", limit: limit || "10" }),
-      [search, page, limit]
+      () => ({ q: search || "", page: page || "1", limit: limit || "10", tanggal: tanggal || "", goodId: goodId || "" }),
+      [search, page, limit, tanggal, goodId]
     )
   );
 
@@ -115,7 +118,18 @@ export default function Page() {
               onValueChange={(e) => setSearch(e)}
               endContent={<HiSearch />}
             />
-            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
+            <DateRangePicker variant="bordered"
+              onChange={
+                (e) => {
+                  setTanggal(`${e?.start?.toString() || ""},${e?.end?.toString() || ""}`);
+                }
+              }
+            />             
+            <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
+            <FilterBarang onChangeIdBarang={(id) => setGoodId(id)} />
+
+
+            </div>
           </div>
         </div>
         <Table aria-label="Data">
