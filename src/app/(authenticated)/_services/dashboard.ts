@@ -86,20 +86,14 @@ export const useDashboardKeuangan = ({
 };
 
 export const useGetDashboardPersediaanBarang = ({
-  tanggal,
   cageId,
 }: {
-  tanggal: {
-    startDate: Date | null;
-    endDate: Date | null;
-  };
   cageId: string | null;
 }) => {
   return useHttp<DasboardPersediaanBarangResponse>(
     "/v1/persediaan-barang/dashboard",
     {
       params: {
-        tanggal,
         cageId
       },
     }

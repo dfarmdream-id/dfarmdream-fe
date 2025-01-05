@@ -3,13 +3,10 @@
 import { Card, CardBody, Spinner } from "@nextui-org/react";
 import dynamic from "next/dynamic";
 import {
-  useDashboardChartEgg,
   useGetDashboardPersediaanBarang,
 } from "@/app/(authenticated)/_services/dashboard";
 import { useMemo, useState } from "react";
 import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCageRack";
-import { useQueryClient } from "@tanstack/react-query";
-import { DateRangeSelector } from "@/app/(authenticated)/dashboard/_components/DateRangeSelector";
 import { NumberFormat } from "@/common/helpers/number-format";
 import KartuStokTable from "../../stock/transaksi/components/DataTable";
 
@@ -19,36 +16,17 @@ const Chart = dynamic(
 );
 export default function GrafikPersediaanBarang() {
   const [selectedCageId, setSelectedCageId] = useState<string | null>(null);
-  const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
-  const [selectedRange, setSelectedRange] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  }>({ startDate: null, endDate: null });
-
-  const handleRangeChange = (range: {
-    startDate: Date | null;
-    endDate: Date | null;
-  }) => {
-    setSelectedRange(range);
-  };
-
-  const selectedRackId = null;
-
+ 
   const handleCageIdChange = (cageId: string) => {
     setSelectedCageId(cageId); // Simpan cageId di state parent
-  };
-
-  const handleBatchIdChange = (batchId: string) => {
-    setSelectedBatchId(batchId); // Simpan batchId di state parent
   };
 
   const persediaanData = useGetDashboardPersediaanBarang(
     useMemo(
       () => ({
-        tanggal: selectedRange,
         cageId: selectedCageId,
       }),
-      [selectedRange, selectedCageId]
+      [selectedCageId]
     )
   );
 
@@ -69,19 +47,7 @@ export default function GrafikPersediaanBarang() {
     }
   }, [persediaanData.data]);
 
-  const chartData = useDashboardChartEgg(
-    useMemo(
-      () => ({
-        groupBy: "days",
-        rackId: selectedRackId,
-        cageId: selectedCageId,
-        batchId: selectedBatchId,
-        dateRange: selectedRange,
-      }),
-      [selectedRange, selectedRackId, selectedCageId, selectedBatchId] // Memastikan dependensi sesuai
-    )
-  );
-
+  
   const chart = useMemo<{
     series: [
       { name: string; data: number[] },
@@ -128,7 +94,7 @@ export default function GrafikPersediaanBarang() {
         colors: datas ? ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#E67E22'] : [],
       },
     }),
-    [chartData]
+    [datas]
   );
 
   
@@ -147,7 +113,6 @@ export default function GrafikPersediaanBarang() {
                 // onRackIdChange={handleRackIdChange}
                 onCageIdChange={handleCageIdChange}
               />
-              <DateRangeSelector onChange={handleRangeChange} />
             </div>
           </div>
           <div>
