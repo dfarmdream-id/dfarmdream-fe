@@ -10,7 +10,7 @@ import {
   TableColumn,
   TableBody,
   TableRow,
-  TableCell,
+  TableCell, Autocomplete, AutocompleteItem,
 } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
@@ -214,7 +214,7 @@ export default function Page() {
           <Controller
             control={form.control}
             name="code"
-            render={({ field, fieldState }) => (
+            render={({field, fieldState}) => (
               <Input
                 label="Kode"
                 placeholder="Masukkan kode jurnal"
@@ -229,7 +229,7 @@ export default function Page() {
           <Controller
             control={form.control}
             name="date"
-            render={({ field, fieldState }) => (
+            render={({field, fieldState}) => (
               <Input
                 type="date"
                 label="Tanggal"
@@ -241,7 +241,7 @@ export default function Page() {
               />
             )}
           />
-          
+
 
           <Controller
             control={form.control}
@@ -267,8 +267,9 @@ export default function Page() {
               </Select>
             )}
           />
-          
-            <FilterBatch label="Batch " onBatchIdChange={(value) => form.setValue("batchId", value)} batchId={form.watch("batchId")} />
+
+          <FilterBatch label="Batch " onBatchIdChange={(value) => form.setValue("batchId", value)}
+                       batchId={form.watch("batchId")}/>
 
           <Controller
             control={form.control}
@@ -299,77 +300,84 @@ export default function Page() {
               Tambah Detail COA
             </Button>
           </div>
-          <Table>
-            <TableHeader>
-              <TableColumn>Account Code</TableColumn>
-              <TableColumn>Debit</TableColumn>
-              <TableColumn>Credit</TableColumn>
-              <TableColumn>Note</TableColumn>
-              <TableColumn>Actions</TableColumn>
-            </TableHeader>
-            <TableBody>
-              {form.watch("details").map((detail, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Select
-                      variant="bordered"
-                      labelPlacement="outside"
-                      selectedKeys={[detail.coaCode]}
-                      onChange={(value) =>
-                        form.setValue(`details.${index}.coaCode`, value.target.value)
-                      }
-                    >
-                      {coas.data?.data?.data.map((coa) => (
-                        <SelectItem key={coa.code} value={coa.code}>
-                          {
-                            `${coa.code}: ${coa.name}`
-                          }
-                        </SelectItem>
-                      )) ?? []}
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {
-                      (detail.typeLedger === "DEBIT" || detail.typeLedger === "ALL") ? (
+          <div className="overflow-x-auto">
+            <Table className="min-w-[1000px] w-full">
+              <TableHeader>
+                <TableColumn>Account Code</TableColumn>
+                <TableColumn>Debit</TableColumn>
+                <TableColumn>Credit</TableColumn>
+                <TableColumn>Note</TableColumn>
+                <TableColumn>Actions</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {form.watch("details").map((detail, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Autocomplete
+                        className="w-full"
+                        defaultItems={coas.data?.data?.data.map((coa) => ({
+                          key: coa.code,
+                          label: `${coa.code}: ${coa.name}`,
+                        }))}
+                        placeholder="Search COA"
+                        onSelectionChange={(value): void => {
+                          console.log(value);
+                          form.setValue(`details.${index}.coaCode`, value?.toString() ?? "");
+                        }}
+                      >
+                        {(item) => (
+                          <AutocompleteItem value={item.key} key={item.key}>
+                            {item.label}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                    </TableCell>
+                    <TableCell>
+                      {(detail.typeLedger === "DEBIT" || detail.typeLedger === "ALL") ? (
                         <Input
                           type="text"
                           value={formatRupiah(detail.debit.toString())}
                           onChange={(e) =>
                             form.setValue(`details.${index}.debit`, parseRupiah(e.target.value))
                           }
+                          className="w-full"
                         />
-                      ) : (<div></div>)
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      (detail.typeLedger === "CREDIT" || detail.typeLedger === "ALL") ? (
+                      ) : (
+                        <div></div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {(detail.typeLedger === "CREDIT" || detail.typeLedger === "ALL") ? (
                         <Input
                           type="text"
                           value={formatRupiah(detail.credit.toString())}
                           onChange={(e) =>
                             form.setValue(`details.${index}.credit`, parseRupiah(e.target.value))
                           }
+                          className="w-full"
                         />
-                      ) : (<div></div>)
-                    }
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      placeholder="Catatan"
-                      value={detail.note}
-                      onChange={(e) => form.setValue(`details.${index}.note`, e.target.value)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button color="danger" onClick={() => onRemoveDetail(index)}>
-                      Hapus
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                      ) : (
+                        <div></div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        placeholder="Catatan"
+                        value={detail.note}
+                        onChange={(e) => form.setValue(`details.${index}.note`, e.target.value)}
+                        className="w-full"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button color="danger" onClick={() => onRemoveDetail(index)}>
+                        Hapus
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
         <div className="text-right mt-3">
           <div>Total Debit: {formatRupiah(calculateTotals().debitTotal.toString())}</div>
