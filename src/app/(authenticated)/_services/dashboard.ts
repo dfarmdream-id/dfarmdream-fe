@@ -1,18 +1,17 @@
 "use client";
 import { useHttp } from "@/hooks/http";
 import {
+  DasboardPersediaanBarangResponse,
   DashboardChartDiseaseResponse,
-  DashboardChartResponse, DashboardEggChartResponse, DashboardKeuanganResponse,
+  DashboardChartResponse,
+  DashboardEggChartResponse,
+  DashboardKeuanganResponse,
   DashboardSummaryResponse,
   LdrListDataResonse,
 } from "../_models/response/dashboard";
-import {useMemo} from "react";
+import { useMemo } from "react";
 
-export const useDashboardSummary = ({
-  cageId,
-}: {
-  cageId: string | null;
-}) => {
+export const useDashboardSummary = ({ cageId }: { cageId: string | null }) => {
   return useHttp<DashboardSummaryResponse>("/v1/dashboard", {
     params: {
       cageId,
@@ -20,15 +19,13 @@ export const useDashboardSummary = ({
   });
 };
 
-export const useDashboardChart = (
-  {
-    date,
-    cageId,
-  }: {
-    date: string | null;
-    cageId: string | null;
-  }
-) => {
+export const useDashboardChart = ({
+  date,
+  cageId,
+}: {
+  date: string | null;
+  cageId: string | null;
+}) => {
   return useHttp<DashboardChartResponse>("/v1/dashboard/chart", {
     params: {
       cageId,
@@ -38,12 +35,12 @@ export const useDashboardChart = (
 };
 
 export const useDashboardChartEgg = ({
-                                       groupBy,
-                                       rackId,
-                                       cageId,
-                                       batchId,
-                                       dateRange,
-                                     }: {
+  groupBy,
+  rackId,
+  cageId,
+  batchId,
+  dateRange,
+}: {
   groupBy: string;
   rackId: string | null;
   cageId: string | null;
@@ -70,33 +67,52 @@ export const useDashboardChartEgg = ({
   });
 };
 
-export const useDashboardKeuangan = (
-  {
-    year,
-    cageId,
-    batchId
-  }: {
-    year: string | null;
-    cageId: string | null;
-    batchId: string | null;
-  }
-) => {
+export const useDashboardKeuangan = ({
+  year,
+  cageId,
+  batchId,
+}: {
+  year: string | null;
+  cageId: string | null;
+  batchId: string | null;
+}) => {
   return useHttp<DashboardKeuanganResponse>("/v1/journal/chart-keuangan", {
     params: {
       year,
       cageId,
-      batchId
+      batchId,
     },
   });
 };
 
+export const useGetDashboardPersediaanBarang = ({
+  tanggal,
+  cageId,
+}: {
+  tanggal: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
+  cageId: string | null;
+}) => {
+  return useHttp<DasboardPersediaanBarangResponse>(
+    "/v1/persediaan-barang/dashboard",
+    {
+      params: {
+        tanggal,
+        cageId
+      },
+    }
+  );
+};
+
 export const useDashboardChartChicken = ({
-                                           groupBy,
-                                           rackId,
-                                           cageId,
-                                           batchId,
-                                           dateRange,
-                                         }: {
+  groupBy,
+  rackId,
+  cageId,
+  batchId,
+  dateRange,
+}: {
   groupBy: string;
   rackId: string | null;
   cageId: string | null;
@@ -124,27 +140,25 @@ export const useDashboardChartChicken = ({
 };
 
 // useDashboardChartDiease
-export const useDashboardChartDisease = (
-  {
-    date,
-    cageId,
-  }: {
-    date: string | null;
-    cageId: string | null;
-  }
-) => {
+export const useDashboardChartDisease = ({
+  date,
+  cageId,
+}: {
+  date: string | null;
+  cageId: string | null;
+}) => {
   return useHttp<DashboardChartDiseaseResponse>("/v1/dashboard/chart-disease", {
     params: {
-      ...cageId && { cageId },
-      ...date && { date },
+      ...(cageId && { cageId }),
+      ...(date && { date }),
     },
   });
 };
 
-export const useGetLdrData = ({cageId}:{cageId:string | null})=>{
-  return useHttp<LdrListDataResonse>("/v1/sensor/ldr",{
-    params:{
-      cageId
-    }
-  })
-}
+export const useGetLdrData = ({ cageId }: { cageId: string | null }) => {
+  return useHttp<LdrListDataResonse>("/v1/sensor/ldr", {
+    params: {
+      cageId,
+    },
+  });
+};
