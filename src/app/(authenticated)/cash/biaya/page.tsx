@@ -21,7 +21,6 @@ import { useMemo } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
-import Actions from "./_components/actions";
 import { useGetListBiaya } from "../../_services/biaya";
 import { IDR } from "@/common/helpers/currency";
 
@@ -69,10 +68,6 @@ const columns = [
   {
     key: "createdAt",
     label: "Tanggal Dibuat",
-  },
-  {
-    key: "action",
-    label: "Aksi",
   },
 ];
 
@@ -199,9 +194,6 @@ export default function Page() {
                       { locale: "id" }
                     )}
                   </div>
-                </TableCell>
-                <TableCell>
-                  <Actions id={item.id} />
                 </TableCell>
               </TableRow>
             )}
