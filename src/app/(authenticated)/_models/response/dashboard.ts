@@ -97,3 +97,25 @@ export interface IotSensor{
   temperatureThreshold:number;
   amoniaThreshold:number;
 }
+
+export interface DasboardPersediaanBarangResponse{
+  status:number;
+  message:string;
+  data: DashboardPersediaanBarang[]
+}
+
+export interface DashboardPersediaanBarang{
+  id:string;
+  goodsId:string;
+  qty:number;
+  harga:number;
+  total:number;
+  goods:Goods
+}
+
+export interface Goods{
+  id:string;
+  sku:string;
+  name:string;
+  type:string;
+}
