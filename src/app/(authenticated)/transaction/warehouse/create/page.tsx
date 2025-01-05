@@ -1,6 +1,6 @@
 "use client";
 import {
-  Button, Checkbox, Modal,
+  Button, Checkbox, DatePicker, Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -23,9 +23,12 @@ import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-typ
 import FilterRack from "@/app/(authenticated)/_components/filterRack";
 import useBatchStore from "@/stores/useBatchStore";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
+import {CalendarDate} from "@internationalized/date";
 
 export default function Page() {
   const schema = z.object({
+    dateCreated: z
+      .string().optional(),
     cageId: z.string({
       message: "Kandang wajib diisi",
     }),
@@ -84,7 +87,17 @@ export default function Page() {
       {
         body: {
           ...data,
-          type: "IN"
+          type: "IN",
+          dateCreated: data.dateCreated
+            ? new Date(
+              new Date(data.dateCreated).setHours(
+                new Date().getHours(),
+                new Date().getMinutes(),
+                new Date().getSeconds(),
+                new Date().getMilliseconds()
+              )
+            ).toISOString()
+            : new Date().toISOString(),
         },
       },
       {
@@ -137,6 +150,42 @@ export default function Page() {
         <form
           className="grid grid-cols-1 md:grid-cols-2 gap-5"
         >
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="dateCreated" // Pastikan ini sesuai dengan field yang khusus untuk DatePicker
+              render={({field}) => {
+                const dateValue = field.value ? new Date(field.value) : new Date();
+
+                return (
+                  <DatePicker
+                    variant="bordered"
+                    labelPlacement="outside"
+                    label="Tanggal"
+                    {...field}
+                    value={
+                      dateValue
+                        ? new CalendarDate(
+                          dateValue.getFullYear(),
+                          dateValue.getMonth() + 1, // Bulan dimulai dari 0, tambahkan 1
+                          dateValue.getDate()
+                        )
+                        : new CalendarDate(
+                          new Date().getFullYear(),
+                          new Date().getMonth() + 1,
+                          new Date().getDate()
+                        )
+                    }
+                    onChange={(newDate) => {
+                      const formattedDate = `${newDate.year}-${String(newDate.month).padStart(2, "0")}-${String(newDate.day).padStart(2, "0")}`;
+                      field.onChange(formattedDate); // Simpan format string ke form state
+                    }}
+                  />
+                );
+              }}
+            />
+          </div>
+
           <div className="h-16">
             <Controller
               control={form.control}

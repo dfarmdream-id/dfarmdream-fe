@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Button,
+  Button, DatePicker,
   Modal,
   ModalBody,
   ModalContent,
@@ -24,6 +24,7 @@ import {useMemo, useState} from "react";
 import { DateTime } from "luxon";
 import { IoMdSend } from "react-icons/io";
 import {useGetListJournalType} from "@/app/(authenticated)/_services/journal-type";
+import {CalendarDate} from "@internationalized/date";
 
 type Props = {
   id: string;
@@ -47,6 +48,8 @@ export default function Actions(props: Props) {
   const [journalType, setJournalType] = useState<
     { typeSell: string, typeCash: string }
   >({ typeSell: "", typeCash: "" });
+  
+  const [dateSend, setDateSend] = useState<Date | null>(null);
 
   const handleDelete = (id: string) => {
     deleteData.mutate(
@@ -72,6 +75,16 @@ export default function Actions(props: Props) {
         body: {
           typeSell: journalType.typeSell,
           typeCash: journalType.typeCash,
+          dateCreated: dateSend
+            ? new Date(
+              new Date(dateSend).setHours(
+                new Date().getHours(),
+                new Date().getMinutes(),
+                new Date().getSeconds(),
+                new Date().getMilliseconds()
+              )
+            ).toISOString()
+            : new Date().toISOString(),
         },
       },
       {
@@ -318,6 +331,29 @@ export default function Actions(props: Props) {
           </ModalHeader>
           <ModalBody>
             <p>Apakah anda yakin ingin mengirim transaksi ini ke kasir?</p>
+            <DatePicker
+              variant="bordered"
+              labelPlacement="outside"
+              label="Tanggal"
+              value={
+                dateSend
+                  ? new CalendarDate(
+                    dateSend.getFullYear(),
+                    dateSend.getMonth() + 1,
+                    dateSend.getDate()
+                  )
+                  : new CalendarDate(
+                    new Date().getFullYear(),
+                    new Date().getMonth() + 1,
+                    new Date().getDate()
+                  )
+              }
+              onChange={(newDate) => {
+                const formattedDate = `${newDate.year}-${String(newDate.month).padStart(2, "0")}-${String(newDate.day).padStart(2, "0")}`;
+                
+                setDateSend(new Date(formattedDate));
+              }}
+            />
             <Select
               label="Jurnal Penjualan"
               placeholder="Pilih Jurnal Penjualan"
