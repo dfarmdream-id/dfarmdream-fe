@@ -264,7 +264,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>
-                    {item.qty} {item.category == "EGG" ? "Butir Utuh" : "Ekor"}
+                    {item.qty} {item.category == "EGG" ? "Butir" : "Ekor"}
                     {item.qtyCrack ? ` (${item.qtyCrack} Retak)` : ""}
                   </div>
                 </TableCell>
