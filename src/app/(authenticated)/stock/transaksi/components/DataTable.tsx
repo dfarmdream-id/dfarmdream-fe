@@ -104,7 +104,7 @@ export default function KartuStokTable() {
 
 
   return (
-    <div className="p-5 flex flex-row gap-3">
+    <div className="p-5">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
@@ -127,7 +127,7 @@ export default function KartuStokTable() {
             </div>
           </div>
         </div>
-        <Table aria-label="Data">
+        <Table aria-label="Data" className="mt-2">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -207,7 +207,7 @@ export default function KartuStokTable() {
             )}
           </TableBody>
         </Table>
-        <div className="flex justify-between">
+        <div className="flex justify-between mt-2">
           <Select
             className="w-40"
             label="Tampilkan"
