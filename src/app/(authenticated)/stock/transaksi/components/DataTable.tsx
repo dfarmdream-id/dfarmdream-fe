@@ -104,7 +104,7 @@ export default function KartuStokTable() {
 
 
   return (
-    <div className="p-5 flex flex-column gap-3">
+    <div className="p-5 flex flex-row gap-3">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
