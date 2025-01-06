@@ -24,6 +24,7 @@ export interface Daum {
   jamKeluar: string;
   timestampMasuk: string;
   timestampKeluar: string;
+  total:number;
   user: User
   status: number;
 }
@@ -33,7 +34,14 @@ export interface User {
   fullName: string;
   identityId:string;
   phone?: string;
+  position?:Position
   sites: Site[]
+}
+
+export interface Position{
+  id:string;
+  name:string;
+  checkKandang:boolean
 }
 
 export interface Site {
