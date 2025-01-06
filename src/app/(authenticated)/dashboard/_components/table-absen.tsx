@@ -21,11 +21,32 @@ import { useGetAbsen } from "../../_services/absen";
 import { useMemo, useState } from "react";
 import { useQueryState } from "nuqs";
 import EmptyState from "@/components/state/empty";
-import {DateTime} from 'luxon'
+import { DateTime } from "luxon";
 import SvgWhatsappIcon from "@/app/(authenticated)/dashboard/_components/whatsapp";
 import { useGetCages } from "../../_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
 
+export function StatusAbsen({
+  checkKandang,
+  status,
+  total,
+}: {
+  checkKandang:boolean,
+  status: number;
+  total: number;
+}) {
+  if(checkKandang && total>2){
+    return <Chip color="danger" className="text-white">
+      Absen Abnormal
+    </Chip>
+  }
+
+  return (
+    <Chip color={status === 1 ? "success" : "danger"} className="text-white">
+      {status === 1 ? "Masuk" : "Absen"}
+    </Chip>
+  );
+}
 export default function TableAbsen() {
   const columns = [
     {
@@ -68,24 +89,30 @@ export default function TableAbsen() {
     throttleMs: 1000,
   });
 
-  const {siteId} = useLocationStore()
+  const { siteId } = useLocationStore();
 
   const cages = useGetCages(
-      useMemo(() => {
-        return {
-          page: "1",
-          limit: "100",
-        };
-      }, [])
-    );
+    useMemo(() => {
+      return {
+        page: "1",
+        limit: "100",
+      };
+    }, [])
+  );
 
-    
   const [kandang, setKandang] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState<string | null>(null);
 
   const attendance = useGetAbsen(
     useMemo(
-      () => ({ q: "", page: page || "1", limit: limit || "10", tanggal: tanggal || "", kandang: kandang || "", lokasi:siteId || "" }),
+      () => ({
+        q: "",
+        page: page || "1",
+        limit: limit || "10",
+        tanggal: tanggal || "",
+        kandang: kandang || "",
+        lokasi: siteId || "",
+      }),
       [page, limit, tanggal, kandang, siteId]
     )
   );
@@ -120,7 +147,6 @@ export default function TableAbsen() {
   //   return formattedDate
   // }
 
-
   return (
     <>
       <Card>
@@ -133,37 +159,43 @@ export default function TableAbsen() {
               <div className="flex gap-3 items-center flex-wrap md:flex-nowrap"></div>
             </div>
           </div> */}
-           <div className="grid gird-cols-1 xl:grid-cols-2 gap-4">
-          <div className="flex flex-col">
-          <label htmlFor="tanggal" className="text-sm font-medium text-gray-700 mb-1">
-            Tanggal
-          </label>
-            <Input
-              type="date"
-              placeholder="Pilih Tanggal"
-              onChange={(e) => setTanggal(e.target.value)}
-              className="w-full"
-            />
+          <div className="grid gird-cols-1 xl:grid-cols-2 gap-4">
+            <div className="flex flex-col">
+              <label
+                htmlFor="tanggal"
+                className="text-sm font-medium text-gray-700 mb-1"
+              >
+                Tanggal
+              </label>
+              <Input
+                type="date"
+                placeholder="Pilih Tanggal"
+                onChange={(e) => setTanggal(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="kandang"
+                className="text-sm font-medium text-gray-700 mb-1"
+              >
+                Kandang
+              </label>
+              <Select
+                variant="bordered"
+                placeholder="Pilih kandang"
+                onChange={(e) => setKandang(e.target.value)}
+                isLoading={cages.isLoading}
+                className="w-full"
+              >
+                {cages.data?.data?.data?.map((site) => (
+                  <SelectItem key={site.id} value={site.id}>
+                    {site.name}
+                  </SelectItem>
+                )) || []}
+              </Select>
+            </div>
           </div>
-          <div className="flex flex-col">
-          <label htmlFor="kandang" className="text-sm font-medium text-gray-700 mb-1">
-            Kandang
-          </label>
-            <Select
-              variant="bordered"
-              placeholder="Pilih kandang"
-              onChange={(e) => setKandang(e.target.value)} 
-              isLoading={cages.isLoading}
-              className="w-full"
-            >
-              {cages.data?.data?.data?.map((site) => (
-                <SelectItem key={site.id} value={site.id}>
-                  {site.name}
-                </SelectItem>
-              )) || []}
-            </Select>
-          </div>
-        </div>
           <Table aria-label="Data" className="mt-2">
             <TableHeader columns={columns}>
               {(column) => (
@@ -214,16 +246,15 @@ export default function TableAbsen() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      color={item.status === 1 ? "success" : "danger"}
-                      className="text-white"
-                    >
-                      {item.status === 1 ? "Masuk" : "Absen"}
-                    </Chip></TableCell>
-              {/* icon wa to redirect to wa */}
-                <TableCell>
-                  {
-                    item.status === 1 ? (
+                    <StatusAbsen
+                      checkKandang={item.user?.position?.checkKandang || false}
+                      status={item.status}
+                      total={item.total}
+                    />
+                  </TableCell>
+                  {/* icon wa to redirect to wa */}
+                  <TableCell>
+                    {item.status === 1 && !item.jamKeluar ? (
                       <div className="flex gap-3">
                         <a
                           href={`https://wa.me/${
@@ -234,15 +265,13 @@ export default function TableAbsen() {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <SvgWhatsappIcon className="cursor-pointer"/>
+                          <SvgWhatsappIcon className="cursor-pointer" />
                         </a>
                       </div>
-                    ) : null
-                  }
-                  
-                </TableCell>
-              </TableRow>
-                )}
+                    ) : null}
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
           <div className="flex justify-between mt-3">
