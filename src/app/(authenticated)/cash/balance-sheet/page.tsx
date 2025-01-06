@@ -136,6 +136,12 @@ export default function BalanceSheet() {
               onChange={(e) => {
                 setYear(e.target.value);
               }}
+              renderValue={(value) => (
+                <span className="text-black">{
+                  value[0].key === "placeholder" ? "Pilih Tahun" : value[0].key
+                }</span>
+              )}
+              selectedKeys={[year as string]}
               className="w-full min-w-[120px]"
             >
               {
@@ -202,9 +208,11 @@ export default function BalanceSheet() {
             <p className="text-gray-700">Dfarm Dream</p>
             <p className="text-gray-700">
               As at{" "}
-              {month
-                ? `${new Date().toLocaleString("id-ID", {month: "long"})} ${year}`
-                : "..."}
+              {
+                month
+                  ? `${new Date(2025, Number(month) - 1).toLocaleString("id-ID", { month: "long" })} ${year}`
+                  : "..."
+              }
             </p>
           </div>
 
