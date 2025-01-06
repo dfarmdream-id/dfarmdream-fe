@@ -166,25 +166,25 @@ export default function Page() {
           >
             {(item) => (
               <TableRow
-                key={`${item.identityId}-${item.checkinat}`}
+                key={`${item.user?.identityId}-${item.checkInAt}`}
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>
-                  <div>{item.identityId}</div>
+                  <div>{item.user?.identityId}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.fullName}</div>
+                  <div>{item.user?.fullName}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.kandang}</div>
+                  <div>{item.cage?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.lokasi}</div>
+                  <div>{item.site?.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>
-                    {item.checkinat?formatDate(item.checkinat):"-"}
+                    {item.checkInAt?formatDate(item.checkInAt):"-"}
                   </div>
                 </TableCell>
               </TableRow>

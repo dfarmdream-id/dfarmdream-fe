@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Switch } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
@@ -15,6 +15,9 @@ export default function Page() {
     checkinTime: z.string({
       message: "Checkin Time wajib diisi",
     }),
+    checkKandang:z.boolean({
+      message:"Mohon isi check kandang"
+    }),
     checkoutTime: z.string({
       message: "Checkout Time wajib diisi",
     }),
@@ -22,6 +25,9 @@ export default function Page() {
 
   const form = useForm<z.infer<typeof schema>>({
     schema,
+    defaultValues:{
+      checkKandang:false
+    }
   });
 
   const submission = useCreatePosition();
@@ -103,6 +109,23 @@ export default function Page() {
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <div className="text-sm mb-2">Check Kandang?</div>
+            <Controller
+              control={form.control}
+              name="checkKandang"
+              render={({ field }) => (
+                <Switch
+                  defaultChecked
+                  isSelected={field.value}
+                  onValueChange={field.onChange}
+                >
+                  Check Kandang
+                </Switch>
               )}
             />
           </div>

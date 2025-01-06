@@ -20,6 +20,7 @@ export interface Daum {
   name: string;
   checkinTime:string;
   checkoutTime:string;
+  checkKandang:boolean;
   deletedAt: any;
   createdAt: string;
   updatedAt: string;

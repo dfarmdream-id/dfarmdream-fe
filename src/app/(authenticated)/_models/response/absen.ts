@@ -30,7 +30,8 @@ export interface Daum {
 
 export interface User {
   id: string;
-  name: string;
+  fullName: string;
+  identityId:string;
   phone?: string;
   sites: Site[]
 }
@@ -78,12 +79,16 @@ export interface DataLog {
 }
 
 export interface LogResponse {
-  userId: string;
-  fullName: string;
-  identityId: string;
-  kandang: string;
-  lokasi: string;
-  checkinat: string;
-  tanggal: string;
+  id:string;
+  tanggal:string;
+  checkInAt:string;
+  site:Site2,
+  cage:Cage,
+  user:User
+}
+
+export interface Cage{
+  id:string;
+  name:string;
 }
   
