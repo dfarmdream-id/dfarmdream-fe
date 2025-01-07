@@ -102,7 +102,7 @@ export default function Page() {
           <Button
             as={Link}
             href="/cash/penerimaan-modal/create"
-            color="primary"k
+            color="primary"
             startContent={<HiPlus />}
             className="w-full md:w-auto"
           >
