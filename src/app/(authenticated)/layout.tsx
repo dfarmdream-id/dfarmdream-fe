@@ -11,8 +11,8 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Image,
-  ScrollShadow,
-  Skeleton, Tooltip, useDisclosure
+  ScrollShadow, Skeleton,
+  Tooltip, useDisclosure
 } from "@nextui-org/react";
 import {
   HiChevronRight
@@ -26,7 +26,6 @@ import {
   HiX,
 } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import { Can } from "@/components/acl/can";
 import { useAuthStore } from "../auth/_store/auth";
 import Link from "next/link";
 import useLocationStore from "@/stores/useLocationStore";
@@ -161,24 +160,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     menu.expanded ? "p-3 space-y-2" : "p-1 space-y-1"
                   )}
                 >
-                  {menu.childrens.map((child) => (
-                    <li key={child.label}>
-                      {
-                        menu.expanded ? (
-                          <Can action={child.can || ""}>
+                  {menu.childrens
+                    ?.filter((child) => permissions?.includes("*") || permissions?.includes(child.can as string))
+                    .map((child) => (
+                      <li key={child.label}>
+                        {menu.expanded ? (
                             <Card
                               shadow="none"
                               onPress={() => {
                                 if (child.href) {
-                                  handleNavigation(child.href); // Use handleNavigation
+                                  handleNavigation(child.href); // Navigasi ke child menu
                                 } else if (menu.action) {
-                                  menu.action();
+                                  menu.action(); // Eksekusi aksi jika ada
                                 }
                               }}
                               as={child.href ? Link : "a"}
                               href={child.href ? child.href : undefined}
                               isPressable
-                              data-active={child.href == path}
+                              data-active={child.href === path}
                               className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
                             >
                               <CardBody className="flex gap-2 flex-row items-center test">
@@ -186,9 +185,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                 {menu.expanded ? child.label : !menu.mobile ? null : child.label}
                               </CardBody>
                             </Card>
-                          </Can>
                         ) : (
-                          <Can action={child.can || ""}>
                             <Tooltip
                               content={child.label}
                               placement="right"
@@ -198,28 +195,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                 shadow="none"
                                 onPress={() => {
                                   if (child.href) {
-                                    handleNavigation(child.href); // Use handleNavigation
+                                    handleNavigation(child.href); // Navigasi ke child menu
                                   } else if (menu.action) {
-                                    menu.action();
+                                    menu.action(); // Eksekusi aksi jika ada
                                   }
                                 }}
                                 as={child.href ? Link : "a"}
                                 href={child.href ? child.href : undefined}
                                 isPressable
-                                data-active={child.href == path}
+                                data-active={child.href === path}
                                 className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
                               >
-                                <CardBody className="flex gap-2 flex-row items-center kedu">
+                                <CardBody className="flex gap-2 flex-row items-center">
                                   {child.icon}
                                   {menu.expanded ? child.label : !menu.mobile ? null : child.label}
                                 </CardBody>
                               </Card>
                             </Tooltip>
-                          </Can>
-                        )
-                      }
-                    </li>
-                  ))}
+                        )}
+                      </li>
+                    ))}
                 </motion.ul>
               )}
             </AnimatePresence>
@@ -232,6 +227,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
+  const { isPending } = useGetProfile();
+  const permissions = useAuthStore((state) => state.permissions);
 
   return (
     <>
@@ -251,25 +249,36 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <Logo className="h-16" />
                   )}
                 </li>
-                {menus.map((menu) => {
-                  return (
-                    <Can
-                      key={menu.label}
-                      action={menu.can || ""}
-                      loader={
-                        <div className="flex gap-4 h-16 relative justify-center items-center p-4">
-                          <Skeleton className="w-full h-full absolute z-0 rounded-xl" />
-                          <div>
-                            <Skeleton className="w-8 h-8 rounded-xl" />
-                          </div>
-                          <div className="flex-1 space-y-3">
-                            <Skeleton className="w-full h-2 rounded-xl" />
-                            <Skeleton className="w-full h-2 rounded-xl" />
-                          </div>
+                {isPending ? (
+                  <div className="p-4 space-y-4">
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index} className="flex gap-4 h-16 relative justify-center items-center p-4">
+                        <Skeleton className="w-full h-full absolute z-0 rounded-xl" />
+                        <div>
+                          <Skeleton className="w-8 h-8 rounded-xl" />
                         </div>
-                      }
-                    >
+                        <div className="flex-1 space-y-3">
+                          <Skeleton className="w-full h-2 rounded-xl" />
+                          <Skeleton className="w-full h-2 rounded-xl" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Tampilkan menu jika permissions sudah dimuat
+                  menus.map((menu) => {
+                    const hasChildPermission = menu.children?.some((child) =>
+                      permissions?.includes(child.can) || permissions?.includes("*")
+                    );
+
+                    // Render parent if user has '*' permission or access to parent/any child
+                    if (!permissions?.includes(menu.can) && !hasChildPermission) {
+                      return null; // Don't render the parent menu
+                    }
+
+                    return (
                       <SidebarMenuItem
+                        key={menu.label}
                         id={menu.key || ""}
                         label={menu.label as string}
                         icon={menu.icon as React.ReactNode}
@@ -278,9 +287,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         href={menu.href as string}
                         childrens={menu.children}
                       />
-                    </Can>
-                  );
-                })}
+                    );
+                  })
+                )}
               </ul>
             </ScrollShadow>
           </motion.aside>
@@ -308,20 +317,28 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ScrollShadow className="h-full" hideScrollBar>
               <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
                 {menus.map((menu) => {
+                  const hasChildPermission = menu.children?.some((child) =>
+                    permissions?.includes(child.can) || permissions?.includes("*")
+                  );
+
+                  // Render parent if user has '*' permission or access to parent/any child
+                  if (!permissions?.includes(menu.can) && !hasChildPermission) {
+                    return null; // Don't render the parent menu
+                  }
+                  
                   return (
-                    <Can key={menu.label} action={menu.can || "show:basic-menu"}>
-                      <SidebarMenuItem
-                        id={menu.key || ""}
-                        onClick={() => setOpen(false)}
-                        expanded={!open}
-                        mobile
-                        href={menu.href as string}
-                        label={menu.label as string}
-                        icon={menu.icon as React.ReactNode}
-                        can={menu.can as string}
-                        childrens={menu.children}
-                      />
-                    </Can>
+                    <SidebarMenuItem
+                      key={menu.label}
+                      id={menu.key || ""}
+                      onClick={() => setOpen(false)}
+                      expanded={!open}
+                      mobile
+                      href={menu.href as string}
+                      label={menu.label as string}
+                      icon={menu.icon as React.ReactNode}
+                      can={menu.can as string}
+                      childrens={menu.children}
+                    />
                   );
                 })}
               </ul>
