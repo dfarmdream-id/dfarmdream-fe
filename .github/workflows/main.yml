@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
+      - name: Configure npm registry mirror
+        run: |
+          echo "registry=https://registry.npmmirror.com/" > ~/.npmrc
 
       - name: Prepare
         run: |
