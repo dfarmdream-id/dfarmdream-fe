@@ -122,33 +122,6 @@ export default function Actions(props: Props) {
           </Tooltip>
         </Can>
       </Tooltip>
-      {/*<Tooltip content="Edit Data">*/}
-      {/*  <Can action="update:warehouse-transaction">*/}
-      {/*    <Tooltip content="Edit Data">*/}
-      {/*      <Button*/}
-      {/*        as={Link}*/}
-      {/*        href={`/transaction/warehouse/${props.id}/edit`}*/}
-      {/*        isIconOnly*/}
-      {/*        variant="light"*/}
-      {/*        color="primary"*/}
-      {/*      >*/}
-      {/*        <HiPencilAlt />*/}
-      {/*      </Button>*/}
-      {/*    </Tooltip>*/}
-      {/*  </Can>*/}
-      {/*</Tooltip>*/}
-      {/*<Can action="delete:warehouse-transaction">*/}
-      {/*  <Tooltip content="Hapus Data">*/}
-      {/*    <Button*/}
-      {/*      isIconOnly*/}
-      {/*      variant="light"*/}
-      {/*      color="danger"*/}
-      {/*      onPress={deleteDisclosure.onOpen}*/}
-      {/*    >*/}
-      {/*      <HiTrash />*/}
-      {/*    </Button>*/}
-      {/*  </Tooltip>*/}
-      {/*</Can>*/}
 
       {!props.CashierDeliveryAt && (
         <Can action="update:warehouse-transaction">
@@ -186,80 +159,92 @@ export default function Actions(props: Props) {
               <div className="flex-1">
                 <table className="w-full">
                   <tbody>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Lokasi</td>
-                      <td className="px-3 py-1">
-                        {data?.data?.data?.site?.name}
-                      </td>n
-                    </tr>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Jenis</td>
-                      <td className="px-3 py-1">
-                        {data?.data?.data?.category == "CHICKEN"
-                          ? "Ayam"
-                          : "Telur"}
-                      </td>
-                    </tr>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Jumlah</td>
-                      <td className="px-3 py-1">
-                        {data?.data?.data?.qty} {
-                          data?.data?.data?.category == "CHICKEN"
-                            ? "Ekor"
-                            : "Butir Utuh"
-                      } {data?.data?.data?.qtyCrack ? ` (${data?.data?.data?.qtyCrack} Retak)` : ""}
-                      </td>
-                    </tr>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Berat Total</td>
-                      <td className="px-3 py-1">
-                        {data?.data?.data?.weight} KG
-                      </td>
-                    </tr>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Karyawan Panen</td>
-                      <td className="px-3 py-1">
-                        {data.data?.data?.createdBy?.fullName}
-                      </td>
-                    </tr>
-                    <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
-                      <td className="px-3 py-1 w-1/4">Tanggal Panen</td>
-                      <td className="px-3 py-1 overflow-hidden ">
-                        <div className="w-full overflow-hidden truncate">
-                          {DateTime.fromISO(
-                            data.data?.data?.createdAt || ""
-                          ).toFormat("dd-MM-yyyy")}
-                        </div>
-                      </td>
-                    </tr>
-                    {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
-                    {/*  <td className="px-3 py-1 w-1/4">*/}
-                    {/*    Harga{" "}*/}
-                    {/*    {data.data?.data?.category == "CHICKEN"*/}
-                    {/*      ? "Ayam"*/}
-                    {/*      : "Telur"}{" "}*/}
-                    {/*    Pada{" "}*/}
-                    {/*    {DateTime.fromISO(*/}
-                    {/*      data.data?.data?.price?.createdAt || ""*/}
-                    {/*    ).toFormat("dd-MM-yyyy")}*/}
-                    {/*  </td>*/}
-                    {/*  <td className="px-3 py-1 overflow-hidden ">*/}
-                    {/*    <div className="w-full overflow-hidden truncate">*/}
-                    {/*      {IDR(data.data?.data?.price?.value || 0)} /Kg*/}
-                    {/*    </div>*/}
-                    {/*  </td>*/}
-                    {/*</tr>*/}
-                    {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
-                    {/*  <td className="px-3 py-1 w-1/4">Total Harga</td>*/}
-                    {/*  <td className="px-3 py-1 overflow-hidden ">*/}
-                    {/*    <div className="w-full overflow-hidden truncate">*/}
-                    {/*      {IDR(*/}
-                    {/*        (data.data?.data?.price?.value ?? 0) **/}
-                    {/*          (data.data?.data?.weight ?? 0) || 0*/}
-                    {/*      )}*/}
-                    {/*    </div>*/}
-                    {/*  </td>*/}
-                    {/*</tr>*/}
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Lokasi</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.site?.name}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Kandang</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.cage?.name}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Batch</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.batch?.name}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Jenis</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.category == "CHICKEN"
+                        ? "Ayam"
+                        : "Telur"}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Jumlah</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.qty} {
+                      data?.data?.data?.category == "CHICKEN"
+                        ? "Ekor"
+                        : "Butir Utuh"
+                    } {data?.data?.data?.qtyCrack ? ` (${data?.data?.data?.qtyCrack} Retak)` : ""}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Berat Total</td>
+                    <td className="px-3 py-1">
+                      {data?.data?.data?.weight} KG
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Karyawan Panen</td>
+                    <td className="px-3 py-1">
+                      {data.data?.data?.createdBy?.fullName}
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Tanggal Panen</td>
+                    <td className="px-3 py-1 overflow-hidden ">
+                      <div className="w-full overflow-hidden truncate">
+                        {DateTime.fromISO(
+                          data.data?.data?.createdAt || ""
+                        ).toFormat("dd-MM-yyyy")}
+                      </div>
+                    </td>
+                  </tr>
+                  {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+                  {/*  <td className="px-3 py-1 w-1/4">*/}
+                  {/*    Harga{" "}*/}
+                  {/*    {data.data?.data?.category == "CHICKEN"*/}
+                  {/*      ? "Ayam"*/}
+                  {/*      : "Telur"}{" "}*/}
+                  {/*    Pada{" "}*/}
+                  {/*    {DateTime.fromISO(*/}
+                  {/*      data.data?.data?.price?.createdAt || ""*/}
+                  {/*    ).toFormat("dd-MM-yyyy")}*/}
+                  {/*  </td>*/}
+                  {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+                  {/*    <div className="w-full overflow-hidden truncate">*/}
+                  {/*      {IDR(data.data?.data?.price?.value || 0)} /Kg*/}
+                  {/*    </div>*/}
+                  {/*  </td>*/}
+                  {/*</tr>*/}
+                  {/*<tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">*/}
+                  {/*  <td className="px-3 py-1 w-1/4">Total Harga</td>*/}
+                  {/*  <td className="px-3 py-1 overflow-hidden ">*/}
+                  {/*    <div className="w-full overflow-hidden truncate">*/}
+                  {/*      {IDR(*/}
+                  {/*        (data.data?.data?.price?.value ?? 0) **/}
+                  {/*          (data.data?.data?.weight ?? 0) || 0*/}
+                  {/*      )}*/}
+                  {/*    </div>*/}
+                  {/*  </td>*/}
+                  {/*</tr>*/}
                   </tbody>
                 </table>
               </div>

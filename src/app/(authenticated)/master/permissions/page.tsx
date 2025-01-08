@@ -67,6 +67,9 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (user.data) {
+      if(parseInt(page || "1") > user.data?.data?.meta?.totalPage) {
+        setPage(user.data?.data?.meta?.totalPage == 0 ? "1" : user.data?.data?.meta?.totalPage.toString());
+      }
       return user.data?.data?.data || [];
     }
     return [];

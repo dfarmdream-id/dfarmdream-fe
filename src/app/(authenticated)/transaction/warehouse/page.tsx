@@ -28,6 +28,7 @@ import Form from "next/form";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   {
@@ -110,6 +111,9 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (data.data) {
+      if(parseInt(page || "1") > data.data?.data?.meta?.totalPage) {
+        setPage(data.data?.data?.meta?.totalPage == 0 ? "1" : data.data?.data?.meta?.totalPage.toString());
+      }
       return data.data?.data?.data || [];
     }
     return [];
@@ -323,13 +327,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
+          {data.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
             color="primary"
             total={data.data?.data?.meta?.totalPage || 1}
             initialPage={1}
             page={data.data?.data?.meta?.page || 1}
             onChange={(page) => setPage(page.toString())}
           />
+          )}
         </div>
       </div>
     </div>

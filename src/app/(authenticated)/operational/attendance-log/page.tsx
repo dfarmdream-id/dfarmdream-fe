@@ -19,6 +19,7 @@ import EmptyState from "@/components/state/empty";
 import {useGetAbsenLog} from "@/app/(authenticated)/_services/absen";
 import { useGetCages } from "../../_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   {
@@ -208,13 +209,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={iot.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={iot.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {iot.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={iot.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={iot.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

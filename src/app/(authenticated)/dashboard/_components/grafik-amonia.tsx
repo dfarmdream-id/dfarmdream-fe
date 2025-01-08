@@ -11,6 +11,7 @@ import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { useGetTelegramLog } from "../../_services/telegram-log";
 import { useQueryState } from "nuqs";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -297,13 +298,17 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
           </TableBody>
         </Table>
         <div className="flex justify-center mt-3">
-          <Pagination
-            color="primary"
-            total={iot.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={iot.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {iot.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={iot.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={iot.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

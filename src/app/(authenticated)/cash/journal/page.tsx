@@ -24,6 +24,7 @@ import {parseDate} from "@internationalized/date";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const groupByJournalId = (rows: SingleJournalData[]) => {
   return rows.reduce<Record<string, SingleJournalData>>((acc, row) => {
@@ -63,7 +64,16 @@ export default function Page() {
   );
 
   const rows: SingleJournalData[] = useMemo(() => {
-    return journalData.data?.data?.data || [];
+    // return journalData.data?.data?.data || [];
+    if(
+      journalData.data
+    ){
+      if(parseInt(page || "1") > journalData.data?.data?.meta?.totalPage) {
+        setPage(journalData.data?.data?.meta?.totalPage == 0 ? "1" : journalData.data?.data?.meta?.totalPage.toString());
+      }
+    }
+    
+    return []
   }, [journalData.data]);
 
   const groupedRows = useMemo(() => {
@@ -267,13 +277,17 @@ export default function Page() {
           </TableBody>
         </Table>
         <div className="flex justify-between">
-          <Pagination
-            color="primary"
-            total={journalData.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={journalData.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {journalData.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={journalData.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={journalData.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

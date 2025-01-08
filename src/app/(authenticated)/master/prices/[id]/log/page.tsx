@@ -20,6 +20,7 @@ import { DateTime } from "luxon";
 import { IDR } from "@/common/helpers/currency";
 import { useParams } from "next/navigation";
 import { useGetPriceLog } from "@/app/(authenticated)/_services/price";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   {
@@ -162,13 +163,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={items.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={items.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {items.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={items.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={items.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>
