@@ -22,6 +22,7 @@ import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetIotDevices } from "../../_services/iot-device";
 import { Can } from "@/components/acl/can";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   {
@@ -78,6 +79,9 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (iot.data) {
+      if(parseInt(page || "1") > iot.data?.data?.meta?.totalPage) {
+        setPage(iot.data?.data?.meta?.totalPage == 0 ? "1" : iot.data?.data?.meta?.totalPage.toString());
+      }
       return iot.data?.data?.data || [];
     }
     return [];
@@ -172,13 +176,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={iot.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={iot.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {iot.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={iot.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={iot.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

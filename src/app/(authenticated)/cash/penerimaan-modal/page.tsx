@@ -23,6 +23,7 @@ import { DateTime } from "luxon";
 import Actions from "./_components/actions";
 import { IDR } from "@/common/helpers/currency";
 import { useGetListPenerimaanModal } from "../../_services/penerimaan-modal";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   {
@@ -77,6 +78,9 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (user.data) {
+      if(parseInt(page || "1") > user.data?.data?.meta?.totalPage) {
+        setPage(user.data?.data?.meta?.totalPage == 0 ? "1" : user.data?.data?.meta?.totalPage.toString());
+      }
       return user.data?.data?.data || [];
     }
     return [];
@@ -179,13 +183,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={user.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={user.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {user.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={user.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={user.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

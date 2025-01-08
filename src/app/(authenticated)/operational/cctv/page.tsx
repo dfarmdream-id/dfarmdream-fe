@@ -21,6 +21,8 @@ import Link from "next/link";
 import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { useGetAllCCTV } from "../../_services/cctv";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
+import {Can} from "@/components/acl/can";
 
 const columns = [
   {
@@ -62,6 +64,9 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (cctv.data) {
+      if(parseInt(page || "1") > cctv.data?.data?.meta?.totalPage) {
+        setPage(cctv.data?.data?.meta?.totalPage == 0 ? "1" : cctv.data?.data?.meta?.totalPage.toString());
+      }
       return cctv.data?.data?.data || [];
     }
     return [];
@@ -81,14 +86,18 @@ export default function Page() {
               onValueChange={setSearch}
             />
           </div>
-          <Button
-            as={Link}
-            href="/operational/cctv/create"
-            color="primary"
-            startContent={<HiPlus />}
+          <Can
+            action="create:cctv"
           >
-            Tambah CCTV
-          </Button>
+            <Button
+              as={Link}
+              href="/operational/cctv/create"
+              color="primary"
+              startContent={<HiPlus />}
+            >
+              Tambah CCTV
+            </Button>
+          </Can>
         </div>
         <Table aria-label="Data">
           <TableHeader columns={columns}>
@@ -144,13 +153,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={cctv.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={cctv.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {cctv.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={cctv.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={cctv.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -9,12 +9,14 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
+import {HiOutlinePrinter, HiQrCode, HiTrash} from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useDeleteChicken } from "@/app/(authenticated)/_services/chicken";
+import {useDeleteChicken, useGetChicken} from "@/app/(authenticated)/_services/chicken";
 import { Can } from "@/components/acl/can";
+import {useMemo} from "react";
+import QRCode from "react-qr-code";
 
 type Props = {
   id: string;
@@ -26,6 +28,9 @@ export default function Actions(props: Props) {
   const deleteData = useDeleteChicken();
 
   const queryClient = useQueryClient();
+
+  const qrDisclosure = useDisclosure();
+  const data = useGetChicken(useMemo(() => props.id as string, [props.id]));
 
   const handleDelete = (id: string) => {
     deleteData.mutate(
@@ -60,6 +65,18 @@ export default function Actions(props: Props) {
           </Button>
         </Tooltip>
       </Can>
+      <Can action="print:qr-chicken">
+        <Tooltip content="Print QR">
+          <Button
+            isIconOnly
+            variant="light"
+            color="default"
+            onPress={qrDisclosure.onOpen}
+          >
+            <HiQrCode />
+          </Button>
+        </Tooltip>
+      </Can>
       <Can action="delete:chicken">
         <Tooltip content="Hapus Data">
           <Button
@@ -72,6 +89,90 @@ export default function Actions(props: Props) {
           </Button>
         </Tooltip>
       </Can>
+      <Modal
+        onOpenChange={qrDisclosure.onOpenChange}
+        isOpen={qrDisclosure.isOpen}
+        onClose={qrDisclosure.onClose}
+        size="xl"
+        classNames={{ closeButton: "print:hidden" }}
+      >
+        <ModalContent className="print:w-full print:m-0 ">
+          <ModalHeader className="gap-2 print:hidden">
+            <div>QR {
+              data?.data?.data?.name
+            }</div>
+          </ModalHeader>
+          <ModalBody>
+            <div className="flex items-center w-full gap-5 print:flex">
+              <div className="w-1/3">
+                <QRCode
+                  className="w-full h-fit"
+                  value={`chicken|${data.data?.data?.id}`}
+                />
+              </div>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Lokasi</td>
+                    <td className="px-3 py-1">
+                      {
+                        data?.data?.data?.rack?.cage?.site?.name
+                      }
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Kandang</td>
+                    <td className="px-3 py-1">
+                      {
+                        data?.data?.data?.rack?.cage?.name
+                      }
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Rack</td>
+                    <td className="px-3 py-1">
+                      {
+                        data?.data?.data?.rack?.name
+                      }
+                    </td>
+                  </tr>
+                  <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">
+                    <td className="px-3 py-1 w-1/4">Batch</td>
+                    <td className="px-3 py-1">
+                      {
+                        data?.data?.data?.batch?.name
+                      }
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter className="print:hidden">
+            <Button
+              variant="bordered"
+              color="default"
+              className="w-full"
+              onPress={qrDisclosure.onClose}
+            >
+              Batal
+            </Button>
+            <Button
+              isLoading={deleteData.isPending}
+              color="primary"
+              className="w-full"
+              startContent={<HiOutlinePrinter />}
+              onPress={() => {
+                window.open(`/qr-print/chicken/${props.id}?print=true`, "_blank");
+              }}
+            >
+              Print
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}

@@ -9,6 +9,7 @@ import FilterCageRack from "@/app/(authenticated)/dashboard/_components/filterCa
 import { useQueryClient } from "@tanstack/react-query";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import {DateRangeSelector} from "@/app/(authenticated)/dashboard/_components/DateRangeSelector";
+import {formatNumber} from "@/libs/helper";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -200,7 +201,7 @@ export default function GrafiTelur (){
                 <CardBody className="d-flex flex-col items-center">
                   <div className="text-2xl font-bold text-primary">
                     {
-                      sumPenjualanTotalButir
+                      formatNumber(sumPenjualanTotalButir)
                     } Ekor
                   </div>
                   {/*<p className="text-xs text-red-500 mt-1">*/}

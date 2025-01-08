@@ -67,6 +67,12 @@ export interface Cage {
   height: number;
   capacity: number;
   status: string;
+  site: Site;
+}
+
+export interface Site {
+  id: string;
+  name: string;
 }
 
 export interface Meta {

@@ -22,6 +22,7 @@ import Actions from "./_components/actions";
 import EmptyState from "@/components/state/empty";
 import { DateTime } from "luxon";
 import { useGetListTemplateJournal } from "../../_services/template-journal";
+import SkeletonPagination from "@/components/ui/SkeletonPagination";
 
 const columns = [
   { key: "code", label: "Kode" },
@@ -50,7 +51,14 @@ export default function Page() {
   );
 
   const rows = useMemo(() => {
-    return user.data?.data?.data || [];
+    if(user.data) {
+      if(parseInt(page || "1") > user.data?.data?.meta?.totalPage) {
+        setPage(user.data?.data?.meta?.totalPage == 0 ? "1" : user.data?.data?.meta?.totalPage.toString());
+      }
+      return user.data?.data?.data || [];
+    }
+    
+    return [];
   }, [user.data]);
 
   return (
@@ -134,13 +142,17 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          <Pagination
-            color="primary"
-            total={user.data?.data?.meta?.totalPage || 1}
-            initialPage={1}
-            page={user.data?.data?.meta?.page || 1}
-            onChange={(page) => setPage(page.toString())}
-          />
+          {user.isLoading ? (
+            <SkeletonPagination />
+          ) : (
+            <Pagination
+              color="primary"
+              total={user.data?.data?.meta?.totalPage || 1}
+              initialPage={1}
+              page={user.data?.data?.meta?.page || 1}
+              onChange={(page) => setPage(page.toString())}
+            />
+          )}
         </div>
       </div>
     </div>
