@@ -16,7 +16,6 @@ import { HiSearch } from "react-icons/hi";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
 import EmptyState from "@/components/state/empty";
-import { DateTime } from "luxon";
 import {useGetAbsenLog} from "@/app/(authenticated)/_services/absen";
 import { useGetCages } from "../../_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
@@ -44,6 +43,40 @@ const columns = [
     label:"Tanggal Check In"
   },
 ];
+
+// function formatDate(inputDate:string) {
+//   const date = new Date(inputDate);
+
+//   const options:any = {
+//     year: 'numeric',
+//     month: 'short',
+//     day: 'numeric',
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     second: '2-digit',
+//     hour12: false, 
+//   };
+
+//   const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+
+//   const [day, month, year] = formattedDate.split(' ');
+//   const time = date.toTimeString().split(' ')[0]; 
+//   const result = `${day} ${month} ${year} ${time}`;
+
+//   return result;
+// }
+
+function formatDate(dateString:string) {
+  const formattedDate = dateString
+      .replace('T', ' ')        
+      .substring(0, 19);        
+  
+  const dateParts = formattedDate.split(" ")[0].split("-"); 
+  const timePart = formattedDate.split(" ")[1]; 
+  
+  return `${dateParts[1]}-${dateParts[2]}-${dateParts[0]} ${timePart}`;
+}
+
 
 export default function Page() {
   const [search, setSearch] = useQueryState("q", {
@@ -134,28 +167,25 @@ export default function Page() {
           >
             {(item) => (
               <TableRow
-                key={`${item.identityId}-${item.checkinat}`}
+                key={`${item.user?.identityId}-${item.checkInAt}`}
                 className="odd:bg-[#cffdec]"
                 role="button"
               >
                 <TableCell>
-                  <div>{item.identityId}</div>
+                  <div>{item.user?.identityId}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.fullName}</div>
+                  <div>{item.user?.fullName}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.kandang}</div>
+                  <div>{item.cage?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.lokasi}</div>
+                  <div>{item.site?.name}</div>
                 </TableCell>
                 <TableCell>
                   <div>
-                    {DateTime.fromISO(item.checkinat).toLocaleString(
-                      DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale: "id" }
-                    )}
+                    {item.checkInAt?formatDate(item.checkInAt):"-"}
                   </div>
                 </TableCell>
               </TableRow>

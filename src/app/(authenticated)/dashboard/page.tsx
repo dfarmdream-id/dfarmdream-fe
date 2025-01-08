@@ -21,6 +21,7 @@ import GrafikAyam from "@/app/(authenticated)/dashboard/_components/grafik-ayam"
 import GrafikDisease from "@/app/(authenticated)/dashboard/_components/grafik-disease";
 import GrafiKeuangan from "@/app/(authenticated)/dashboard/_components/grafik-keuangan";
 import LogKipasLampu from "./_components/log-kipas-lampu";
+import GrafikPersediaanBarang from "./_components/grafik-persediaan-barang";
 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
@@ -270,6 +271,11 @@ export default function Page() {
         <div>
           <Can action="show:chart-egg">
             <GrafiTelur/>
+          </Can>
+        </div>
+        <div>
+          <Can action="show:chart-egg">
+            <GrafikPersediaanBarang/>
           </Can>
         </div>
         <div>

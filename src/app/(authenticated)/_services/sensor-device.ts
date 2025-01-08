@@ -1,6 +1,12 @@
 import { useHttp, useHttpMutation } from "@/hooks/http";
 import { useMemo } from "react";
-import { GetListSensorDeviceResponse, GetSensorDeviceResponse } from "../_models/sensor-device";
+import { GetListSensorDeviceResponse, GetSensorDeviceResponse, GetSensorLogResponse } from "../_models/sensor-device";
+
+export const useGetLogSensorList = (params: Record<string, string>) => { 
+  return useHttp<GetSensorLogResponse>("/v1/sensor/log", {
+    params,
+  });
+};
 
 export const useGetSensorDeviceList = (params: Record<string, string>) => {
   return useHttp<GetListSensorDeviceResponse>("/v1/sensor-device", {

@@ -39,6 +39,10 @@ const columns = [
     label: "Jam Keluar",
   },
   {
+    key:"checkKandang",
+    label:"Check Kandang",
+  },
+  {
     key: "createdAt",
     label: "Tanggal Dibuat",
   },
@@ -133,6 +137,9 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{DateTime.fromISO(item.checkoutTime).toFormat('HH:mm')}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item.checkKandang?'Ya':'Tidak'}</div>
                 </TableCell>
                 <TableCell>
                   <div>

@@ -130,7 +130,7 @@ export default function Page() {
                   <div>{item.description}</div>
                 </TableCell>
                 <TableCell>
-                  <Actions id={item.id} />
+                  <Actions id={item.id} ip={item.ipAddress} name={item.name} />
                 </TableCell>
               </TableRow>
             )}

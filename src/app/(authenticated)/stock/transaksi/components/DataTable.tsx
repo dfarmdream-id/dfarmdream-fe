@@ -20,9 +20,8 @@ import { useMemo, useState } from "react";
 import EmptyState from "@/components/state/empty";
 import { IDR } from "@/common/helpers/currency";
 import { NumberFormat } from "@/common/helpers/number-format";
-import { useGetListTransaksiBarang } from "../../_services/transaksi-barang";
-import FilterBarang from "../../_components/filterBarang";
-import SkeletonPagination from "@/components/ui/SkeletonPagination";
+import { useGetListTransaksiBarang } from "@/app/(authenticated)/_services/transaksi-barang";
+import FilterBarang from "@/app/(authenticated)/_components/filterBarang";
 
 const columns = [
   {
@@ -76,7 +75,7 @@ const columns = [
   },
 ];
 
-export default function Page() {
+export default function KartuStokTable() {
   const [search, setSearch] = useQueryState("q", {
     throttleMs: 1000,
   });
@@ -98,9 +97,6 @@ export default function Page() {
 
   const rows = useMemo(() => {
     if (user.data) {
-      if(parseInt(page || "1") > user.data?.data?.meta?.totalPage) {
-        setPage(user.data?.data?.meta?.totalPage == 0 ? "1" : user.data?.data?.meta?.totalPage.toString());
-      }
       return user.data?.data?.data || [];
     }
     return [];
@@ -109,8 +105,6 @@ export default function Page() {
 
   return (
     <div className="p-5">
-      <div className="text-3xl font-bold mb-10">Kartu Stok Pakan Obat</div>
-      <div className="space-y-5 bg-white p-5 rounded-lg">
         <div className="flex justify-between items-center gap-3 flex-wrap">
           <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <Input
@@ -130,12 +124,10 @@ export default function Page() {
             />             
             <div className="flex gap-3 items-center flex-wrap md:flex-nowrap">
             <FilterBarang onChangeIdBarang={(id) => setGoodId(id)} />
-
-
             </div>
           </div>
         </div>
-        <Table aria-label="Data">
+        <Table aria-label="Data" className="mt-2">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -215,7 +207,7 @@ export default function Page() {
             )}
           </TableBody>
         </Table>
-        <div className="flex justify-between">
+        <div className="flex justify-between mt-2">
           <Select
             className="w-40"
             label="Tampilkan"
@@ -232,19 +224,14 @@ export default function Page() {
             <SelectItem key="40">40</SelectItem>
             <SelectItem key="50">50</SelectItem>
           </Select>
-          {user.isLoading ? (
-            <SkeletonPagination />
-          ) : (
-            <Pagination
-              color="primary"
-              total={user.data?.data?.meta?.totalPage || 1}
-              initialPage={1}
-              page={user.data?.data?.meta?.page || 1}
-              onChange={(page) => setPage(page.toString())}
-            />
-          )}
+          <Pagination
+            color="primary"
+            total={user.data?.data?.meta?.totalPage || 1}
+            initialPage={1}
+            page={user.data?.data?.meta?.page || 1}
+            onChange={(page) => setPage(page.toString())}
+          />
         </div>
       </div>
-    </div>
   );
 }

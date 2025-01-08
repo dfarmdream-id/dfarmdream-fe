@@ -61,6 +61,8 @@ export default function GrafikSuhu({
     )
   );
 
+  console.log("Temperature : ", items)
+
   useEffect(() => {
     const interval = setInterval(() => {
       queryClient.refetchQueries({
@@ -136,7 +138,7 @@ export default function GrafikSuhu({
       series: [
         {
           name: "Temperature",
-          data: items?.data?.data?.chart?.map((x) => x.y) ?? [],
+          data: items?.data?.data?.chart?.map((item) => item.y) ?? [],
         },
       ],
       options: {
@@ -165,7 +167,12 @@ export default function GrafikSuhu({
           },
         },
         xaxis: {
-          categories: items?.data?.data?.chart?.map((x) => x.x) ?? [],
+          categories: items?.data?.data?.chart?.map((item) => {
+            // return DateTime.fromISO(item.x)
+            // .setZone("Asia/Jakarta")
+            // .toFormat("HH:mm");
+            return item.x
+          }) ?? [],
         },
       },
     }),
