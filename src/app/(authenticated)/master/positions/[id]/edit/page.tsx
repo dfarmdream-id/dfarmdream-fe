@@ -5,7 +5,10 @@ import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useGetPosition, useUpdatePosition } from "../../../../_services/position";
+import {
+  useGetPosition,
+  useUpdatePosition,
+} from "../../../../_services/position";
 import { useEffect, useMemo } from "react";
 
 export default function Page() {
@@ -19,9 +22,9 @@ export default function Page() {
     checkoutTime: z.string({
       message: "Checkout Time wajib diisi",
     }),
-    checkKandang:z.boolean({
-      message:"Check kandang wajib diisi"
-    })
+    checkKandang: z.boolean({
+      message: "Check kandang wajib diisi",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -37,11 +40,21 @@ export default function Page() {
   useEffect(() => {
     if (position.data) {
       form.setValue("name", position?.data?.data?.name);
-      form.setValue("checkinTime", position?.data?.data?.checkinTime)
-      form.setValue("checkoutTime", position?.data?.data?.checkoutTime)
-      form.setValue("checkKandang", position?.data?.data?.checkKandang)
+      if (position?.data?.data?.checkinTime) {
+        const dateTimeString = position?.data?.data?.checkinTime;
+        const timeString = dateTimeString.split("T")[1].substring(0, 5);
+        form.setValue("checkinTime", timeString);
+      }
+      if (position?.data?.data?.checkoutTime) {
+        const dateTimeString = position?.data?.data?.checkoutTime;
+        const timeString = dateTimeString.split("T")[1].substring(0, 5);
+        form.setValue("checkoutTime", timeString);
+      }
+      form.setValue("checkKandang", position?.data?.data?.checkKandang);
     }
   }, [position.data, form]);
+
+  const checkinTime = form.watch("checkinTime");
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
@@ -66,7 +79,10 @@ export default function Page() {
     <div className="p-5">
       <div className="text-2xl font-bold mb-10">Ubah Jabatan</div>
       <div>
-        <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form
+          onSubmit={onSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
           <div className="h-16">
             <Controller
               control={form.control}

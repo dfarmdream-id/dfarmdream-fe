@@ -21,8 +21,8 @@ import { useGetCages } from "@/app/(authenticated)/_services/cage";
 
 export default function Page() {
   const schema = z.object({
-    identityId:z.string({
-      message:"NIK Wajib diisi",
+    identityId: z.string({
+      message: "NIK Wajib diisi",
     }),
     username: z.string({
       message: "ID wajib diisi",
@@ -73,22 +73,13 @@ export default function Page() {
   const user = useGetUser(useMemo(() => params.id as string, [params.id]));
 
   useEffect(() => {
-    if (user.data) {
-      if (user?.data?.data?.username) {
-        form.setValue("username", user?.data?.data?.username);
-      }
-      if (user?.data?.data?.fullName) {
-        form.setValue("fullName", user?.data?.data?.fullName);
-      }
-      if (user?.data?.data?.position?.id) {
-        form.setValue("positionId", user?.data?.data?.position?.id || "");
-      }
-      if (user?.data?.data?.phone) {
-        form.setValue("phone", user?.data?.data?.phone);
-      }
-      if (user?.data?.data?.address) {
-        form.setValue("address", user?.data?.data?.address);
-      }
+    if (user.data && user.data.data) {
+      form.setValue("identityId",user?.data?.data?.identityId);
+      form.setValue("username", user?.data?.data?.username);
+      form.setValue("fullName", user?.data?.data?.fullName);
+      form.setValue("positionId", user?.data?.data?.position?.id || "");
+      form.setValue("phone", user?.data?.data?.phone || "");
+      form.setValue("address", user?.data?.data?.address || "");
       if (user?.data?.data?.sites) {
         form.setValue(
           "sites",
@@ -101,15 +92,11 @@ export default function Page() {
           user?.data?.data?.cages?.map((v) => v.cageId).join(",")
         );
       }
-      if (user?.data?.data?.status) {
-        form.setValue("status", user?.data?.data?.status === "ACTIVE");
-      }
-      if (user.data?.data?.roles) {
-        form.setValue(
-          "roles",
-          user?.data?.data?.roles.map((v) => v.roleId).join(",")
-        );
-      }
+      form.setValue("status", user?.data?.data?.status === "ACTIVE");
+      form.setValue(
+        "roles",
+        user?.data?.data?.roles.map((v) => v.roleId).join(",")
+      );
     }
   }, [user.data, form]);
 
