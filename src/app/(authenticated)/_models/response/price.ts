@@ -23,6 +23,7 @@ export interface Daum {
   type: string;
   status: string;
   value: number;
+  weightPerUnit: number;
   siteId: string;
   site: Site;
   deletedAt: any;

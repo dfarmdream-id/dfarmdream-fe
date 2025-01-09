@@ -10,6 +10,7 @@ import {useGetSites} from "../../../_services/site";
 import {useEffect, useMemo} from "react";
 import {useCreatePrice} from "../../../_services/price";
 import useLocationStore from "@/stores/useLocationStore";
+import {Input} from "@nextui-org/input";
 
 export default function Page() {
   const schema = z.object({
@@ -21,6 +22,9 @@ export default function Page() {
     }),
     status: z.boolean({
       message: "Status wajib diisi",
+    }),
+    weightPerUnit: z.string({
+      message: "Berat per unit wajib diisi",
     }),
     type: z.string({
       message: "Tipe wajib diisi",
@@ -109,6 +113,35 @@ export default function Page() {
                   placeholder="Harga"
                   startContent="Rp. "
                   {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="weightPerUnit"
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text" // Tetap gunakan text agar fleksibel
+                  label="Berat per Unit"
+                  placeholder="Berat per Unit"
+                  endContent="KG"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    // Izinkan koma atau titik sebagai pemisah desimal
+                    if (/^\d*[.,]?\d*$/.test(value)) {
+                      // Ganti koma dengan titik untuk konsistensi nilai numerik
+                      field.onChange(value.replace(',', '.'));
+                    }
+                  }}
+                  value={field.value}
                   errorMessage={fieldState.error?.message}
                   isInvalid={fieldState.invalid}
                 />

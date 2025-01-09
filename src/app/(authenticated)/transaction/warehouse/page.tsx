@@ -269,7 +269,7 @@ export default function Page() {
                 <TableCell>
                   <div>
                     {item.qty} {item.category == "EGG" ? "Butir" : "Ekor"}
-                    {item.qtyCrack ? ` (${item.qtyCrack} Retak)` : ""}
+                    {item.qtyCrack ? ` (${item.qtyCrack} Rusak)` : ""}
                   </div>
                 </TableCell>
                 <TableCell>

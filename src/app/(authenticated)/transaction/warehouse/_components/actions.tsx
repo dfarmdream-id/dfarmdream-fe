@@ -192,7 +192,7 @@ export default function Actions(props: Props) {
                       data?.data?.data?.category == "CHICKEN"
                         ? "Ekor"
                         : "Butir Utuh"
-                    } {data?.data?.data?.qtyCrack ? ` (${data?.data?.data?.qtyCrack} Retak)` : ""}
+                    } {data?.data?.data?.qtyCrack ? ` (${data?.data?.data?.qtyCrack} Rusak)` : ""}
                     </td>
                   </tr>
                   <tr className="p-3 whitespace-nowrap even:bg-white odd:bg-slate-100">

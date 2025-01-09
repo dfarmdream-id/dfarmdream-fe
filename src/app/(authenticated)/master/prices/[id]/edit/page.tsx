@@ -9,6 +9,7 @@ import { useEffect, useMemo } from "react";
 import { useGetSites } from "../../../../_services/site";
 import { InputNumber } from "@/components/ui/input";
 import { useGetPrice, useUpdatePrice } from "../../../../_services/price";
+import {Input} from "@nextui-org/input";
 
 export default function Page() {
   const schema = z.object({
@@ -18,6 +19,9 @@ export default function Page() {
     }),
     siteId: z.string({
       message: "Site wajib diisi",
+    }),
+    weightPerUnit: z.string({
+      message: "Berat per unit wajib diisi",
     }),
     status: z.boolean({
       message: "Status wajib diisi",
@@ -40,6 +44,7 @@ export default function Page() {
   useEffect(() => {
     if (data.data) {
       form.setValue("siteId", data?.data?.data?.siteId);
+      form.setValue("weightPerUnit", data?.data?.data?.weightPerUnit.toString());
       form.setValue(
         "status",
         data?.data?.data?.status == "ACTIVE" ? true : false
@@ -81,7 +86,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="siteId"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   isLoading={sites.isLoading}
                   labelPlacement="outside"
@@ -102,12 +107,12 @@ export default function Page() {
               )}
             />
           </div>
-          
+
           <div className="h-16">
             <Controller
               control={form.control}
               name="value"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <InputNumber
                   labelPlacement="outside"
                   variant="bordered"
@@ -125,8 +130,37 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
+              name="weightPerUnit"
+              render={({field, fieldState}) => (
+                <Input
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text" // Tetap gunakan text agar fleksibel
+                  label="Berat per Unit"
+                  placeholder="Berat per Unit"
+                  endContent="KG"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    // Izinkan koma atau titik sebagai pemisah desimal
+                    if (/^\d*[.,]?\d*$/.test(value)) {
+                      // Ganti koma dengan titik untuk konsistensi nilai numerik
+                      field.onChange(value.replace(',', '.'));
+                    }
+                  }}
+                  value={field.value}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+          <div className="h-16">
+            <Controller
+              control={form.control}
               name="type"
-              render={({ field, fieldState }) => (
+              render={({field, fieldState}) => (
                 <Select
                   labelPlacement="outside"
                   variant="bordered"
@@ -148,7 +182,7 @@ export default function Page() {
             <Controller
               control={form.control}
               name="status"
-              render={({ field }) => (
+              render={({field}) => (
                 <Switch
                   defaultChecked
                   isSelected={field.value}

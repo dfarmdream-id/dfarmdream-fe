@@ -41,6 +41,10 @@ const columns = [
     label: "Harga",
   },
   {
+    key: "weightPerUnit",
+    label: "Berat per Unit",
+  },
+  {
     key: "status",
     label: "Status",
   },
@@ -148,6 +152,9 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <div>{IDR(item.value || 0)}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{item?.weightPerUnit} KG</div>
                 </TableCell>
                 <TableCell>
                   <div>

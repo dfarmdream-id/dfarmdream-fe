@@ -9,7 +9,7 @@ import {
   SelectItem,
   useDisclosure
 } from "@nextui-org/react";
-import { Controller, useFieldArray } from "react-hook-form";
+import {Controller, useFieldArray, useWatch} from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "@/hooks/form";
 import { toast } from "sonner";
@@ -24,6 +24,8 @@ import FilterRack from "@/app/(authenticated)/_components/filterRack";
 import useBatchStore from "@/stores/useBatchStore";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import {CalendarDate} from "@internationalized/date";
+import {useGetPrices} from "@/app/(authenticated)/_services/price";
+import useLocationStore from "@/stores/useLocationStore";
 
 export default function Page() {
   const schema = z.object({
@@ -79,6 +81,33 @@ export default function Page() {
     useMemo(() => ({ page: "1", limit: "10000" }), [])
   );
 
+  const {siteId} = useLocationStore();
+  
+  const weightPerUnits = useGetPrices(
+    useMemo(
+      () => ({
+        q:  "",
+        page: "1",
+        limit: "10",
+        siteId: siteId as string,
+      }),
+      [siteId]
+    )
+  );
+  
+  const typeCategory = form.watch("category");
+
+  const weightPerUnit = useMemo(() => {
+    if (weightPerUnits.data) {
+      if(typeCategory === 'EGG'){
+        return weightPerUnits.data.data.data.filter((item) => item.type === 'EGG');
+      } else if(typeCategory === 'CHICKEN') {
+        return weightPerUnits.data.data.data.filter((item) => item.type === 'CHICKEN');
+      }
+    }
+    return [];
+  }, [typeCategory, weightPerUnits.data]);
+
   const submission = useCreateWarehouseTransaction();
   const router = useRouter();
 
@@ -88,6 +117,7 @@ export default function Page() {
         body: {
           ...data,
           type: "IN",
+          weight: parseInt(String(data.weight), 10),
           dateCreated: data.dateCreated
             ? new Date(
               new Date(data.dateCreated).setHours(
@@ -142,6 +172,23 @@ export default function Page() {
       form.setValue("batchId", batchId);
     }
   }, [batchId, form]);
+
+  const watchedHaversts = useWatch({
+    control: form.control,
+    name: "haversts", // Memantau seluruh array haversts
+  });
+
+  useEffect(() => {
+    // Hitung total berat saat ada perubahan pada qty di haversts
+    const totalWeight = (watchedHaversts || []).reduce((
+      acc: number, item: { qty: number }
+    ) => {
+      return acc + (item.qty || 0); // Tambahkan qty, default ke 0 jika undefined
+    }, 0) * (weightPerUnit[0]?.weightPerUnit || 0);
+
+    // Update nilai weight di form
+    form.setValue("weight", totalWeight);
+  }, [watchedHaversts, weightPerUnit, form]);
 
   return (
     <div className="p-5">
@@ -267,6 +314,15 @@ export default function Page() {
               )}
             />
           </div>
+          <div className="h-16">
+            <div>
+              {weightPerUnit.length > 0 && (
+                <span>
+                  Berat per Unit: {weightPerUnit[0].weightPerUnit} KG
+                </span>
+              )}
+            </div>
+          </div>
           <div className="bg-white p-5 rounded-lg md:col-span-2">
             <div className="font-bold">Data Panen</div>
             <ul className="mt-5 grid gap-5">
@@ -328,8 +384,8 @@ export default function Page() {
                                   labelPlacement="outside"
                                   variant="bordered"
                                   type="text"
-                                  label="Jumlah Telur Pecah"
-                                  placeholder="Jumlah Telur Pecah"
+                                  label="Jumlah Telur Rusak"
+                                  placeholder="Jumlah Telur Rusak"
                                   {...field}
                                   errorMessage={fieldState.error?.message}
                                   isInvalid={fieldState.invalid}
