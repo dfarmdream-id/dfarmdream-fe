@@ -54,7 +54,6 @@ export default function Page() {
     }
   }, [position.data, form]);
 
-  const checkinTime = form.watch("checkinTime");
 
   const onSubmit = form.handleSubmit((data) => {
     submission.mutate(
