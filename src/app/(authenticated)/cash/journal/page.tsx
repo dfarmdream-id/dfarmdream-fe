@@ -63,17 +63,8 @@ export default function Page() {
     )
   );
 
-  const rows: SingleJournalData[] = useMemo(() => {
-    // return journalData.data?.data?.data || [];
-    if(
-      journalData.data
-    ){
-      if(parseInt(page || "1") > journalData.data?.data?.meta?.totalPage) {
-        setPage(journalData.data?.data?.meta?.totalPage == 0 ? "1" : journalData.data?.data?.meta?.totalPage.toString());
-      }
-    }
-    
-    return []
+    const rows: SingleJournalData[] = useMemo(() => {
+    return journalData.data?.data?.data || [];
   }, [journalData.data]);
 
   const groupedRows = useMemo(() => {
