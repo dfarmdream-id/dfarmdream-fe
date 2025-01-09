@@ -12,7 +12,7 @@ import { DateTime } from "luxon";
 import { useGetTelegramLog } from "../../_services/telegram-log";
 import { useQueryState } from "nuqs";
 import SkeletonPagination from "@/components/ui/SkeletonPagination";
-
+ 
 const Chart = dynamic(
   () => import("react-apexcharts").then((mod) => mod.default),
   {
@@ -60,7 +60,7 @@ export default function GrafikAmonia({ children }: { children: ReactNode }) {
       () => ({
         tanggal: tanggal || "",
         cageId: kandang || "",
-        siteid: siteId || ""
+        siteId: siteId || ""
       }),
       [kandang, tanggal, siteId]
     )
