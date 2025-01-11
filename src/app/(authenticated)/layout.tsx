@@ -1,404 +1,282 @@
 "use client";
-import Logo from "@/components/assets/logo";
+
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Avatar,
   Button,
-  Card,
-  CardBody,
   cn,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
   Image,
-  ScrollShadow, Skeleton,
-  Tooltip, useDisclosure
+  Navbar,
+  NavbarContent,
+  NavbarItem,
+  ScrollShadow,
 } from "@nextui-org/react";
-import {
-  HiChevronRight
-} from "react-icons/hi2";
-import { AnimatePresence, motion } from "framer-motion";
-import { useGetProfile } from "./_services/profile";
-import { usePathname, useRouter } from "next/navigation";
-import {
-  HiMenuAlt2,
-  HiMenuAlt4,
-  HiX,
-} from "react-icons/hi";
-import { useEffect, useState } from "react";
-import { useAuthStore } from "../auth/_store/auth";
-import Link from "next/link";
-import useLocationStore from "@/stores/useLocationStore";
-import {menus} from "@/common/menu";
-import {signOut} from "@/app/(authenticated)/sign-out/_actions/sign-out";
+import { Icon } from "@iconify/react";
+import { useMediaQuery } from "usehooks-ts";
 
-import Setting from "@/app/(authenticated)/_components/settings";
-import {MdOutlineSettingsSuggest} from "react-icons/md";
+// Framer Motion
+import { AnimatePresence, motion } from "framer-motion";
+
+// Services / Stores
+import { useGetProfile } from "./_services/profile";
+import { useAuthStore } from "../auth/_store/auth";
+import useLocationStore from "@/stores/useLocationStore";
+
+// Components
+import Logo from "@/components/assets/logo";
+import { sectionNestedItems } from "@/components/ui/sidebar-items";
+
+import dynamic from "next/dynamic";
+
+const Sidebar = dynamic(() => import("@/components/ui/sidebar"), { ssr: false });
+
 export default function Layout({ children }: { children: React.ReactNode }) {
+  // Ambil data profil (roles, site, dll.)
   const { data } = useGetProfile();
 
-  const { setPermissions } = useAuthStore((state) => state);
+  // Global states (permissions & site)
+  const { setPermissions } = useAuthStore();
   const { setSiteId } = useLocationStore();
-  const router = useRouter();
 
+  // State: menandakan sidebar sedang "terbuka" (true) atau "tertutup" (false)
+  // - Di desktop => true = w-72, false = w-16
+  // - Di mobile => true = overlay terbuka, false = overlay tertutup
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Deteksi mobile
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Handler toggle sidebar
+  const handleToggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
+
+  // Sinkronisasi data roles & site -> permissions & siteId
   useEffect(() => {
-    if (data?.data && data?.data?.roles?.length > 0) {
+    if (!data?.data) return;
+    const { roles, site } = data.data;
+
+    // Set permissions
+    if (roles?.length > 0) {
       setPermissions(
-        data?.data?.roles
-          .map((role) =>
-            role.role.permissions.map(
-              (permission) => permission.permission.code
-            )
-          )
-          .flat()
+        roles.flatMap((role) =>
+          role.role.permissions.map((p) => p.permission.code)
+        )
       );
     }
-  }, [data, setPermissions]);
-
-  useEffect(() => {
-    if (data?.data?.site?.id) {
-      setSiteId(data?.data?.site?.id);
+    // Set siteId
+    if (site?.id) {
+      setSiteId(site.id);
     }
-  }, [data, setSiteId]);
-
-  const handleNavigation = (href: string) => {
-    router.push(href);
-    setOpen(false); // Close sidebar after navigation
-  };
-
-  const SidebarMenuItem = (menu: {
-    can: string;
-    href?: string;
-    label?: string;
-    icon?: React.ReactNode;
-    action?: () => void;
-    childrens?: Partial<{
-      href: string;
-      label: string;
-      icon: React.ReactNode;
-      can: string;
-      key: string;
-    }>[];
-    expanded?: boolean;
-    mobile?: boolean;
-    id: string;
-    onClick?: () => void;
-  }) => {
-    const path = usePathname();
-
-    const [open, setOpen] = useState(
-      menu?.id?.includes(path.split("/")[1]) || false
-    );
-
-    return (
-      <li key={menu.label}>
-        <Card
-          isPressable
-          onPress={() => {
-            if (menu.href) {
-              handleNavigation(menu.href); // Use the handleNavigation function
-            } else if (menu.action) {
-              menu.action(); // Run action if no href
-            }
-            setOpen(!open); // Toggle submenu
-          }}
-          as={menu.href ? Link : "a"}
-          href={menu.href ? menu.href : undefined}
-          className={cn(
-            "shadow-lg w-full data-[active=true]:bg-primary data-[active=true]:text-[#F4E9B1] py-1 bg-transparent text-primary md:text-gray-600"
-          )}
-          data-active={menu.href == path}
-          shadow="none"
-        >
-          <CardBody
-            className={cn(
-              "flex gap-2 flex-row items-center w-full",
-              menu.expanded ? "justify-between" : "justify-center"
-            )}
-          >
-            {menu.mobile && (
-              <div className="flex gap-2 flex-row items-center w-full">
-                {menu.icon}
-                {menu.label}
-              </div>
-            )}
-            {!menu.mobile && (
-              <div className="flex gap-2 flex-row items-center">
-                {menu.icon}
-                {menu.expanded ? menu.label : null}
-              </div>
-            )}
-            {menu.mobile && (
-              <>
-                {menu.childrens ? (
-                  <motion.div animate={{ rotate: open ? 90 : 0 }}>
-                    <HiChevronRight />
-                  </motion.div>
-                ) : null}
-              </>
-            )}
-            {!menu.mobile && (
-              <>
-                {menu.childrens && menu.expanded ? (
-                  <motion.div animate={{ rotate: open ? 90 : 0 }}>
-                    <HiChevronRight />
-                  </motion.div>
-                ) : null}
-              </>
-            )}
-          </CardBody>
-        </Card>
-        <motion.div>
-          {open && (
-            <AnimatePresence>
-              {menu.childrens && (
-                <motion.ul
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className={cn(
-                    menu.expanded ? "p-3 space-y-2" : "p-1 space-y-1"
-                  )}
-                >
-                  {menu.childrens
-                    ?.filter((child) => permissions?.includes("*") || permissions?.includes(child.can as string))
-                    .map((child) => (
-                      <li key={child.label}>
-                        {menu.expanded ? (
-                            <Card
-                              shadow="none"
-                              onPress={() => {
-                                if (child.href) {
-                                  handleNavigation(child.href); // Navigasi ke child menu
-                                } else if (menu.action) {
-                                  menu.action(); // Eksekusi aksi jika ada
-                                }
-                              }}
-                              as={child.href ? Link : "a"}
-                              href={child.href ? child.href : undefined}
-                              isPressable
-                              data-active={child.href === path}
-                              className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
-                            >
-                              <CardBody className="flex gap-2 flex-row items-center test">
-                                {child.icon}
-                                {menu.expanded ? child.label : !menu.mobile ? null : child.label}
-                              </CardBody>
-                            </Card>
-                        ) : (
-                            <Tooltip
-                              content={child.label}
-                              placement="right"
-                              offset={10}
-                            >
-                              <Card
-                                shadow="none"
-                                onPress={() => {
-                                  if (child.href) {
-                                    handleNavigation(child.href); // Navigasi ke child menu
-                                  } else if (menu.action) {
-                                    menu.action(); // Eksekusi aksi jika ada
-                                  }
-                                }}
-                                as={child.href ? Link : "a"}
-                                href={child.href ? child.href : undefined}
-                                isPressable
-                                data-active={child.href === path}
-                                className="py-1 w-full bg-transparent text-primary md:text-gray-600 data-[active=true]:bg-primary/90 data-[active=true]:text-[#F4E9B1]"
-                              >
-                                <CardBody className="flex gap-2 flex-row items-center">
-                                  {child.icon}
-                                  {menu.expanded ? child.label : !menu.mobile ? null : child.label}
-                                </CardBody>
-                              </Card>
-                            </Tooltip>
-                        )}
-                      </li>
-                    ))}
-                </motion.ul>
-              )}
-            </AnimatePresence>
-          )}
-        </motion.div>
-      </li>
-    );
-  };
-
-  const [open, setOpen] = useState(false);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  }, [data, setPermissions, setSiteId]);
   
-  const { isPending } = useGetProfile();
-  const permissions = useAuthStore((state) => state.permissions);
+  // Pastikan Anda memiliki akses ke state `isSidebarOpen` & fungsi penutup 
+  // (misalnya setIsSidebarOpen(false)) di dalam scope sidebarContent.
+  const sidebarContent = (
+    <>
+      {/* Header area: Logo + Tombol X di baris yang sama */}
+      <div className={
+        cn(
+          "flex items-center",
+          isMobile ? "justify-between px-2" : "justify-center"
+        )
+      }>
+        {/* Logo */}
+        {(!isSidebarOpen) ? (
+          <Image
+            className="h-10"
+            src="/icon.png"
+            alt="Logo Compact"
+          />
+        ) : (
+          <Logo className="h-16" />
+        )}
+
+        {/* Tombol X hanya muncul jika mobile & isSidebarOpen (opsional) */}
+        {isMobile && isSidebarOpen && (
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => setIsSidebarOpen(false)}
+          >
+            <Icon
+              icon="solar:close-circle-outline"
+              width={24}
+              height={24}
+              className="text-default-500"
+            />
+          </Button>
+        )}
+      </div>
+
+      {/* Menu Sidebar */}
+      <ScrollShadow hideScrollBar>
+        <Sidebar
+          defaultSelectedKey="home"
+          // Di desktop => isCompact jika !isSidebarOpen
+          // Di mobile => overlay menampilkan full, 
+          //   tapi Anda masih bisa memanfaatkan isCompact sesuai kebutuhan
+          isCompact={!isSidebarOpen && !isMobile}
+          items={sectionNestedItems}
+        />
+      </ScrollShadow>
+    </>
+  );
+
 
   return (
-    <>
-      <AnimatePresence>
-        <div className="flex w-full h-screen overflow-hidden">
-          <motion.aside
-            initial={{ width: "20rem" }}
-            animate={{ width: open ? "5rem" : "20rem" }}
-            className="w-80 h-screen bg-[#F8F9FA] hidden md:block overflow-hidden pb-10"
-          >
-            <ScrollShadow offset={0} className="h-full" hideScrollBar>
-              <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
-                <li className="h-20 flex justify-center items-center sticky top-0 inset-x-0 z-[50] bg-white/90 backdrop-blur-xl">
-                  {open ? (
-                    <Image className="h-16" src="/icon.png" alt="logo" />
-                  ) : (
-                    <Logo className="h-16" />
-                  )}
-                </li>
-                {isPending ? (
-                  <div className="p-4 space-y-4">
-                    {[...Array(5)].map((_, index) => (
-                      <div key={index} className="flex gap-4 h-16 relative justify-center items-center p-4">
-                        <Skeleton className="w-full h-full absolute z-0 rounded-xl" />
-                        <div>
-                          <Skeleton className="w-8 h-8 rounded-xl" />
-                        </div>
-                        <div className="flex-1 space-y-3">
-                          <Skeleton className="w-full h-2 rounded-xl" />
-                          <Skeleton className="w-full h-2 rounded-xl" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  // Tampilkan menu jika permissions sudah dimuat
-                  menus.map((menu) => {
-                    const hasChildPermission = menu.children?.some((child) =>
-                      permissions?.includes(child.can) || permissions?.includes("*")
-                    );
+    <div className="flex h-screen w-full overflow-hidden">
+      {/* 
+        MOBILE => OVERLAY
+        DESKTOP => ASIDE
+      */}
+      {isMobile ? (
+        // ======== MOBILE: AnimatePresence + motion.div sebagai Drawer Overlay ========
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <div className="fixed inset-0 z-50 flex">
+              {/* BACKDROP → Fade In/Out */}
+              <motion.div
+                className="absolute inset-0 bg-black/30"
+                // Awal (invisible), lalu fade in
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              />
 
-                    // Render parent if user has '*' permission or access to parent/any child
-                    if (!permissions?.includes(menu.can) && !hasChildPermission) {
-                      return null; // Don't render the parent menu
-                    }
+              {/* SIDEBAR → Slide In/Out dari kiri */}
+              <motion.aside
+                className="relative z-50 w-72 border-r border-divider bg-white p-2"
+                // Awal (x:-288), lalu geser ke 0
+                initial={{ x: -288 }}
+                animate={{ x: 0 }}
+                exit={{ x: -288 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {sidebarContent}
+              </motion.aside>
+            </div>
+          )}
+        </AnimatePresence>
+      ) : (
+        // ========== DESKTOP => <aside> normal (collapse/expand) ==========
+        <aside
+          className={cn(
+            "relative flex flex-col h-full border-r border-divider p-2 transition-[width]",
+            isSidebarOpen ? "w-72" : "w-16 items-center px-2 py-6"
+          )}
+        >
+          {sidebarContent}
+        </aside>
+      )}
 
-                    return (
-                      <SidebarMenuItem
-                        key={menu.label}
-                        id={menu.key || ""}
-                        label={menu.label as string}
-                        icon={menu.icon as React.ReactNode}
-                        can={menu.can as string}
-                        expanded={!open}
-                        href={menu.href as string}
-                        childrens={menu.children}
-                      />
-                    );
-                  })
-                )}
-              </ul>
-            </ScrollShadow>
-          </motion.aside>
-          <motion.aside
-            initial={{ width: "0" }}
-            animate={{ width: open ? "100%" : "0" }}
-            className="h-dvh bg-[#F8F9FA] block md:hidden overflow-hidden"
-          >
-            <div className="h-20 flex justify-between items-center px-5">
-              <div>
-                <Logo className="h-16" />
-              </div>
-              <div>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  onPress={() => {
-                    setOpen(false);
-                  }}
-                >
-                  <HiX className="text-2xl text-primary" />
+      {/* WRAPPER UTAMA (HEADER + MAIN) */}
+      <div className="flex flex-1 flex-col min-w-0 bg-[#ececec]">
+        {/* HEADER */}
+        <header className="shrink-0 border-b border-divider bg-white">
+          <Navbar height="60px" maxWidth="full" className="mx-auto max-w-full">
+            {/* Tombol toggle sidebar */}
+            <NavbarContent justify="start">
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                onPress={handleToggleSidebar}
+              >
+                <Icon
+                  className="text-default-500"
+                  icon="solar:sidebar-minimalistic-outline"
+                  width={24}
+                  height={24}
+                />
+              </Button>
+            </NavbarContent>
+
+            {/* Bagian Kanan (settings, profile) */}
+            <NavbarContent justify="end" className="items-center space-x-1">
+              {/* Settings Button */}
+              <NavbarItem className="hidden sm:flex">
+                <Button isIconOnly radius="full" variant="light">
+                  <Icon
+                    className="text-default-500"
+                    icon="solar:settings-linear"
+                    width={24}
+                  />
                 </Button>
-              </div>
-            </div>
-            <ScrollShadow className="h-full" hideScrollBar>
-              <ul className="p-3 space-y-2 h-[calc(100vh-20rem)]">
-                {menus.map((menu) => {
-                  const hasChildPermission = menu.children?.some((child) =>
-                    permissions?.includes(child.can) || permissions?.includes("*")
-                  );
+              </NavbarItem>
 
-                  // Render parent if user has '*' permission or access to parent/any child
-                  if (!permissions?.includes(menu.can) && !hasChildPermission) {
-                    return null; // Don't render the parent menu
-                  }
-                  
-                  return (
-                    <SidebarMenuItem
-                      key={menu.label}
-                      id={menu.key || ""}
-                      onClick={() => setOpen(false)}
-                      expanded={!open}
-                      mobile
-                      href={menu.href as string}
-                      label={menu.label as string}
-                      icon={menu.icon as React.ReactNode}
-                      can={menu.can as string}
-                      childrens={menu.children}
-                    />
-                  );
-                })}
-              </ul>
-            </ScrollShadow>
-          </motion.aside>
-          <main className="flex-1 bg-default-50 w-full overflow-y-auto">
-            <nav className="bg-white w-full sticky top-0 h-16 flex justify-center items-center px-5 z-30">
-              <div className="w-full flex justify-between items-center">
-                <div className="flex gap-3 w-full items-center">
-                  <div>
-                    <Button
-                      variant="light"
-                      isIconOnly
-                      onClick={() => setOpen(!open)}
+              {/* Profile Avatar & Dropdown */}
+              <NavbarItem>
+                <Dropdown placement="bottom-end">
+                  <DropdownTrigger>
+                    <div
+                      className={cn(
+                        "flex items-center gap-2 rounded-xl py-2 px-3 outline-none transition-colors",
+                        "hover:bg-neutral-100 active:bg-neutral-200"
+                      )}
                     >
-                      {!open ? <HiMenuAlt4 /> : <HiMenuAlt2 />}  </Button>
-                  </div>
-                  {/*<SwitchSite />*/}
-                  <Button size="md" onPress={onOpen}>
-                    <MdOutlineSettingsSuggest size="20" />
-                    <span>Settings</span>
-                  </Button>
-                </div>
-                <div>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Card shadow="none" isPressable className="p-1">
-                        <CardBody className="flex flex-row items-center gap-2 px-1 py-0">
-                          <Avatar src={data?.data?.photoProfile} />
-                          {data?.data?.fullName}
-                        </CardBody>
-                      </Card>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Actions">
-                      <DropdownItem key="update-profile" color="danger">
-                        <Link href="/user/update-profile">Update Profile</Link>
-                      </DropdownItem>
-                      <DropdownItem key="update-password" color="danger">
-                        <Link href="/user/update-password">Update Password</Link>
-                      </DropdownItem>
-                      <DropdownItem
-                        key="delete"
-                        className="text-danger"
-                        color="danger"
-                        onPress={() => signOut()}
-                      >
-                        Keluar
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-              </div>
-            </nav>
-            <div className="w-full overflow-x-hidden overflow-y-auto bg-[#ececec] min-h-screen">
-              {children}
-            </div>
-            <Setting isOpen={isOpen} onOpenChange={onOpenChange} />
-          </main>
-        </div>
-      </AnimatePresence>
-    </>
+                      <Avatar
+                        size="md"
+                        src={
+                          data?.data?.photoProfile ??
+                          "https://i.pravatar.cc/150?u=a04258114e29026708c"
+                        }
+                      />
+                      <div className="flex flex-col text-left">
+                        <span className="font-semibold text-default-700 leading-tight">
+                          {data?.data?.username ?? "User"}
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownTrigger>
+
+                  <DropdownMenu aria-label="Profile Actions" variant="flat">
+                    <DropdownItem
+                      key="help_and_feedback"
+                      startContent={
+                        <Icon
+                          icon="solar:help-linear"
+                          width={18}
+                          height={18}
+                          className="text-default-500"
+                        />
+                      }
+                    >
+                      Help &amp; Feedback
+                    </DropdownItem>
+                    <DropdownItem
+                      key="logout"
+                      color="danger"
+                      startContent={
+                        <Icon
+                          icon="solar:logout-3-linear"
+                          width={18}
+                          height={18}
+                          className="text-danger"
+                        />
+                      }
+                    >
+                      Log Out
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </NavbarItem>
+            </NavbarContent>
+          </Navbar>
+        </header>
+
+        {/* MAIN CONTENT */}
+        <main className="flex-1 overflow-auto min-w-0">
+          <div className="w-full min-h-full overflow-x-hidden">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
   );
 }

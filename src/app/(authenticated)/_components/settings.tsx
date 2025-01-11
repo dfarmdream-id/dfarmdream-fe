@@ -87,71 +87,58 @@ export default function GlobalSettings(
     <div>
       <Modal
         isOpen={isOpen}
-        size="lg"
-        scrollBehavior="inside"
         onOpenChange={onOpenChange}
-        isDismissable
-        className="mobile:full-screen"
       >
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Global Settings</ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-6">
-                  {/* Switch Site */}
-                  <div>
-                    <Autocomplete
-                      label="Pilih Lokasi"
-                      placeholder="Cari Lokasi"
-                      defaultSelectedKey={profile.data?.data?.site?.id || ""}
-                      isLoading={sites.isLoading || switchSite.isPending || profile.isLoading}
-                      defaultItems={sites.data?.data || []}
-                      onSelectionChange={(id) => handleSiteChange(id as string)}
-                    >
-                      {(item) => (
-                        <AutocompleteItem key={item.siteId}>
-                          {item.site?.name || "Unknown"}
-                        </AutocompleteItem>
-                      )}
-                    </Autocomplete>
-                  </div>
+          <ModalHeader className="flex flex-col gap-1">Global Settings</ModalHeader>
+          <ModalBody>
+            <div className="flex flex-col gap-6">
+              {/* Switch Site */}
+              <div>
+                <Autocomplete
+                  label="Pilih Lokasi"
+                  placeholder="Cari Lokasi"
+                  defaultSelectedKey={profile.data?.data?.site?.id || ""}
+                  isLoading={sites.isLoading || switchSite.isPending || profile.isLoading}
+                  defaultItems={sites.data?.data || []}
+                  onSelectionChange={(id) => handleSiteChange(id as string)}
+                >
+                  {(item) => (
+                    <AutocompleteItem key={item.siteId}>
+                      {item.site?.name || "Unknown"}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              </div>
 
-                  {/* Switch Batch */}
-                  <div>
-                    <Autocomplete
-                      label="Pilih Batch"
-                      placeholder="Cari Batch"
-                      isLoading={batches.isLoading || switchBatch.isPending}
-                      defaultItems={batches.data?.data?.data || []}
-                      defaultSelectedKey={batchId || ""}
-                      onSelectionChange={(id) => handleBatchChange(id as string)}
-                    >
-                      {(item) => (
-                        <AutocompleteItem key={item.id}
-                                          value={item.id}
-                                          aria-label={`[${item.status}]: ${item.name}`}>
-                          <div className="flex gap-2 items-center">
-                            <div className="flex flex-col">
-                              <span className="text-small">{item.name}</span>
-                              <span className="text-tiny text-default-400">
-                                {item.status}
-                              </span>
-                            </div>
-                          </div>
-                        </AutocompleteItem>
-                      )}
-                    </Autocomplete>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+              {/* Switch Batch */}
+              <div>
+                <Autocomplete
+                  label="Pilih Batch"
+                  placeholder="Cari Batch"
+                  isLoading={batches.isLoading || switchBatch.isPending}
+                  defaultItems={batches.data?.data?.data || []}
+                  defaultSelectedKey={batchId || ""}
+                  onSelectionChange={(id) => handleBatchChange(id as string)}
+                >
+                  {(item) => (
+                    <AutocompleteItem key={item.id}
+                                      value={item.id}
+                                      aria-label={`[${item.status}]: ${item.name}`}>
+                      <div className="flex gap-2 items-center">
+                        <div className="flex flex-col">
+                          <span className="text-small">{item.name}</span>
+                          <span className="text-tiny text-default-400">
+                            {item.status}
+                          </span>
+                        </div>
+                      </div>
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              </div>
+            </div>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

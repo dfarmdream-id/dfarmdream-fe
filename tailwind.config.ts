@@ -11,11 +11,16 @@ export default {
   theme: {
     extend: {
       colors: {
+        'scrollbar-thumb': '#9ca3af', // Warna thumb
+        'scrollbar-track': '#e5e7eb', // Warna track
         primary: {
           DEFAULT: "#0f6646",
         },
       },
     },
+  },
+  variants: {
+    scrollbar: ['rounded'], // Tambahkan jika ingin border radius di thumb
   },
   plugins: [
     nextui({
