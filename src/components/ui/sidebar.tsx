@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {
   Listbox,
   ListboxItem,
@@ -10,12 +10,9 @@ import {
   AccordionItem,
   cn,
   type ListboxProps,
-  type ListboxSectionProps, Skeleton,
+  type ListboxSectionProps,
 } from "@nextui-org/react";
-import {Icon} from "@iconify/react";
 import {Tooltip} from "@nextui-org/react";
-import {useGetProfile} from "@/app/(authenticated)/_services/profile";
-import {useAuthStore} from "@/app/auth/_store/auth";
 
 export enum SidebarItemType {
   Nest = "nest",
@@ -24,7 +21,7 @@ export enum SidebarItemType {
 export type SidebarItem = {
   key: string;
   title: string;
-  icon?: string;
+  icon?: React.ReactNode;
   href?: string;
   can: string;
   type?: SidebarItemType.Nest;
@@ -61,6 +58,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
     ref,
   ) => {
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleItemClick = React.useCallback(
       (e: React.MouseEvent, href?: string) => {
@@ -71,6 +69,18 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       },
       [router],
     );
+
+    const hasActiveChild = (items: SidebarItem[], currentPath: string): boolean => {
+      return items.some((item) => {
+        if (item.href && currentPath.startsWith(item.href)) {
+          return true;
+        }
+        if (item.items && item.items.length > 0) {
+          return hasActiveChild(item.items, currentPath); // Cek secara rekursif
+        }
+        return false;
+      });
+    };
 
     const sectionClasses = {
       ...sectionClassesProp,
@@ -90,15 +100,11 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         const isNestType =
           item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest;
 
+        const isOpen = hasActiveChild(item.items || [], pathname);
+
         const modifiedItem = {...item};
         if (isNestType) {
           delete modifiedItem.href;
-        }
-        
-        if(
-          !permissions?.includes("*") || !permissions?.includes(item.can as string)
-        ) {
-          return <div></div>;
         }
 
         return (
@@ -119,14 +125,14 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
             endContent={isCompact || isNestType || hideEndContent ? null : item.endContent ?? null}
             startContent={
               isCompact || isNestType ? null : item.icon ? (
-                <Icon
+                <div
                   className={cn(
                     "text-default-500 ",
                     iconClassName,
                   )}
-                  icon={item.icon}
-                  width={24}
-                />
+                >
+                  {item.icon}
+                </div>
               ) : (
                 item.startContent ?? null
               )
@@ -138,14 +144,14 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
                   {item.icon ? (
-                    <Icon
+                    <div
                       className={cn(
                         "text-default-500 ",
                         iconClassName,
                       )}
-                      icon={item.icon}
-                      width={24}
-                    />
+                    >
+                      {item.icon}
+                    </div>
                   ) : (
                     item.startContent ?? null
                   )}
@@ -155,7 +161,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
 
             {/* Jika Nest & tidak compact, render Accordion */}
             {!isCompact && isNestType ? (
-              <Accordion className="p-0">
+              <Accordion className="p-0" defaultExpandedKeys={isOpen ? [item.key] : []}>
                 <AccordionItem
                   key={item.key}
                   aria-label={item.title}
@@ -167,14 +173,14 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                   title={
                     item.icon ? (
                       <div className="flex h-11 items-center gap-2 px-2 py-1.5">
-                        <Icon
+                        <div
                           className={cn(
                             "text-default-500 ",
                             iconClassName,
                           )}
-                          icon={item.icon}
-                          width={24}
-                        />
+                        >
+                          {item.icon}
+                        </div>
                         <span className="text-small font-medium text-default-500 ">
                           {item.title}
                         </span>
@@ -218,6 +224,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
 
     const renderItem = React.useCallback(
       (item: SidebarItem) => {
+        const isActive = pathname.startsWith(item.href ?? "");
+        
         const isNestType =
           item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest;
 
@@ -230,38 +238,44 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
             {...item}
             key={item.key}
             onClick={(e) => handleItemClick(e, item.href)}
+            className={cn(
+              item.className,
+              {
+                "bg-default-100": isActive,
+              },
+            )}
             startContent={
               isCompact
                 ? null
                 : item.icon
                   ? (
-                    <Icon
+                    <div
                       className={cn(
                         "text-default-500",
                         iconClassName,
                       )}
-                      icon={item.icon}
-                      width={24}
-                    />
+                    >
+                      {item.icon}
+                    </div>
                   )
                   : item.startContent ?? null
             }
             endContent={isCompact || hideEndContent ? null : item.endContent ?? null}
             textValue={item.title}
-            title={isCompact ? null : item.title}
+            title={isCompact ? null : `${item.title}`}
           >
             {isCompact ? (
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
                   {item.icon ? (
-                    <Icon
+                    <div
                       className={cn(
                         "text-default-500 ",
                         iconClassName,
                       )}
-                      icon={item.icon}
-                      width={24}
-                    />
+                    >
+                      {item.icon}
+                    </div>
                   ) : (
                     item.startContent ?? null
                   )}
@@ -271,11 +285,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           </ListboxItem>
         );
       },
-      [isCompact, hideEndContent, iconClassName, handleItemClick, renderNestItem],
+      [isCompact, iconClassName, hideEndContent, renderNestItem, handleItemClick],
     );
-    
-    const { isPending } = useGetProfile();
-    const permissions = useAuthStore((state) => state.permissions);
 
     return (
       <Listbox
@@ -307,15 +318,6 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         {...props}
       >
         {(item) => {
-
-          const hasChildPermission = item.items?.some((child) =>
-            permissions?.includes(child.can) || permissions?.includes("*")
-          );
-
-          if (!permissions?.includes(item.can) && !hasChildPermission) {
-            return <div></div>;
-          }
-          
           if (item.items && item.items?.length > 0 && item?.type === SidebarItemType.Nest) {
             return renderNestItem(item);
           } else if (item.items && item.items?.length > 0) {

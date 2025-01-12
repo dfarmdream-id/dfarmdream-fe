@@ -6,6 +6,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import GlobalSettings from "@/app/(authenticated)/_components/settings";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               
               shallowRouting
             />
+            <GlobalSettings />
             {children}
           </Suspense>
         </NuqsAdapter>

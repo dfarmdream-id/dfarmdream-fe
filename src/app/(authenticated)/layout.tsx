@@ -13,146 +13,174 @@ import {
   Navbar,
   NavbarContent,
   NavbarItem,
-  ScrollShadow,
+  ScrollShadow, Skeleton,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { useMediaQuery } from "usehooks-ts";
-
-// Framer Motion
 import { AnimatePresence, motion } from "framer-motion";
-
-// Services / Stores
+import dynamic from "next/dynamic";
+import { sectionNestedItems } from "@/components/ui/sidebar-items";
+import { SidebarItem } from "@/components/ui/sidebar";
+import { Role } from "@/app/(authenticated)/_models/response/profile";
 import { useGetProfile } from "./_services/profile";
 import { useAuthStore } from "../auth/_store/auth";
 import useLocationStore from "@/stores/useLocationStore";
-
-// Components
 import Logo from "@/components/assets/logo";
-import { sectionNestedItems } from "@/components/ui/sidebar-items";
-
-import dynamic from "next/dynamic";
+import useSidebarStore from "@/stores/useSidebarStore";
+import {usePathname} from "next/navigation";
+import {IoReorderThree} from "react-icons/io5";
+import {BiXCircle} from "react-icons/bi";
+import useModalStore from "@/stores/useModalStore";
+import {MdOutlineSettingsSuggest} from "react-icons/md";
 
 const Sidebar = dynamic(() => import("@/components/ui/sidebar"), { ssr: false });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  // Ambil data profil (roles, site, dll.)
-  const { data } = useGetProfile();
-
-  // Global states (permissions & site)
+  const { data, isPending } = useGetProfile();
   const { setPermissions } = useAuthStore();
   const { setSiteId } = useLocationStore();
 
-  // State: menandakan sidebar sedang "terbuka" (true) atau "tertutup" (false)
-  // - Di desktop => true = w-72, false = w-16
-  // - Di mobile => true = overlay terbuka, false = overlay tertutup
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Deteksi mobile
+  const pathname = usePathname();
+  
+  const {
+    isSidebarOpen,
+    toggleSidebar,
+  } = useSidebarStore(
+    (state) => state
+  )
+  
+  const [filteredItems, setFilteredItems] = useState(sectionNestedItems);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Handler toggle sidebar
   const handleToggleSidebar = useCallback(() => {
-    setIsSidebarOpen((prev) => !prev);
+    toggleSidebar();
+  }, [toggleSidebar]);
+
+  const hasPermission = useCallback((item: SidebarItem, roles: Role[], hasGlobalPermission: boolean): boolean => {
+    if (hasGlobalPermission) return true;
+    if (item.can === "*") return true;
+    if (item.can) {
+      return roles.some((role) =>
+        role.role.permissions.some((p) => p.permission.code === item.can)
+      );
+    }
+    return true;
   }, []);
 
-  // Sinkronisasi data roles & site -> permissions & siteId
+  const checkPermissionsRecursively = useCallback((items: SidebarItem[], roles: Role[], hasGlobalPermission: boolean): SidebarItem[] => {
+    return items.filter((item) => {
+      const isItemAllowed = hasPermission(item, roles, hasGlobalPermission);
+      if (item.items && item.items.length > 0) {
+        const filteredChildItems = checkPermissionsRecursively(item.items, roles, hasGlobalPermission);
+        if (filteredChildItems.length > 0) {
+          item.items = filteredChildItems;
+          return true;
+        }
+      }
+      return isItemAllowed;
+    });
+  }, [hasPermission]);
+
   useEffect(() => {
     if (!data?.data) return;
     const { roles, site } = data.data;
+    const hasGlobalPermission = roles.some((role) =>
+      role.role.permissions.some((p) => p.permission.code === "*")
+    );
 
-    // Set permissions
     if (roles?.length > 0) {
       setPermissions(
         roles.flatMap((role) =>
           role.role.permissions.map((p) => p.permission.code)
         )
       );
+
+      const filteredItems = checkPermissionsRecursively(sectionNestedItems, roles, hasGlobalPermission);
+      setFilteredItems(filteredItems);
     }
-    // Set siteId
+
     if (site?.id) {
       setSiteId(site.id);
     }
-  }, [data, setPermissions, setSiteId]);
+  }, [checkPermissionsRecursively, data, setPermissions, setSiteId, isPending]);
   
-  // Pastikan Anda memiliki akses ke state `isSidebarOpen` & fungsi penutup 
-  // (misalnya setIsSidebarOpen(false)) di dalam scope sidebarContent.
+  // if pathname change and sidebar is open, close the sidebar
+  useEffect(() => {
+    if (isMobile && isSidebarOpen) {
+      handleToggleSidebar();
+    }
+  }, [pathname]);
+
+  const { toggleModal } = useModalStore(); // Gunakan store modal
+
   const sidebarContent = (
     <>
-      {/* Header area: Logo + Tombol X di baris yang sama */}
-      <div className={
-        cn(
-          "flex items-center",
-          isMobile ? "justify-between px-2" : "justify-center"
-        )
-      }>
-        {/* Logo */}
-        {(!isSidebarOpen) ? (
-          <Image
-            className="h-10"
-            src="/icon.png"
-            alt="Logo Compact"
-          />
+      <div className={cn("flex items-center", isMobile ? "justify-between px-2" : "justify-center")}>
+        {!isSidebarOpen ? (
+          <Image className="h-10" src="/icon.png" alt="Logo Compact" />
         ) : (
           <Logo className="h-16" />
         )}
-
-        {/* Tombol X hanya muncul jika mobile & isSidebarOpen (opsional) */}
         {isMobile && isSidebarOpen && (
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => setIsSidebarOpen(false)}
-          >
-            <Icon
-              icon="solar:close-circle-outline"
-              width={24}
-              height={24}
-              className="text-default-500"
-            />
+          <Button isIconOnly variant="light" onPress={() => handleToggleSidebar()}>
+            <BiXCircle size={24} className="text-default-500" />
           </Button>
         )}
       </div>
-
-      {/* Menu Sidebar */}
-      <ScrollShadow hideScrollBar>
-        <Sidebar
-          defaultSelectedKey="home"
-          // Di desktop => isCompact jika !isSidebarOpen
-          // Di mobile => overlay menampilkan full, 
-          //   tapi Anda masih bisa memanfaatkan isCompact sesuai kebutuhan
-          isCompact={!isSidebarOpen && !isMobile}
-          items={sectionNestedItems}
-        />
+      <ScrollShadow hideScrollBar offset={100}>
+        {
+          (isPending) ? (
+            <div className={cn("p-4", isSidebarOpen ? "space-y-3" : "space-y-1")}>
+              {[...Array(5)].map((_, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "flex gap-4 h-11 relative justify-center items-center w-full max-w-full",
+                    isSidebarOpen ? "p-4" : "p-0"
+                  )}
+                >
+                  {isSidebarOpen ? (
+                    <>
+                      <Skeleton className="w-full h-full absolute z-0 rounded-xl"/>
+                      <div>
+                        <Skeleton className="w-8 h-8 rounded-xl"/>
+                      </div>
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="w-full h-2 rounded-xl"/>
+                        <Skeleton className="w-full h-2 rounded-xl"/>
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <Skeleton className="w-8 h-8 rounded-xl"/>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Sidebar key={pathname} defaultSelectedKey="home" isCompact={!isSidebarOpen && !isMobile} items={filteredItems}/>
+          )
+        }
       </ScrollShadow>
     </>
   );
 
-
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* 
-        MOBILE => OVERLAY
-        DESKTOP => ASIDE
-      */}
       {isMobile ? (
-        // ======== MOBILE: AnimatePresence + motion.div sebagai Drawer Overlay ========
         <AnimatePresence>
           {isSidebarOpen && (
             <div className="fixed inset-0 z-50 flex">
-              {/* BACKDROP → Fade In/Out */}
               <motion.div
                 className="absolute inset-0 bg-black/30"
-                // Awal (invisible), lalu fade in
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+                transition={{duration: 0.3}}
               />
-
-              {/* SIDEBAR → Slide In/Out dari kiri */}
               <motion.aside
                 className="relative z-50 w-72 border-r border-divider bg-white p-2"
-                // Awal (x:-288), lalu geser ke 0
                 initial={{ x: -288 }}
                 animate={{ x: 0 }}
                 exit={{ x: -288 }}
@@ -164,102 +192,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
       ) : (
-        // ========== DESKTOP => <aside> normal (collapse/expand) ==========
-        <aside
-          className={cn(
-            "relative flex flex-col h-full border-r border-divider p-2 transition-[width]",
-            isSidebarOpen ? "w-72" : "w-16 items-center px-2 py-6"
-          )}
-        >
+        <aside className={cn("relative flex flex-col h-full border-r border-divider p-2 transition-[width]", isSidebarOpen ? "w-72" : "w-16 items-center px-2 py-6")}>
           {sidebarContent}
         </aside>
       )}
-
-      {/* WRAPPER UTAMA (HEADER + MAIN) */}
       <div className="flex flex-1 flex-col min-w-0 bg-[#ececec]">
-        {/* HEADER */}
         <header className="shrink-0 border-b border-divider bg-white">
           <Navbar height="60px" maxWidth="full" className="mx-auto max-w-full">
-            {/* Tombol toggle sidebar */}
             <NavbarContent justify="start">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onPress={handleToggleSidebar}
-              >
-                <Icon
-                  className="text-default-500"
-                  icon="solar:sidebar-minimalistic-outline"
-                  width={24}
-                  height={24}
-                />
+              <Button isIconOnly size="md" variant="light" onPress={handleToggleSidebar}>
+                <IoReorderThree size={24} className="text-default-500" />
+              </Button>
+              <Button size="md" onClick={toggleModal}>
+                <MdOutlineSettingsSuggest size="24" />
+                <span>Settings</span>
               </Button>
             </NavbarContent>
-
-            {/* Bagian Kanan (settings, profile) */}
-            <NavbarContent justify="end" className="items-center space-x-1">
-              {/* Settings Button */}
-              <NavbarItem className="hidden sm:flex">
-                <Button isIconOnly radius="full" variant="light">
-                  <Icon
-                    className="text-default-500"
-                    icon="solar:settings-linear"
-                    width={24}
-                  />
-                </Button>
-              </NavbarItem>
-
-              {/* Profile Avatar & Dropdown */}
+            <NavbarContent justify="end" className="items-center">
               <NavbarItem>
                 <Dropdown placement="bottom-end">
                   <DropdownTrigger>
-                    <div
-                      className={cn(
-                        "flex items-center gap-2 rounded-xl py-2 px-3 outline-none transition-colors",
-                        "hover:bg-neutral-100 active:bg-neutral-200"
-                      )}
-                    >
+                    <div className={cn("flex items-center gap-2 rounded-xl py-2 px-3 outline-none transition-colors", "hover:bg-neutral-100 active:bg-neutral-200")}>
                       <Avatar
                         size="md"
-                        src={
-                          data?.data?.photoProfile ??
-                          "https://i.pravatar.cc/150?u=a04258114e29026708c"
-                        }
+                        src={data?.data?.photoProfile}
                       />
                       <div className="flex flex-col text-left">
                         <span className="font-semibold text-default-700 leading-tight">
-                          {data?.data?.username ?? "User"}
+                          {data?.data?.username}
                         </span>
                       </div>
                     </div>
                   </DropdownTrigger>
-
                   <DropdownMenu aria-label="Profile Actions" variant="flat">
                     <DropdownItem
                       key="help_and_feedback"
-                      startContent={
-                        <Icon
-                          icon="solar:help-linear"
-                          width={18}
-                          height={18}
-                          className="text-default-500"
-                        />
-                      }
+                      startContent={<Icon icon="solar:help-linear" width={18} height={18} className="text-default-500" />}
                     >
                       Help &amp; Feedback
                     </DropdownItem>
                     <DropdownItem
                       key="logout"
                       color="danger"
-                      startContent={
-                        <Icon
-                          icon="solar:logout-3-linear"
-                          width={18}
-                          height={18}
-                          className="text-danger"
-                        />
-                      }
+                      startContent={<Icon icon="solar:logout-3-linear" width={18} height={18} className="text-danger" />}
                     >
                       Log Out
                     </DropdownItem>
@@ -269,12 +244,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </NavbarContent>
           </Navbar>
         </header>
-
-        {/* MAIN CONTENT */}
         <main className="flex-1 overflow-auto min-w-0">
-          <div className="w-full min-h-full overflow-x-hidden">
-            {children}
-          </div>
+          <div className="w-full min-h-full overflow-x-hidden">{children}</div>
         </main>
       </div>
     </div>

@@ -71,6 +71,8 @@ export default function Page() {
       if(parseInt(page || "1") > journalData.data?.data?.meta?.totalPage) {
         setPage(journalData.data?.data?.meta?.totalPage == 0 ? "1" : journalData.data?.data?.meta?.totalPage.toString());
       }
+      
+      return journalData.data?.data?.data || [];
     }
     
     return []
@@ -115,7 +117,7 @@ export default function Page() {
                 className="w-full md:w-auto"
               />
             </div>
-            
+
             {/* Cage Selection */}
             <Select
               isLoading={cagesData.isLoading}
@@ -135,7 +137,8 @@ export default function Page() {
             </Select>
 
             {/* Filter Batch */}
-            <FilterBatch disableLabel={true} onBatchIdChange={(value) => setBatchId(value)} className="w-full md:w-60 lg:w-80"/>
+            <FilterBatch disableLabel={true} onBatchIdChange={(value) => setBatchId(value)}
+                         className="w-full md:w-60 lg:w-80"/>
           </div>
 
           {/* Add Journal Button */}
@@ -153,143 +156,153 @@ export default function Page() {
             </Button>
           </div>
         </div>
-        <Table aria-label="Data">
-          <TableHeader>
-            <TableColumn>Date</TableColumn>
-            <TableColumn>Type Journal</TableColumn>
-            <TableColumn>Account Code</TableColumn>
-            <TableColumn>Account</TableColumn>
-            <TableColumn>Debit</TableColumn>
-            <TableColumn>Credit</TableColumn>
-            <TableColumn>Posted Date</TableColumn>
-            <TableColumn>Posted By</TableColumn>
-            <TableColumn>Note</TableColumn>
-          </TableHeader>
-          <TableBody
-            isLoading={journalData.isLoading}
-            loadingContent={<Spinner/>}
-          >
-            {Object.entries(groupedRows).map(([journalId, journal]) => {
-              return (
-                <Fragment key={journalId}>
-                  {/* Header Row */}
-                  <TableRow>
-                    <TableCell className="font-bold">
-                      {`${journal.code}`}
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                  </TableRow>
-                  {/* Detail Rows */}
-                  {journal.journalDetails.map((detail) => (
-                    <TableRow key={detail.id}>
-                      <TableCell>
-                        {DateTime.fromISO(journal.createdAt).toLocaleString(
-                          DateTime.DATE_MED
-                        )}
-                      </TableCell>
-                      <TableCell>{journal.journalType.name}</TableCell>
-                      <TableCell>{detail.coa?.code}</TableCell>
-                      <TableCell>{detail.coa?.name}</TableCell>
-                      <TableCell>
-                        {detail.debit.toLocaleString("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        })}
+        <div className="overflow-x-auto">
+          <Table aria-label="Data" className="min-w-[1000px] w-full">
+            <TableHeader>
+              <TableColumn width={100}>Date</TableColumn>
+              <TableColumn width={60}>Type Journal</TableColumn>
+              <TableColumn width={40}>Account Code</TableColumn>
+              <TableColumn width={60}>Account</TableColumn>
+              <TableColumn width={60}>Debit</TableColumn>
+              <TableColumn width={60}>Credit</TableColumn>
+              <TableColumn width={60}>Posted Date</TableColumn>
+              <TableColumn width={60}>Posted By</TableColumn>
+              <TableColumn width={60}>Batch</TableColumn>
+              <TableColumn width={60}>Note</TableColumn>
+            </TableHeader>
+            <TableBody
+              isLoading={journalData.isLoading}
+              loadingContent={<Spinner/>}
+            >
+              {Object.entries(groupedRows).map(([journalId, journal]) => {
+                return (
+                  <Fragment key={journalId}>
+                    {/* Header Row */}
+                    <TableRow>
+                      <TableCell className="font-bold">
+                        {`${journal.code}`}
                       </TableCell>
                       <TableCell>
-                        {detail.credit.toLocaleString("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        })}
+                        <span></span>
                       </TableCell>
                       <TableCell>
-                        {DateTime.fromISO(journal.createdAt).toLocaleString(
-                          DateTime.DATETIME_MED_WITH_WEEKDAY,
-                          {locale: "id"}
-                        )}
+                        <span></span>
                       </TableCell>
-                      <TableCell>{journal.user.fullName}</TableCell>
                       <TableCell>
-                        {detail.note ?? '-'}
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
                       </TableCell>
                     </TableRow>
-                  ))}
-                  {/* Totals Row */}
-                  <TableRow className="bg-gray-100 font-bold">
-                    <TableCell>Total</TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell className="font-bold">
-                      {journal.debtTotal.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })}
-                    </TableCell>
-                    <TableCell className="font-bold">
-                      {journal.creditTotal.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                    <TableCell>
-                      <span></span>
-                    </TableCell>
-                  </TableRow>
-                </Fragment>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <div className="flex justify-between">
-          {journalData.isLoading ? (
-            <SkeletonPagination />
-          ) : (
-            <Pagination
-              color="primary"
-              total={journalData.data?.data?.meta?.totalPage || 1}
-              initialPage={1}
-              page={journalData.data?.data?.meta?.page || 1}
-              onChange={(page) => setPage(page.toString())}
-            />
-          )}
+                    {/* Detail Rows */}
+                    {journal.journalDetails.map((detail) => (
+                      <TableRow key={detail.id}>
+                        <TableCell>
+                          {DateTime.fromISO(journal.createdAt).toLocaleString(
+                            DateTime.DATE_MED
+                          )}
+                        </TableCell>
+                        <TableCell>{journal.journalType.name}</TableCell>
+                        <TableCell>{detail.coa?.code}</TableCell>
+                        <TableCell>{detail.coa?.name}</TableCell>
+                        <TableCell>
+                          {detail.debit.toLocaleString("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          {detail.credit.toLocaleString("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          {DateTime.fromISO(journal.createdAt).toLocaleString(
+                            DateTime.DATETIME_MED_WITH_WEEKDAY,
+                            {locale: "id"}
+                          )}
+                        </TableCell>
+                        <TableCell>{journal.user.fullName}</TableCell>
+                        <TableCell>{journal.batch.name}</TableCell>
+                        <TableCell>
+                          {detail.note ?? '-'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {/* Totals Row */}
+                    <TableRow className="bg-gray-100 font-bold">
+                      <TableCell>Total</TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell className="font-bold">
+                        {journal.debtTotal.toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        })}
+                      </TableCell>
+                      <TableCell className="font-bold">
+                        {journal.creditTotal.toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                      <TableCell>
+                        <span></span>
+                      </TableCell>
+                    </TableRow>
+                  </Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+          <div className="flex justify-between">
+            {journalData.isLoading ? (
+              <SkeletonPagination/>
+            ) : (
+              <Pagination
+                color="primary"
+                total={journalData.data?.data?.meta?.totalPage || 1}
+                initialPage={1}
+                page={journalData.data?.data?.meta?.page || 1}
+                onChange={(page) => setPage(page.toString())}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+      );
+      }

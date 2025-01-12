@@ -43,6 +43,7 @@ import useLocationStore from "@/stores/useLocationStore";
 import Form from "next/form";
 import FilterBatch from "@/app/(authenticated)/_components/filterBatch";
 import FilterRack from "@/app/(authenticated)/_components/filterRack";
+import {useAuthStore} from "@/app/auth/_store/auth";
 
 const columns = [
   {
@@ -99,6 +100,8 @@ export default function Page() {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [statusSelected, setStatusSelected] = useState<string | null>(null);
   const [diseaseSelected, setDiseaseSelected] = useState<string | null>(null);
+  const [statusSelectedFilter, setStatusSelectedFilter] = useState<string | null>(null);
+  const [diseaseSelectedFilter, setDiseaseSelectedFilter] = useState<string | null>(null);
   const [batchId, setBatchId] = useState<string | null>(null);
   const [cageId, setCageId] = useState<string | null>(null);
   const [rackId, setRackId] = useState<string | null>(null);
@@ -120,11 +123,11 @@ export default function Page() {
       if (cageId) params.cageId = cageId;
       if (rackId) params.rackId = rackId;
       if (dateRange) params.dateRangeFilter = dateRange;
-      if(statusSelected) params.status = statusSelected;
-      if(diseaseSelected) params.diseaseId = diseaseSelected;
+      if(statusSelectedFilter) params.status = statusSelectedFilter;
+      if(diseaseSelectedFilter) params.diseaseId = diseaseSelectedFilter;
 
       return params;
-    }, [search, page, limit, batchId, cageId, rackId, dateRange, statusSelected, diseaseSelected])
+    }, [search, page, limit, batchId, cageId, rackId, dateRange, statusSelectedFilter, diseaseSelectedFilter])
   );
 
 
@@ -186,6 +189,8 @@ export default function Page() {
     )
   );
 
+  const permissions = useAuthStore((state) => state.permissions);
+
     return (
       <div className="p-5">
         <Modal isOpen={showFilter} onClose={() => setShowFilter(false)}>
@@ -242,18 +247,18 @@ export default function Page() {
                     variant="bordered"
                     label="Status Ayam"
                     placeholder="Pilih Status Ayam"
-                    selectedKeys={[statusSelected || ""]}
-                    onChange={(e) => setStatusSelected(e.target.value)}
+                    selectedKeys={[statusSelectedFilter as string]}
+                    onChange={(e) => setStatusSelectedFilter(e.target.value)}
                   >
                     {(status) => <SelectItem key={status.key} value={status.key}>{status.label}</SelectItem>}
                   </Select>
                   {
-                    (statusSelected === "ALIVE_IN_SICK" || statusSelected === "DEAD_DUE_TO_ILLNESS") && (
+                    (statusSelectedFilter === "ALIVE_IN_SICK" || statusSelectedFilter === "DEAD_DUE_TO_ILLNESS") && (
                       <Autocomplete
-                        onSelectionChange={(value) => setDiseaseSelected(
+                        onSelectionChange={(value) => setDiseaseSelectedFilter(
                           value as string
                         )} // Perbarui state
-                        selectedKey={diseaseSelected}
+                        selectedKey={diseaseSelectedFilter}
                         variant="bordered" className="w-100" label="Pilih Alasan Penyakit">
                         {diseases?.data?.data?.data.map((status) => (
                           <AutocompleteItem key={status.id}>{status.name}</AutocompleteItem>
@@ -267,14 +272,13 @@ export default function Page() {
                 <Button
                   variant="bordered"
                   onPress={ () => {
-                    // reset
                      setBatchId(null);
                      setCageId(null);
                      setDateRange(null);
                      setRackId(null);
-                      setStatusSelected(null);
-                      setDiseaseSelected(null);
-                      setShowFilter(false);
+                     setStatusSelectedFilter(null);
+                     setDiseaseSelectedFilter(null);
+                     setShowFilter(false);
                   }}
                 >
                   Batal
@@ -354,7 +358,11 @@ export default function Page() {
                     <Chip
                       color={getStatusProps(item.status as ChickenStatus).color as "success" | "primary" | "default" | "secondary" | "warning" | "danger" | undefined} // Pastikan status cocok dengan tipe
                       className="text-white"
-                      onClick={() => handleStatus(item)} // Tetap menggunakan logika klik
+                      onClick={() => {
+                        if(permissions.includes("update:chicken") || permissions.includes("*")) {
+                          handleStatus(item)
+                        }
+                      }} // Tetap menggunakan logika klik
                     >
                       {getStatusProps(item.status as ChickenStatus).label}
                     </Chip>

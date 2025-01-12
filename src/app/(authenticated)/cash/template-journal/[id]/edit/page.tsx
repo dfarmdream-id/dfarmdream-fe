@@ -10,7 +10,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Spinner,
+  Spinner, AutocompleteItem, Autocomplete,
 } from "@nextui-org/react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
@@ -246,86 +246,93 @@ export default function Page() {
                   Tambah Detail COA
                 </Button>
               </div>
-              <Table>
-                <TableHeader>
-                  <TableColumn>COA</TableColumn>
-                  <TableColumn>Type Ledger</TableColumn>
-                  <TableColumn>Status</TableColumn>
-                  <TableColumn>Aksi</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {form.watch("details").map((detail, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Select
-                          variant="bordered"
-                          labelPlacement="outside"
-                          selectedKeys={[detail.coaCode]}
-                          onChange={(value) =>
-                            form.setValue(`details.${index}.coaCode`, value.target.value)
-                          }
-                        >
-                          {coas.data?.data?.data?.map((coa) => (
-                            <SelectItem key={coa.code} value={coa.code}>
-                              {`${coa.code}: ${coa.name}`}
+              <div className="overflow-x-auto">
+                <Table className="min-w-[1000px] w-full">
+                  <TableHeader>
+                    <TableColumn>COA</TableColumn>
+                    <TableColumn>Type Ledger</TableColumn>
+                    <TableColumn>Status</TableColumn>
+                    <TableColumn>Aksi</TableColumn>
+                  </TableHeader>
+                  <TableBody>
+                    {form.watch("details").map((detail, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <Autocomplete
+                            className="w-full"
+                            defaultItems={coas.data?.data?.data.map((coa) => ({
+                              key: coa.code,
+                              label: `${coa.code}: ${coa.name}`,
+                            }))}
+                            defaultSelectedKey={detail.coaCode}
+                            placeholder="Search COA"
+                            onSelectionChange={(value): void => {
+                              console.log(value);
+                              form.setValue(`details.${index}.coaCode`, value?.toString() ?? "");
+                            }}
+                          >
+                            {(item) => (
+                              <AutocompleteItem value={item.key} key={item.key}>
+                                {item.label}
+                              </AutocompleteItem>
+                            )}
+                          </Autocomplete>
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            variant="bordered"
+                            labelPlacement="outside"
+                            selectedKeys={[detail.typeLedger]}
+                            onChange={(value) =>
+                              form.setValue(
+                                `details.${index}.typeLedger`,
+                                value.target.value as "DEBIT" | "CREDIT"
+                              )
+                            }
+                          >
+                            <SelectItem key="DEBIT" value="DEBIT">
+                              DEBIT
                             </SelectItem>
-                          )) ?? []}
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          variant="bordered"
-                          labelPlacement="outside"
-                          selectedKeys={[detail.typeLedger]}
-                          onChange={(value) =>
-                            form.setValue(
-                              `details.${index}.typeLedger`,
-                              value.target.value as "DEBIT" | "CREDIT"
-                            )
-                          }
-                        >
-                          <SelectItem key="DEBIT" value="DEBIT">
-                            DEBIT
-                          </SelectItem>
-                          <SelectItem key="CREDIT" value="CREDIT">
-                            CREDIT
-                          </SelectItem>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          labelPlacement="outside"
-                          variant="bordered"
-                          selectedKeys={[detail.status]}
-                          onChange={(value) =>
-                            form.setValue(`details.${index}.status`, value.target.value)
-                          }
-                        >
-                          <SelectItem key="1" value="1">
-                            Aktif
-                          </SelectItem>
-                          <SelectItem key="0" value="0">
-                            Tidak Aktif
-                          </SelectItem>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="danger"
-                          variant="bordered"
-                          onClick={() => onRemoveDetail(index)}
-                        >
-                          Hapus
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                            <SelectItem key="CREDIT" value="CREDIT">
+                              CREDIT
+                            </SelectItem>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            labelPlacement="outside"
+                            variant="bordered"
+                            selectedKeys={[detail.status]}
+                            onChange={(value) =>
+                              form.setValue(`details.${index}.status`, value.target.value)
+                            }
+                          >
+                            <SelectItem key="1" value="1">
+                              Aktif
+                            </SelectItem>
+                            <SelectItem key="0" value="0">
+                              Tidak Aktif
+                            </SelectItem>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            color="danger"
+                            variant="bordered"
+                            onClick={() => onRemoveDetail(index)}
+                          >
+                            Hapus
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              </div>
 
-            <div className="flex gap-3 justify-end">
-              <Button variant="bordered" onClick={() => router.back()}>
+              <div className="flex gap-3 justify-end">
+                <Button variant="bordered" onClick={() => router.back()}>
                 Kembali
               </Button>
               <Button

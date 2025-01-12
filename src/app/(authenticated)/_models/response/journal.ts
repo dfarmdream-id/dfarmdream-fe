@@ -1,3 +1,5 @@
+import {Batch} from "@/app/(authenticated)/_models/response/rack";
+
 export interface GetListJournalResponse {
   message: string;
   data: ListJournalData;
@@ -30,6 +32,7 @@ export interface SingleJournalData {
   journalType: JurnalType;
   journalDetails: JournalDetail[];
   user: User;
+  batch: Batch
 }
 
 export interface User {

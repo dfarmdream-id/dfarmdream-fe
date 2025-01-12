@@ -26,9 +26,9 @@ export default function GrafiKeuangan (){
   const chartData = useDashboardKeuangan(
     useMemo(() => ({
       year,
-      cageId: selectedBatchId,
+      cageId: selectedCageId,
       batchId: selectedBatchId,
-    }), [year, selectedCageId])
+    }), [year, selectedCageId, selectedBatchId])
   );
 
   const handleCageIdChange = (cageId: string) => {

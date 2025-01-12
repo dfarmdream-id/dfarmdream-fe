@@ -319,6 +319,7 @@ export default function Page() {
                           key: coa.code,
                           label: `${coa.code}: ${coa.name}`,
                         }))}
+                        defaultSelectedKey={detail.coaCode}
                         placeholder="Search COA"
                         onSelectionChange={(value): void => {
                           console.log(value);
