@@ -7,10 +7,12 @@ import { Suspense } from "react";
 import { Toaster } from "sonner";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import GlobalSettings from "@/app/(authenticated)/_components/settings";
+import Cookies from "js-cookie";
 
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const token = Cookies.get("accessToken");
   return (
     <NextUIProvider>
       <QueryClientProvider client={queryClient}>
@@ -35,7 +37,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
               
               shallowRouting
             />
-            <GlobalSettings />
+            {
+              token && <GlobalSettings />
+            }
             {children}
           </Suspense>
         </NuqsAdapter>

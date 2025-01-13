@@ -23,6 +23,7 @@ import useBatchStore from "@/stores/useBatchStore";
 import useModalStore from "@/stores/useModalStore"; // Import store modal
 
 export default function GlobalSettings() {
+  
   const { isModalOpen, toggleModal } = useModalStore(); // Gunakan store modal
   const { setSiteId } = useLocationStore();
   const { batchId, setBatchId } = useBatchStore();
