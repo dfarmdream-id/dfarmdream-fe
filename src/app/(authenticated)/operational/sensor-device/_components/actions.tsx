@@ -26,7 +26,7 @@ export default function Actions(props: Props) {
   const deleteData = useDeleteSensorDevice();
 
   const queryClient = useQueryClient();
-
+  const disableUpdateDelete = true
   const handleDelete = (id: string) => {
     deleteData.mutate(
       { pathVars: { id } },
@@ -57,7 +57,7 @@ export default function Actions(props: Props) {
             <HiEye />
           </Button>
         </Tooltip>
-      <Can action="update:iot">
+      {!disableUpdateDelete && <Can action="update:iot">
         <Tooltip content="Edit Data">
           <Button
             as={Link}
@@ -69,8 +69,8 @@ export default function Actions(props: Props) {
             <HiPencilAlt />
           </Button>
         </Tooltip>
-      </Can>
-      <Can action="delete:iot">
+      </Can>}
+      {!disableUpdateDelete && <Can action="delete:iot">
         <Tooltip content="Hapus Data">
           <Button
             isIconOnly
@@ -81,7 +81,8 @@ export default function Actions(props: Props) {
             <HiTrash />
           </Button>
         </Tooltip>
-      </Can>
+      </Can>}
+      
       <Modal
         onOpenChange={deleteDisclosure.onOpenChange}
         isOpen={deleteDisclosure.isOpen}
