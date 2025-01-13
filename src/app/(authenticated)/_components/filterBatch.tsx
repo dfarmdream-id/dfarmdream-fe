@@ -80,7 +80,7 @@ export default function FilterBatch({
         variant="bordered"
         label={disableLabel ? "" : label || "Batch"}
         className="w-full"
-        placeholder="Masukkan nama batch"
+        placeholder={label || "Batch"}
         isLoading={batchsData.isLoading}
         onInputChange={onBatchInputChange}
         onSelectionChange={(selected) => onBatchSelectionChange(selected as string)}

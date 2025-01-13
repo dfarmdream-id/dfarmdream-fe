@@ -2,7 +2,7 @@ import { useHttp, useHttpMutation } from "@/hooks/http";
 import { useMemo } from "react";
 import { GetBiayaResponse, GetListBiayaResponse } from "../_models/response/biaya";
 
-export const useGetListBiaya = (params: Record<string, string>) => {
+export const useGetListBiaya = (params: Record<string, any>) => {
   return useHttp<GetListBiayaResponse>("/v1/biaya", {
     params,
   });
