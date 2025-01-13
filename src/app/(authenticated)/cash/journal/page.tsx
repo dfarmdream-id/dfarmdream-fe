@@ -240,7 +240,7 @@ export default function Page() {
                           )}
                         </TableCell>
                         <TableCell>{journal.user.fullName}</TableCell>
-                        <TableCell>{journal.batch.name}</TableCell>
+                        <TableCell>{journal?.batch?.name ?? "-"}</TableCell>
                         <TableCell>
                           {detail.note ?? '-'}
                         </TableCell>
