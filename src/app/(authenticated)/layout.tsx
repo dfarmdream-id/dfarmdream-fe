@@ -15,7 +15,6 @@ import {
   NavbarItem,
   ScrollShadow, Skeleton,
 } from "@nextui-org/react";
-import { Icon } from "@iconify/react";
 import { useMediaQuery } from "usehooks-ts";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -32,6 +31,10 @@ import {IoReorderThree} from "react-icons/io5";
 import {BiXCircle} from "react-icons/bi";
 import useModalStore from "@/stores/useModalStore";
 import {MdOutlineSettingsSuggest} from "react-icons/md";
+import Link from "next/link";
+import {signOut} from "@/app/(authenticated)/sign-out/_actions/sign-out";
+import {FaUserCog} from "react-icons/fa";
+import {TbLogout2, TbPasswordUser} from "react-icons/tb";
 
 const Sidebar = dynamic(() => import("@/components/ui/sidebar"), { ssr: false });
 
@@ -226,17 +229,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Profile Actions" variant="flat">
                     <DropdownItem
-                      key="help_and_feedback"
-                      startContent={<Icon icon="solar:help-linear" width={18} height={18} className="text-default-500" />}
+                      key="profile"
+                      startContent={<FaUserCog size={18} className="text-default-500" />}
                     >
-                      Help &amp; Feedback
+                      <Link href="/user/update-profile">Update Profile</Link>
+                    </DropdownItem>
+                    <DropdownItem
+                      key="password"
+                      startContent={<TbPasswordUser size={18} className="text-default-500" />}
+                    >
+                      <Link href="/user/update-password">Update Password</Link>
                     </DropdownItem>
                     <DropdownItem
                       key="logout"
                       color="danger"
-                      startContent={<Icon icon="solar:logout-3-linear" width={18} height={18} className="text-danger" />}
+                      onClick={() => signOut()}
+                      startContent={<TbLogout2 size={18} className="text-danger" />}
                     >
-                      Log Out
+                     Keluar
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

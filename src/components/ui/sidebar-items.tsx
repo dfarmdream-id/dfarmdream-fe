@@ -13,11 +13,10 @@ import {
 import {HiOutlineDatabase, HiOutlineInboxIn, HiOutlineLocationMarker, HiOutlineReceiptTax} from "react-icons/hi";
 import {MdAccountTree, MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors} from "react-icons/md";
 import {GiChicken, GiMoneyStack} from "react-icons/gi";
-import {FaBalanceScale, FaBox, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
+import {FaBalanceScale, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
 import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import {VscVariableGroup} from "react-icons/vsc";
 import {IoFileTrayStacked} from "react-icons/io5";
-import {BsBox2} from "react-icons/bs";
 import {CiBoxes} from "react-icons/ci";
 
 export const sectionNestedItems: SidebarItem[] = [
