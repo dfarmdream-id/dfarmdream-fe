@@ -130,7 +130,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Button>
         )}
       </div>
-      <ScrollShadow hideScrollBar offset={100}>
+      <ScrollShadow hideScrollBar>
         {
           (isPending) ? (
             <div className={cn("p-4", isSidebarOpen ? "space-y-3" : "space-y-1")}>
@@ -183,7 +183,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 transition={{duration: 0.3}}
               />
               <motion.aside
-                className="relative z-50 w-72 border-r border-divider bg-white p-2"
+                className="relative z-50 w-72 border-r border-divider bg-white p-2 overflow-y-auto"
                 initial={{ x: -288 }}
                 animate={{ x: 0 }}
                 exit={{ x: -288 }}
@@ -201,8 +201,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
       <div className="flex flex-1 flex-col min-w-0 bg-[#ececec]">
         <header className="shrink-0 border-b border-divider bg-white">
-          <Navbar height="60px" maxWidth="full" className="mx-auto max-w-full">
-            <NavbarContent justify="start">
+          <Navbar height="60px" maxWidth="full" className="mx-auto max-w-full" classNames={{
+            wrapper: "px-4",
+            content: "flex justify-between items-center h-full"
+          }}>
+            <NavbarContent justify="start" className="gap-2">
               <Button isIconOnly size="md" variant="light" onPress={handleToggleSidebar}>
                 <IoReorderThree size={24} className="text-default-500" />
               </Button>

@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import React from "react";
 import { Button } from "@nextui-org/react";
+import {signOut} from "@/app/(authenticated)/sign-out/_actions/sign-out";
 
 export const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -26,22 +27,35 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (response) => {
+    // Jika respons berhasil, kembalikan langsung
     return response;
   },
   async (error) => {
+    // Periksa jika status respons adalah 401 (Unauthorized)
+    if (error.response?.status === 401) {
+      // Redirect ke halaman login (uncomment jika diperlukan)
+      // window.location.href = "/auth/login";
+      
+      // Hapus token dari cookie
+      await signOut();
+    }
+
+    // Tampilkan toast error dengan opsi refresh
     toast.error("Gagal memuat data, silahkan coba lagi", {
       action: React.createElement(
         Button,
         {
           variant: "light",
-          color: 'danger',
+          color: "danger",
           onClick: () => {
-            window.location.reload();
+            window.location.reload(); // Muat ulang halaman
           },
         },
-        "Refresh"
+        "Refresh" // Label tombol
       ),
     });
+
+    // Tolak promise dengan error agar bisa ditangani di tempat lain
     return Promise.reject(error);
   }
 );
