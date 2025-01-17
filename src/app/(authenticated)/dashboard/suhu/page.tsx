@@ -1,17 +1,11 @@
 "use client";
 
 import {Spinner} from "@nextui-org/react";
-import dynamic from "next/dynamic";
 
 import { Can } from "@/components/acl/can";
 
 import ForbiddenState from "@/components/state/forbidden";
 import GrafikSuhu from "../_components/grafik-suhu";
-
-const Chart = dynamic(
-  () => import("react-apexcharts").then((mod) => mod.default),
-  { ssr: false, loading: () => <Spinner /> }
-);
 
 export default function Page() {
  
