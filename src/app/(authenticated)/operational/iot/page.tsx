@@ -144,13 +144,13 @@ export default function Page() {
                   <div>{item?.cage?.name}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.tempThreshold}°</div>
+                  <div>{item.tempMinThreshold}° sd {item.tempThreshold}°</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.humidityThreshold}</div>
+                  <div>{item.humidityMinThreshold}° sd {item.humidityThreshold}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item.amoniaThreshold} PPM</div>
+                  <div>{item.amoniaMinThreshold} sd {item.amoniaThreshold} PPM</div>
                 </TableCell>
                 <TableCell>
                   <Actions id={item.id} />

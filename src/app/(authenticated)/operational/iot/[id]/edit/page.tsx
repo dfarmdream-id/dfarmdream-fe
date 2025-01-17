@@ -33,6 +33,9 @@ export default function Page() {
     ldrThreshold: z.number({
       message: "Isi LDR Threshold",
     }),
+    tempMinThreshold: z.number({message:"Mohon isi minimum temperature"}),
+    humidityMinThreshold:z.number({message:"Mohon isi minimum humidity"}),
+    amoniaMinThreshold:z.number({message:"mohon isi minimum amonia"}),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -46,32 +49,20 @@ export default function Page() {
   const item = useGetIotDevice(useMemo(() => params.id as string, [params.id]));
 
   useEffect(() => {
-    if (item.data) {
-      if (item?.data?.data?.name) {
+    if (item.data && item.data.data) {
         form.setValue("name", item?.data?.data?.name);
-      }
-      if (item?.data?.data?.code) {
         form.setValue("code", item?.data?.data?.code);
-      }
-      if (item?.data?.data?.tempThreshold) {
         form.setValue("tempThreshold", item?.data?.data?.tempThreshold);
-      }
-      if (item?.data?.data?.humidityThreshold) {
         form.setValue(
           "humidityThreshold",
           item?.data?.data?.humidityThreshold || 0
         );
-      }
-      if (item?.data?.data?.amoniaThreshold) {
         form.setValue("amoniaThreshold", item?.data?.data?.amoniaThreshold);
-      }
-      if (item?.data?.data?.cageId) {
-        form.setValue("cageId", item?.data?.data?.cageId);
-      }
-
-      if(item?.data?.data?.ldrThreshold){
+        form.setValue("cageId", item?.data?.data?.cageId!);
         form.setValue("ldrThreshold", item?.data?.data?.ldrThreshold);
-      }
+        form.setValue("tempMinThreshold", item?.data?.data?.tempMinThreshold);
+        form.setValue("humidityMinThreshold", item?.data?.data?.humidityMinThreshold);
+        form.setValue("amoniaMinThreshold", item?.data?.data?.amoniaMinThreshold);
     }
   }, [item.data, form]);
 
@@ -166,6 +157,25 @@ export default function Page() {
               )}
             />
           </div>
+          
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="tempMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Min Temperature Threshold"
+                  placeholder="Ketikkan Min threshold suhu"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
 
           <div className="h-16">
             <Controller
@@ -185,6 +195,26 @@ export default function Page() {
               )}
             />
           </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="humidityMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Min Humidity Threshold"
+                  placeholder="Min Humidity Threshold"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
           <div className="h-16">
             <Controller
               control={form.control}
@@ -203,7 +233,25 @@ export default function Page() {
               )}
             />
           </div>
-
+          
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="amoniaMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Amonia Min Threshold"
+                  placeholder="Ketikkan Min Threshold Amonia"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
           <div className="h-16">
             <Controller
               control={form.control}

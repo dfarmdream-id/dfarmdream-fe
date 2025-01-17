@@ -19,6 +19,9 @@ export interface Daum {
   id: string;
   name:string;
   code: string;
+  tempMinThreshold:number;
+  humidityMinThreshold:number;
+  amoniaMinThreshold:number;
   tempThreshold: number;
   humidityThreshold: number;
   amoniaThreshold: number;
