@@ -23,6 +23,9 @@ export interface ChartDataResponse {
     name:string;
     code:string;
     cageId:string;
+    tempMinThreshold:number;
+    humidityMinThreshold:number;
+    amoniaMinThreshold:number;
     tempThreshold:number;
     humidityThreshold:number;
     amoniaThreshold:number;

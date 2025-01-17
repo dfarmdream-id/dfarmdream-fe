@@ -49,6 +49,7 @@ export default function GrafikSuhu({
   const [tanggal, setTanggal] = useState<string | null>(null);
   const { siteId } = useLocationStore();
   const queryClient = useQueryClient();
+  const [temperatureData, setTemperatureData] = useState<number[]>([]);
 
   const items = useGetTemperatureData(
     useMemo(
@@ -61,7 +62,12 @@ export default function GrafikSuhu({
     )
   );
 
-  console.log("Temperature : ", items)
+  useEffect(() => {
+    if(items.data && items.data.data.chart) {
+      setTemperatureData(items?.data?.data?.chart?.map((item) => item.y) ?? [])
+      console.log("Temperature Data : ",temperatureData)
+    }
+  },[items?.data?.data])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -125,7 +131,6 @@ export default function GrafikSuhu({
     return [];
   }, [relayLogs.data]);
 
-
   const handleCageIdChange = (cageId: string) => {
     setKandang(cageId); // Simpan cageId di state parent
   };
@@ -138,7 +143,7 @@ export default function GrafikSuhu({
       series: [
         {
           name: "Temperature",
-          data: items?.data?.data?.chart?.map((item) => item.y) ?? [],
+          data: temperatureData,
         },
       ],
       options: {
@@ -167,12 +172,13 @@ export default function GrafikSuhu({
           },
         },
         xaxis: {
-          categories: items?.data?.data?.chart?.map((item) => {
-            // return DateTime.fromISO(item.x)
-            // .setZone("Asia/Jakarta")
-            // .toFormat("HH:mm");
-            return item.x
-          }) ?? [],
+          categories:
+            items?.data?.data?.chart?.map((item) => {
+              // return DateTime.fromISO(item.x)
+              // .setZone("Asia/Jakarta")
+              // .toFormat("HH:mm");
+              return item.x;
+            }) ?? [],
         },
       },
     }),
@@ -235,7 +241,13 @@ export default function GrafikSuhu({
                         className="absolute -translate-y-1/2 -translate-x-1/2 h-4 w-1 bg-green-500 shadow-md rounded"
                         style={{
                           right: `${
-                            item.lastestValue <= item?.IotSensor?.tempThreshold
+                            item.lastestValue < item?.IotSensor?.tempMinThreshold
+                              ? 100 // Far left (Bad side)
+                              : item.lastestValue >
+                                item?.IotSensor?.tempThreshold
+                              ? 0 // Far right (Bad side)
+                              : item.lastestValue <=
+                                item?.IotSensor?.tempThreshold
                               ? (item?.lastestValue /
                                   item?.IotSensor?.tempThreshold) *
                                 50 // Left of center (Good side)

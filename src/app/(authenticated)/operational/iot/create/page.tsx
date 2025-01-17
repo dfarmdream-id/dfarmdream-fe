@@ -21,6 +21,9 @@ export default function Page() {
     cageId: z.string({
       message: "Pilih kandang terlebih dahulu",
     }),
+    tempMinThreshold: z.number({message:"Mohon isi minimum temperature"}),
+    humidityMinThreshold:z.number({message:"Mohon isi minimum humidity"}),
+    amoniaMinThreshold:z.number({message:"mohon isi minimum amonia"}),
     tempThreshold: z.number({
       message: "Isi Temperature Threshold",
     }),
@@ -131,6 +134,25 @@ export default function Page() {
           <div className="h-16">
             <Controller
               control={form.control}
+              name="tempMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Min Temperature Threshold"
+                  placeholder="Ketikkan Min threshold suhu"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
               name="tempThreshold"
               render={({ field, fieldState }) => (
                 <InputNumber
@@ -146,6 +168,26 @@ export default function Page() {
               )}
             />
           </div>
+
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="humidityMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Min Humidity Threshold"
+                  placeholder="Min Humidity Threshold"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
+
           <div className="h-16">
             <Controller
               control={form.control}
@@ -164,7 +206,24 @@ export default function Page() {
               )}
             />
           </div>
-
+          <div className="h-16">
+            <Controller
+              control={form.control}
+              name="amoniaMinThreshold"
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  labelPlacement="outside"
+                  variant="bordered"
+                  type="text"
+                  label="Amonia Min Threshold"
+                  placeholder="Ketikkan Min Threshold Amonia"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />
+              )}
+            />
+          </div>
           <div className="h-16">
             <Controller
               control={form.control}
