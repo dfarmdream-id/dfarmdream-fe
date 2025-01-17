@@ -58,7 +58,7 @@ export default function Page() {
           item?.data?.data?.humidityThreshold || 0
         );
         form.setValue("amoniaThreshold", item?.data?.data?.amoniaThreshold);
-        form.setValue("cageId", item?.data?.data?.cageId!);
+        form.setValue("cageId", item?.data?.data?.cageId ?? "");
         form.setValue("ldrThreshold", item?.data?.data?.ldrThreshold);
         form.setValue("tempMinThreshold", item?.data?.data?.tempMinThreshold);
         form.setValue("humidityMinThreshold", item?.data?.data?.humidityMinThreshold);
