@@ -4,6 +4,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { useGetCages } from "../../_services/cage";
 import { HiSun } from "react-icons/hi2";
 import { useGetLdrData } from "../../_services/dashboard";
+import {DateTime} from 'luxon'
 
 export default function IotDevices({ children }: { children: ReactNode }) {
   const [cage, setCage] = useState<string | null>(null);
@@ -27,6 +28,11 @@ export default function IotDevices({ children }: { children: ReactNode }) {
       };
     }, [])
   );
+
+  const currentTimeWIB = DateTime.local().setZone('Asia/Jakarta');
+  const currentHour = currentTimeWIB.hour;
+  const currentMinute = currentTimeWIB.minute;
+  const isLampOff =  (currentHour >= 21 || currentHour < 4 || (currentHour === 4 && currentMinute <= 30))
 
   return (
     <div className="grid bg-white rounded-lg p-5 gap-3">
@@ -63,7 +69,7 @@ export default function IotDevices({ children }: { children: ReactNode }) {
               </div>
               <div className="w-full">
                 <div className="font-bold">Lampu {index + 1}</div>
-                {x.lastestValue < x.IotSensor.ldrThreshold ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
+                {(isLampOff || x.lastestValue < x.IotSensor.ldrThreshold) ? <Chip color="danger">Mati</Chip> : <Chip color="primary">Hidup</Chip>}
               </div>
             </li>
           ))}
