@@ -138,6 +138,10 @@ export default function GrafiTelur (){
   const sumPenjualanTotalButir = useMemo(() => {
     return chartData.data?.data?.reduce((acc, item) => acc + (item.total || 0), 0) ?? 0;
   }, [chartData]);
+  
+  const sumWeight = useMemo(() => {
+    return chartData.data?.data?.reduce((acc, item) => acc + (item.totalWeight || 0), 0) ?? 0;
+  }, [chartData]);
 
   return (
         <div>
@@ -162,7 +166,7 @@ export default function GrafiTelur (){
                 <Chart options={chart.options} series={chart.series} type="line" height={350}/>
               </div>
               <div className="p-3">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card>
                     <CardHeader className="space-y-0 pb-0 d-flex flex-col">
                       <div className="text-sm font-medium">
@@ -210,6 +214,24 @@ export default function GrafiTelur (){
                         {
                           formatNumber(sumPenjualanTotalButir)
                         } Butir
+                      </div>
+                      {/*<p className="text-xs text-red-500 mt-1">*/}
+                      {/*  -23.44%*/}
+                      {/*</p>*/}
+                    </CardBody>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="space-y-0 pb-0 d-flex flex-col">
+                      <div className="text-sm font-medium">
+                        Jumlah Berat Total
+                      </div>
+                    </CardHeader>
+                    <CardBody className="d-flex flex-col items-center">
+                      <div className="text-2xl font-bold text-primary">
+                        {
+                          formatNumber(sumWeight)
+                        } Kg
                       </div>
                       {/*<p className="text-xs text-red-500 mt-1">*/}
                       {/*  -23.44%*/}

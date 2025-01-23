@@ -44,7 +44,7 @@ export default function BalanceSheet() {
         ...(cageId ? {cageId} : {}),
         ...(batchId ? {batchId} : {}),
       }),
-      [year, cageId, batchId]
+      [cageId, batchId]
     )
   );
 
@@ -56,7 +56,7 @@ export default function BalanceSheet() {
         ...(cageId ? {cageId} : {}),
         ...(batchId ? {batchId} : {}),
       }),
-      [year, cageId, batchId]
+      [cageId, batchId]
     )
   );
 
@@ -242,7 +242,7 @@ export default function BalanceSheet() {
                         if (kasDanSetaraKas.includes(Number(balanceSheet.coa.code))) {
                           return (
                             <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                              <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                              <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                               <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                             </div>
                           );
@@ -259,7 +259,7 @@ export default function BalanceSheet() {
                         if (persediaan.includes(Number(balanceSheet.coa.code))) {
                           return (
                             <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                              <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                              <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                               <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                             </div>
                           );
@@ -276,7 +276,7 @@ export default function BalanceSheet() {
                         if (piutang.includes(Number(balanceSheet.coa.code))) {
                           return (
                             <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                              <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                              <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                               <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                             </div>
                           );
@@ -316,7 +316,7 @@ export default function BalanceSheet() {
                         if (assetTetap.includes(Number(balanceSheet.coa.code))) {
                           return (
                             <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                              <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                              <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                               <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                             </div>
                           );
@@ -373,7 +373,7 @@ export default function BalanceSheet() {
                         if (utangDagang.includes(Number(balanceSheet.coa.code))) {
                           return (
                             <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                              <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                              <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                               <span>{formatCurrency(balanceSheet._sum.credit - balanceSheet._sum.debit)}</span>
                             </div>
                           );
@@ -410,7 +410,7 @@ export default function BalanceSheet() {
                       if (modal.includes(Number(balanceSheet.coa.code))) {
                         return (
                           <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                            <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                            <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                             <span>{formatCurrency(balanceSheet._sum.credit - balanceSheet._sum.debit)}</span>
                           </div>
                         );

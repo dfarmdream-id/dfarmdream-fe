@@ -58,6 +58,7 @@ export interface EggChart {
   total: number;
   totalBiaya: number;
   totalHarga: number;
+  totalWeight: number;
 }
 
 export interface Chart {

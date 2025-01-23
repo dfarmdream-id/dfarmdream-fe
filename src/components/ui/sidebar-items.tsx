@@ -11,13 +11,20 @@ import {
   HiUserGroup
 } from "react-icons/hi2";
 import {HiOutlineDatabase, HiOutlineInboxIn, HiOutlineLocationMarker, HiOutlineReceiptTax} from "react-icons/hi";
-import {MdAccountTree, MdOutlineCollectionsBookmark, MdOutlineDeviceThermostat, MdSensors} from "react-icons/md";
+import {
+  MdAccountTree,
+  MdOutlineAccountBalance,
+  MdOutlineCollectionsBookmark,
+  MdOutlineDeviceThermostat,
+  MdSensors
+} from "react-icons/md";
 import {GiChicken, GiMoneyStack} from "react-icons/gi";
 import {FaBalanceScale, FaDisease, FaMoneyBillAlt} from "react-icons/fa";
 import {TbAugmentedReality, TbBasketDown, TbBuildingWarehouse, TbCashRegister} from "react-icons/tb";
 import {VscVariableGroup} from "react-icons/vsc";
 import {IoFileTrayStacked} from "react-icons/io5";
 import {CiBoxes} from "react-icons/ci";
+import {FaMoneyBillTransfer} from "react-icons/fa6";
 
 export const sectionNestedItems: SidebarItem[] = [
   {
@@ -244,8 +251,22 @@ export const sectionNestedItems: SidebarItem[] = [
         can: "show:journal"
       },
       {
+        key: "general-ledger",
+        title: "Buku Besar (Ringkasan Saldo)",
+        href: "/cash/general-ledger",
+        icon: <FaMoneyBillTransfer className="text-xl" />,
+        can: "show:general-ledger"
+      },
+      {
+        key: "trial-balance",
+        title: "Neraca (Trial Balance)",
+        href: "/cash/trial-balance",
+        icon: <MdOutlineAccountBalance className="text-xl" />,
+        can: "show:trial-balance"
+      },
+      {
         key: "balance-sheet",
-        title: "Neraca",
+        title: "Neraca (Balance Sheet)",
         href: "/cash/balance-sheet",
         icon: <FaBalanceScale className="text-xl" />,
         can: "show:balance-sheet"
