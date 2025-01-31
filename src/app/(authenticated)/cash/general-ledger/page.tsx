@@ -21,6 +21,7 @@ import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
 import Logo from "@/components/assets/logo";
 import EmptyState from "@/components/state/empty";
+import {TrialBalance} from "@/app/(authenticated)/_models/response/journal";
 
 export default function BalanceSheet() {
   const [loading, setLoading] = useState(false);
@@ -245,7 +246,7 @@ export default function BalanceSheet() {
                       className="odd:bg-[#cffdec]"
                       role="button"
                     >
-                      <TableCell>
+                      <TableCell className={`pl-${(String(item.coa.code).length - 3) * 6}`}>
                         <div>{item.coa.code}</div>
                       </TableCell>
                       <TableCell>

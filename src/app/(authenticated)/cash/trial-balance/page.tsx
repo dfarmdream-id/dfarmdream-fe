@@ -1,7 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import {Fragment, useMemo, useState} from "react";
+import {Fragment, useEffect, useMemo, useState} from "react";
 import {
   Button,
   Select,
@@ -30,6 +30,8 @@ export default function BalanceSheet() {
 
   const [cageId, setCageId] = useQueryState("cageId", {throttleMs: 1000});
   const [batchId, setBatchId] = useQueryState("batchId", {throttleMs: 1000});
+  
+  const [balanceDebit, setBalanceDebit] = useState(0);
 
   const balanceSheets = useGetJournalBalanceSheet(
     useMemo(
@@ -242,37 +244,12 @@ export default function BalanceSheet() {
                   loadingContent={<Spinner />}
                   emptyContent={<EmptyState />}
                 >
-                  {/*{(item) => (*/}
-                  {/*  <TableRow*/}
-                  {/*    key={item.coa.code}*/}
-                  {/*    className="odd:bg-[#cffdec]"*/}
-                  {/*    role="button"*/}
-                  {/*  >*/}
-                  {/*    <TableCell>*/}
-                  {/*      <div>{item.coa.code}</div>*/}
-                  {/*    </TableCell>*/}
-                  {/*    <TableCell>*/}
-                  {/*      <div>{item.coa.name}</div>*/}
-                  {/*    </TableCell>*/}
-                  {/*    <TableCell>*/}
-                  {/*      <div>{*/}
-                  {/*        item._sum.debit - item._sum.credit < 0 ? "-" : formatCurrency(item._sum.debit - item._sum.credit)*/}
-                  {/*      }</div>*/}
-                  {/*    </TableCell>*/}
-                  {/*    <TableCell>*/}
-                  {/*      <div>{*/}
-                  {/*        item._sum.debit - item._sum.credit < 0 ? `(${formatCurrency(item._sum.debit - item._sum.credit)})`.toString().replace(*/}
-                  {/*          "-", ""*/}
-                  {/*        ) : "-"*/}
-                  {/*      }</div>*/}
-                  {/*    </TableCell>*/}
-                  {/*  </TableRow>*/}
-                  {/*)}*/}
                   <Fragment>
                     {
                       Object.keys(balanceSheets.data?.data?.trialBalance || {}).map((key) => {
                         const item = balanceSheets.data?.data?.trialBalance[Number(key)];
                         const balance = (item?._sum?.debit ?? 0)- (item?._sum?.credit ?? 0);
+                        
                         return (
                           <TableRow key={key} className="odd:bg-[#cffdec]" role="button">
                             <TableCell>
@@ -303,26 +280,6 @@ export default function BalanceSheet() {
                         )
                       })
                     }
-                    <TableRow className="odd:bg-[#cffdec]">
-                      <TableCell>
-                        <div>Total</div>
-                      </TableCell>
-                      <TableCell>
-                        <div></div>
-                      </TableCell>
-                      <TableCell>
-                        <div>{
-                          formatCurrency(balanceSheets.data?.data?.totalDebit)
-                        }</div>
-                      </TableCell>
-                      <TableCell>
-                        <div>{
-                          `(${formatCurrency(balanceSheets.data?.data?.totalCredit)})`.toString().replace(
-                            "-", ""
-                          )
-                        }</div>
-                      </TableCell>
-                    </TableRow>
                   </Fragment>
                 </TableBody>
               </Table>
