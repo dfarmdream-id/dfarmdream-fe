@@ -38,7 +38,7 @@ export default function ProfitLoss() {
         ...(cageId ? { cageId } : {}),
         ...(batchId ? { batchId } : {}),
       }),
-      [year,cageId, batchId]
+      [cageId, batchId]
     )
   );
 
@@ -216,7 +216,7 @@ export default function ProfitLoss() {
                   if (pendapatan.includes(Number(balanceSheet.coa.code))) {
                     return (
                       <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                        <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                        <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                         <span>{formatCurrency(balanceSheet._sum.credit - balanceSheet._sum.debit)}</span>
                       </div>
                     );
@@ -253,7 +253,7 @@ export default function ProfitLoss() {
                     if (bebanHPPTelur.includes(Number(balanceSheet.coa.code))) {
                       return (
                         <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                          <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                          <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                           <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                         </div>
                       );
@@ -286,7 +286,7 @@ export default function ProfitLoss() {
                     if (bebanHPPAfkir.includes(Number(balanceSheet.coa.code))) {
                       return (
                         <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                          <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                          <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                           <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                         </div>
                       );
@@ -340,7 +340,7 @@ export default function ProfitLoss() {
                     if (bebanOperasional.includes(Number(balanceSheet.coa.code))) {
                       return (
                         <div key={balanceSheet.coa.code} className="flex justify-between items-center py-1">
-                          <span className="text-gray-700">{balanceSheet.coa.name}:</span>
+                          <span className="text-gray-700">[{balanceSheet.coa.code}] {balanceSheet.coa.name}:</span>
                           <span>{formatCurrency(balanceSheet._sum.debit - balanceSheet._sum.credit)}</span>
                         </div>
                       );
