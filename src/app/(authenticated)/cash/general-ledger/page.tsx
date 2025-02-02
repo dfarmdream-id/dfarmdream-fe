@@ -21,7 +21,6 @@ import {useGetCages} from "@/app/(authenticated)/_services/cage";
 import useLocationStore from "@/stores/useLocationStore";
 import Logo from "@/components/assets/logo";
 import EmptyState from "@/components/state/empty";
-import {TrialBalance} from "@/app/(authenticated)/_models/response/journal";
 
 export default function BalanceSheet() {
   const [loading, setLoading] = useState(false);

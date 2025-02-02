@@ -1,7 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import {Fragment, useEffect, useMemo, useState} from "react";
+import {Fragment, useMemo, useState} from "react";
 import {
   Button,
   Select,
@@ -31,8 +31,6 @@ export default function BalanceSheet() {
   const [cageId, setCageId] = useQueryState("cageId", {throttleMs: 1000});
   const [batchId, setBatchId] = useQueryState("batchId", {throttleMs: 1000});
   
-  const [balanceDebit, setBalanceDebit] = useState(0);
-
   const balanceSheets = useGetJournalBalanceSheet(
     useMemo(
       () => ({

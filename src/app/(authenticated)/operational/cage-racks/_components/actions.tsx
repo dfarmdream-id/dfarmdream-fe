@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { HiPencilAlt } from "react-icons/hi";
-import {HiOutlinePrinter, HiQrCode, HiTrash} from "react-icons/hi2";
+import { HiQrCode, HiTrash} from "react-icons/hi2";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -66,7 +66,7 @@ export default function Actions(props: Props) {
         </Tooltip>
       </Can>
       <Can action="print:qr-cage">
-        <Tooltip content="Print QR">
+        <Tooltip content="Show QR">
           <Button
             isIconOnly
             variant="light"
@@ -150,17 +150,6 @@ export default function Actions(props: Props) {
               onPress={qrDisclosure.onClose}
             >
               Batal
-            </Button>
-            <Button
-              isLoading={deleteData.isPending}
-              color="primary"
-              className="w-full"
-              startContent={<HiOutlinePrinter />}
-              onPress={() => {
-                window.open(`/qr-print/cage/${props.id}?print=true`, "_blank");
-              }}
-            >
-              Print
             </Button>
           </ModalFooter>
         </ModalContent>
