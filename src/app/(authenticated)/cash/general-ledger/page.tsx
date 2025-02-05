@@ -234,7 +234,9 @@ export default function BalanceSheet() {
                   )}
                 </TableHeader>
                 <TableBody
-                  items={balanceSheets.data?.data?.trialBalance || []}
+                  items={
+                    balanceSheets.data?.data?.trialBalance.filter((item) => item._sum.debit !== 0 || item._sum.credit !== 0) || []
+                  }
                   isLoading={balanceSheets.isLoading}
                   loadingContent={<Spinner />}
                   emptyContent={<EmptyState />}

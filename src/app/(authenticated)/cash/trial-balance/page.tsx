@@ -244,7 +244,7 @@ export default function BalanceSheet() {
                 >
                   <Fragment>
                     {
-                      Object.keys(balanceSheets.data?.data?.trialBalance || {}).map((key) => {
+                      Object.keys(balanceSheets.data?.data?.trialBalance.filter((item) => item._sum.debit !== 0 || item._sum.credit !== 0) || {}).map((key) => {
                         const item = balanceSheets.data?.data?.trialBalance[Number(key)];
                         const balance = (item?._sum?.debit ?? 0)- (item?._sum?.credit ?? 0);
                         
