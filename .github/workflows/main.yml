@@ -28,6 +28,10 @@ jobs:
         run: |
           echo "registry=https://registry.npmmirror.com/" > ~/.npmrc
 
+      - name: Set alternate npm integrity keys
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+
       # Step 3: Prepare Docker Build Environment
       - name: Prepare
         run: |
