@@ -4,7 +4,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
-RUN corepack enable
+# RUN corepack enable
+RUN npm install -g pnpm
 RUN apk add openssl
 
 FROM base AS deps
