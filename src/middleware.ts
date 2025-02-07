@@ -12,6 +12,10 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.includes("verify")) {
     return NextResponse.next();
   }
+  
+  if(request.nextUrl.pathname.includes("privacy-policy")) {
+    return NextResponse.next();
+  }
 
   const token = request.cookies.get("accessToken");
 
