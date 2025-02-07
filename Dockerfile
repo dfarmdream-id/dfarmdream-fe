@@ -5,7 +5,6 @@ ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 RUN corepack enable
-RUN corepack use pnpm@10.0.0
 RUN apk add openssl
 
 FROM base AS deps
