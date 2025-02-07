@@ -23,6 +23,8 @@ export default {
     scrollbar: ['rounded'], // Tambahkan jika ingin border radius di thumb
   },
   plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/typography'),
     nextui({
       themes: {
         light: {
