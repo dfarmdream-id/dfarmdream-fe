@@ -1,8 +1,6 @@
 export default function Page() {
   return (
-    <div className="relative -mt-[5.75rem] overflow-hidden pt-[5.75rem]"><img
-      src="https://tailwindui.com/img/beams-basic.png" alt=""
-      className="absolute left-1/2 top-0 -ml-[39rem] w-[113.125rem] max-w-none"/>
+    <div className="relative -mt-[5.75rem] overflow-hidden pt-[5.75rem]">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="relative mx-auto max-w-[37.5rem] pt-20 text-center pb-24"><h1
           className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Privacy policy</h1>
@@ -18,14 +16,14 @@ export default function Page() {
             untuk menghormati hak dan masalah privasi semua Pengguna Platform DFRAMDREAM kami. Kami mengakui pentingnya
             data pribadi yang telah Anda percayakan kepada kami dan percaya bahwa merupakan tanggung jawab kami
             untuk mengelola, melindungi dan mengolah data pribadi Anda dengan baik. Kebijakan Privasi ini
-            ("Kebijakan Privasi" atau "Kebijakan") dirancang untuk membantu Anda memahami bagaimana kami
+            (Kebijakan Privasi atau Kebijakan) dirancang untuk membantu Anda memahami bagaimana kami
             mengumpulkan, menggunakan, mengungkapkan dan/atau mengolah data pribadi yang telah Anda percayakan
             kepada kami dan/atau kami miliki tentang Anda, baik di masa sekarang maupun di masa mendatang, serta
             untuk membantu Anda membuat keputusan yang tepat sebelum memberikan data pribadi Anda kepada kami.
           </p>
 
           <p>
-            1.2 "Data Pribadi” berarti data, baik benar maupun tidak, tentang individu yang dapat diidentifikasi
+            1.2 Data Pribadi” berarti data, baik benar maupun tidak, tentang individu yang dapat diidentifikasi
             dari data tersebut, atau dari data dan informasi lainnya yang dapat atau kemungkinan dapat diakses oleh
             suatu organisasi. Contoh umum data pribadi dapat mencakup nama, nomor identifikasi dan informasi kontak.
           </p>
@@ -138,8 +136,8 @@ export default function Page() {
             3.3 Jika Anda tidak ingin kami mengumpulkan informasi/data pribadi tersebut di atas, Anda dapat
             membatalkannya kapan saja dengan memberi tahu Petugas Perlindungan Data kami secara tertulis. Informasi
             lebih jauh mengenai pembatalan tersebut dapat ditemukan dalam bagian di bawah ini yang berjudul
-            "Bagaimana Anda dapat mencabut persetujuan, menghapus, meminta akses untuk, atau memodifikasi informasi
-            yang sudah Anda berikan kepada kami?" . Bagaimanapun, harap diperhatikan, bahwa dengan memilih keluar,
+            Bagaimana Anda dapat mencabut persetujuan, menghapus, meminta akses untuk, atau memodifikasi informasi
+            yang sudah Anda berikan kepada kami? . Bagaimanapun, harap diperhatikan, bahwa dengan memilih keluar,
             atau mencabut persetujuan bagi kami untuk mengumpulkan, menggunakan atau memproses data pribadi Anda,
             dapat memengaruhi penggunaan Anda atas Layanan dan Platform. Contohnya, dengan membatalkan opsi
             pengumpulan informasi lokasi akan menyebabkan fitur berbasis lokasinya dinonaktifkan.
